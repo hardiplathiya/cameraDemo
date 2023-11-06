@@ -21,3 +21,4 @@ rootProject.name = "cameraDemo"
 include ':app'
 
 
+include ':cameraview'

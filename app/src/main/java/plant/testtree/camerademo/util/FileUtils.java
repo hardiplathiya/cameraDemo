@@ -130,7 +130,7 @@ public class FileUtils {
     }
 
     public static File getFileOnSDCard(String str) {
-        return new File(Environment.getExternalStorageDirectory(), str);
+        return new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath(), str);
     }
 
     public static String getPicName() {

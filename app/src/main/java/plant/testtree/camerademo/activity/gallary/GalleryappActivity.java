@@ -218,7 +218,7 @@ public class GalleryappActivity extends AppCompatActivity {
             this.file = new File(getIntent().getStringExtra("dir"));
             this.filename = getIntent().getStringExtra("name");
         } else {
-            this.file = new File(Environment.getExternalStorageDirectory() + File.separator + this.foldername);
+            this.file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + File.separator + this.foldername);
         }
         this.album = new Album(this.file.getAbsolutePath(), this.foldername);
         this.pAdapter = new MediaPagerAdapter(getSupportFragmentManager());
@@ -445,7 +445,7 @@ public class GalleryappActivity extends AppCompatActivity {
             this.file = new File(getIntent().getStringExtra("dir"));
             this.filename = getIntent().getStringExtra("name");
         } else {
-            this.file = new File(Environment.getExternalStorageDirectory() + File.separator + this.foldername);
+            this.file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + File.separator + this.foldername);
         }
         this.album = new Album(this.file.getAbsolutePath(), this.foldername);
         CPHelper.getMedia(this, this.album).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new io.reactivex.functions.Consumer<Media>() {

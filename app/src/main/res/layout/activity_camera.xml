@@ -86,7 +86,6 @@
                 android:layout_centerInParent="true"
                 android:clickable="true"
                 android:focusable="true"
-                android:scaleType="center"
                 android:src="@drawable/btn_photo_shutter" />
         </RelativeLayout>
 

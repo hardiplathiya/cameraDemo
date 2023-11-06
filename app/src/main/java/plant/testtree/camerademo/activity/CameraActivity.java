@@ -1,5 +1,7 @@
 package plant.testtree.camerademo.activity;
 
+import static com.otaliastudios.cameraview.CameraView.getFilter;
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -40,6 +42,7 @@ import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraOptions;
 import com.otaliastudios.cameraview.CameraView;
 import com.otaliastudios.cameraview.PictureResult;
+import com.otaliastudios.cameraview.SwpieCallBack;
 import com.otaliastudios.cameraview.VideoResult;
 import com.otaliastudios.cameraview.controls.Facing;
 import com.otaliastudios.cameraview.controls.Flash;
@@ -49,6 +52,7 @@ import com.otaliastudios.cameraview.controls.Mode;
 import com.otaliastudios.cameraview.controls.Preview;
 import com.otaliastudios.cameraview.controls.WhiteBalance;
 import com.otaliastudios.cameraview.filter.Filters;
+import com.otaliastudios.cameraview.filter.OneParameterFilter;
 import com.warkiz.widget.IndicatorSeekBar;
 import com.warkiz.widget.OnSeekChangeListener;
 import com.warkiz.widget.SeekParams;
@@ -56,6 +60,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import plant.testtree.camerademo.R;
 import plant.testtree.camerademo.activity.gallary.GalleryappActivity;
 import plant.testtree.camerademo.adapter.FilterAdapter;
+import plant.testtree.camerademo.filter.BrightnessFilter;
 import plant.testtree.camerademo.model.ListModel;
 import plant.testtree.camerademo.util.Const;
 import plant.testtree.camerademo.util.GPSTracker;
@@ -208,9 +213,8 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
         this.audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
         AudioManager audioManager = this.audioManager;
         audioManager.setStreamVolume(3, audioManager.getStreamVolume(3), 0);
-        if (Build.VERSION.SDK_INT >= 23) {
-            checkPermission();
-        }
+
+        checkPermission();
         try {
             this.camera = (CameraView) findViewById(R.id.camera);
             this.camera.open();
@@ -273,7 +277,7 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
         if (!Environment.getExternalStorageState().equals("mounted")) {
             Toast.makeText(this, "Error! No SDCARD Found!", Toast.LENGTH_LONG).show();
         } else {
-            this.file = new File(Environment.getExternalStorageDirectory() + File.separator + "iCamera");
+             this.file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + File.separator + "iCamera");
             this.file.mkdirs();
         }
         try {
@@ -379,7 +383,7 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
                     CameraActivity.this.menu_time.performClick();
                 }
                 CameraActivity.this.rvFilterList.setVisibility(View.GONE);
-                CameraActivity.this.file = new File(Environment.getExternalStorageDirectory() + File.separator + "iCamera");
+                CameraActivity.this.file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + File.separator + "iCamera");
                 if (!CameraActivity.this.file.exists()) {
                     CameraActivity.this.file.mkdirs();
                 }
@@ -604,7 +608,7 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
                     CameraActivity.this.titleShow("SCENE MODE\nNIGHT");
                     CameraActivity cameraActivity = CameraActivity.this;
                     cameraActivity.sce = 2;
-                    cameraActivity.camera.setFilter(cameraActivity.mAllFilters[26].newInstance());
+                    cameraActivity.camera.setFilter(cameraActivity.mAllFilters[21].newInstance());
                     CameraActivity.this.menu_scenone.setImageResource(R.drawable.sce_off);
                     CameraActivity.this.menu_night.setImageResource(R.drawable.night_on);
                     CameraActivity.this.menu_action.setImageResource(R.drawable.action);
@@ -750,21 +754,31 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
 
             @Override // com.warkiz.widget.OnSeekChangeListener
             public void onStopTrackingTouch(IndicatorSeekBar indicatorSeekBar) {
+                camera.setFilter(CameraActivity.this.mAllFilters[3].newInstance());
                 if (indicatorSeekBar.getProgress() == -2) {
                     CameraActivity.this.titleShow("EXPOSURE\n-2");
-                    CameraActivity.this.camera.setFilter(CameraActivity.this.mAllFilters[21].newInstance());
+                    com.otaliastudios.cameraview.filters.BrightnessFilter brightnessFilter = new com.otaliastudios.cameraview.filters.BrightnessFilter();
+                    brightnessFilter.setBrightness(0.5F);
+               //     CameraActivity.this.camera.setFilter(CameraActivity.this.mAllFilters[3].newInstance());
                 } else if (indicatorSeekBar.getProgress() == -1) {
+                    com.otaliastudios.cameraview.filters.BrightnessFilter brightnessFilter = new com.otaliastudios.cameraview.filters.BrightnessFilter();
+                    brightnessFilter.setBrightness(1.0F);
                     CameraActivity.this.titleShow("EXPOSURE\n-1");
-                    CameraActivity.this.camera.setFilter(CameraActivity.this.mAllFilters[22].newInstance());
+               //     CameraActivity.this.camera.setFilter(CameraActivity.this.mAllFilters[2].newInstance());
                 } else if (indicatorSeekBar.getProgress() == 0) {
+                    camera.setFilter(CameraActivity.this.mAllFilters[3].newInstance());
                     CameraActivity.this.titleShow("EXPOSURE\n0");
-                    CameraActivity.this.camera.setFilter(CameraActivity.this.mAllFilters[23].newInstance());
+               //     CameraActivity.this.camera.setFilter(CameraActivity.this.mAllFilters[0].newInstance());
                 } else if (indicatorSeekBar.getProgress() == 1) {
+                    com.otaliastudios.cameraview.filters.BrightnessFilter brightnessFilter = new com.otaliastudios.cameraview.filters.BrightnessFilter();
+                    brightnessFilter.setBrightness(1.5F);
                     CameraActivity.this.titleShow("EXPOSURE\n1");
-                    CameraActivity.this.camera.setFilter(CameraActivity.this.mAllFilters[24].newInstance());
+                //    CameraActivity.this.camera.setFilter(CameraActivity.this.mAllFilters[1].newInstance());
                 } else if (indicatorSeekBar.getProgress() == 2) {
+                    com.otaliastudios.cameraview.filters.BrightnessFilter brightnessFilter = new com.otaliastudios.cameraview.filters.BrightnessFilter();
+                    brightnessFilter.setBrightness(2F);
                     CameraActivity.this.titleShow("EXPOSURE\n2");
-                    CameraActivity.this.camera.setFilter(CameraActivity.this.mAllFilters[25].newInstance());
+                   // CameraActivity.this.camera.setFilter(CameraActivity.this.mAllFilters[2].newInstance());
                 }
             }
         });
@@ -838,116 +852,116 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
             }
         });
 
-        this.camera.setCall(new SwpieCallBack() { // from class: com.cameraediter.iphone11pro.CameraActivity.35
-            @Override // com.otaliastudios.cameraview.SwpieCallBack
-            public void onSwipeValue(int i) {
-                if (i != 0) {
-                    if (i == 1) {
-                        CameraActivity.this.shutter_button.setEnabled(true);
-                        if (CameraActivity.this.mWheelview.getSelectedPosition() == 2) {
-                            if (CameraActivity.this.camera.getFacing().equals(Facing.FRONT)) {
-                                CameraActivity.this.frontPhoto();
-                            } else {
-                                CameraActivity.this.backPhoto();
-                            }
-                            CameraActivity.this.mWheelview.selectIndex(1);
-                            CameraActivity cameraActivity = CameraActivity.this;
-                            cameraActivity.startTime = 0L;
-                            cameraActivity.timeInMilliseconds = 0L;
-                            cameraActivity.timeSwapBuff = 0L;
-                            cameraActivity.updatedTime = 0L;
-                            cameraActivity.camera.setMode(Mode.PICTURE);
-                            CameraActivity.this.llTimer.setVisibility(View.GONE);
-                            ViewGroup.LayoutParams layoutParams = CameraActivity.this.camera.getLayoutParams();
-                            layoutParams.width = -1;
-                            layoutParams.height = -1;
-                            CameraActivity cameraActivity2 = CameraActivity.this;
-                            cameraActivity2.set(cameraActivity2.camera, -1);
-                            CameraActivity.this.camera.setLayoutParams(layoutParams);
-                            CameraActivity.this.shutter_button.setImageResource(R.drawable.btn_photo_shutter);
-                            return;
-                        } else if (CameraActivity.this.mWheelview.getSelectedPosition() == 1) {
-                            if (CameraActivity.this.camera.getFacing().equals(Facing.FRONT)) {
-                                CameraActivity.this.frontVideo();
-                            } else {
-                                CameraActivity.this.backVideo();
-                            }
-                            CameraActivity.this.mWheelview.selectIndex(0);
-                            CameraActivity.this.camera.setMode(Mode.VIDEO);
-                            CameraActivity.this.llTimer.setVisibility(View.VISIBLE);
-                            CameraActivity.this.rvFilterList.setVisibility(View.GONE);
-                            CameraActivity.this.camera.setFilter(CameraActivity.this.mAllFilters[0].newInstance());
-                            ViewGroup.LayoutParams layoutParams2 = CameraActivity.this.camera.getLayoutParams();
-                            layoutParams2.width = -1;
-                            layoutParams2.height = -1;
-                            CameraActivity.this.camera.setLayoutParams(layoutParams2);
-                            CameraActivity cameraActivity3 = CameraActivity.this;
-                            cameraActivity3.set(cameraActivity3.camera, -1);
-                            CameraActivity.this.shutter_button.setImageResource(R.drawable.btn_new_shutter);
-                            return;
-                        } else {
-                            return;
-                        }
-                    }
-                    return;
-                }
-                CameraActivity.this.shutter_button.setEnabled(true);
-                if (CameraActivity.this.mWheelview.getSelectedPosition() == 0) {
-                    if (CameraActivity.this.camera.getFacing().equals(Facing.FRONT)) {
-                        CameraActivity.this.frontPhoto();
-                    } else {
-                        CameraActivity.this.backPhoto();
-                    }
-                    CameraActivity.this.mWheelview.selectIndex(1);
-                    CameraActivity cameraActivity4 = CameraActivity.this;
-                    cameraActivity4.startTime = 0L;
-                    cameraActivity4.timeInMilliseconds = 0L;
-                    cameraActivity4.timeSwapBuff = 0L;
-                    cameraActivity4.updatedTime = 0L;
-                    cameraActivity4.camera.setMode(Mode.PICTURE);
-                    CameraActivity.this.llTimer.setVisibility(View.GONE);
-                    ViewGroup.LayoutParams layoutParams3 = CameraActivity.this.camera.getLayoutParams();
-                    layoutParams3.width = -1;
-                    layoutParams3.height = -1;
-                    CameraActivity cameraActivity5 = CameraActivity.this;
-                    cameraActivity5.set(cameraActivity5.camera, -1);
-                    CameraActivity.this.camera.setLayoutParams(layoutParams3);
-                    CameraActivity.this.shutter_button.setImageResource(R.drawable.btn_photo_shutter);
-                } else if (CameraActivity.this.mWheelview.getSelectedPosition() == 1) {
-                    if (CameraActivity.this.camera.getFacing().equals(Facing.FRONT)) {
-                        CameraActivity.this.frontPhoto();
-                    } else {
-                        CameraActivity.this.backPhoto();
-                    }
-                    CameraActivity.this.mWheelview.selectIndex(2);
-                    CameraActivity cameraActivity6 = CameraActivity.this;
-                    cameraActivity6.startTime = 0L;
-                    cameraActivity6.timeInMilliseconds = 0L;
-                    cameraActivity6.timeSwapBuff = 0L;
-                    cameraActivity6.updatedTime = 0L;
-                    cameraActivity6.camera.setMode(Mode.PICTURE);
-                    CameraActivity.this.llTimer.setVisibility(View.GONE);
-                    ViewGroup.LayoutParams layoutParams4 = CameraActivity.this.camera.getLayoutParams();
-                    int measuredWidth = CameraActivity.this.camera.getMeasuredWidth();
-                    layoutParams4.width = -1;
-                    layoutParams4.height = measuredWidth;
-                    CameraActivity.this.camera.setLayoutParams(layoutParams4);
-                    CameraActivity cameraActivity7 = CameraActivity.this;
-                    cameraActivity7.set(cameraActivity7.camera, Integer.valueOf(measuredWidth));
-                    CameraActivity.this.shutter_button.setImageResource(R.drawable.btn_photo_shutter);
-                }
-            }
-
-            public void onTapValue(int i) {
-                if (CameraActivity.this.setting_feature.getVisibility() == View.VISIBLE) {
-                    CameraActivity.this.menu_setting.performClick();
-                }
-                if (CameraActivity.this.llTimerClick.getVisibility() == View.VISIBLE) {
-                    CameraActivity.this.menu_time.performClick();
-                }
-                CameraActivity.this.rvFilterList.setVisibility(View.GONE);
-            }
-        });
+//        this.camera.setCall(new SwpieCallBack() { // from class: com.cameraediter.iphone11pro.CameraActivity.35
+//            @Override // com.otaliastudios.cameraview.SwpieCallBack
+//            public void onSwipeValue(int i) {
+//                if (i != 0) {
+//                    if (i == 1) {
+//                        CameraActivity.this.shutter_button.setEnabled(true);
+//                        if (CameraActivity.this.mWheelview.getSelectedPosition() == 2) {
+//                            if (CameraActivity.this.camera.getFacing().equals(Facing.FRONT)) {
+//                                CameraActivity.this.frontPhoto();
+//                            } else {
+//                                CameraActivity.this.backPhoto();
+//                            }
+//                            CameraActivity.this.mWheelview.selectIndex(1);
+//                            CameraActivity cameraActivity = CameraActivity.this;
+//                            cameraActivity.startTime = 0L;
+//                            cameraActivity.timeInMilliseconds = 0L;
+//                            cameraActivity.timeSwapBuff = 0L;
+//                            cameraActivity.updatedTime = 0L;
+//                            cameraActivity.camera.setMode(Mode.PICTURE);
+//                            CameraActivity.this.llTimer.setVisibility(View.GONE);
+//                            ViewGroup.LayoutParams layoutParams = CameraActivity.this.camera.getLayoutParams();
+//                            layoutParams.width = -1;
+//                            layoutParams.height = -1;
+//                            CameraActivity cameraActivity2 = CameraActivity.this;
+//                            cameraActivity2.set(cameraActivity2.camera, -1);
+//                            CameraActivity.this.camera.setLayoutParams(layoutParams);
+//                            CameraActivity.this.shutter_button.setImageResource(R.drawable.btn_photo_shutter);
+//                            return;
+//                        } else if (CameraActivity.this.mWheelview.getSelectedPosition() == 1) {
+//                            if (CameraActivity.this.camera.getFacing().equals(Facing.FRONT)) {
+//                                CameraActivity.this.frontVideo();
+//                            } else {
+//                                CameraActivity.this.backVideo();
+//                            }
+//                            CameraActivity.this.mWheelview.selectIndex(0);
+//                            CameraActivity.this.camera.setMode(Mode.VIDEO);
+//                            CameraActivity.this.llTimer.setVisibility(View.VISIBLE);
+//                            CameraActivity.this.rvFilterList.setVisibility(View.GONE);
+//                            CameraActivity.this.camera.setFilter(CameraActivity.this.mAllFilters[0].newInstance());
+//                            ViewGroup.LayoutParams layoutParams2 = CameraActivity.this.camera.getLayoutParams();
+//                            layoutParams2.width = -1;
+//                            layoutParams2.height = -1;
+//                            CameraActivity.this.camera.setLayoutParams(layoutParams2);
+//                            CameraActivity cameraActivity3 = CameraActivity.this;
+//                            cameraActivity3.set(cameraActivity3.camera, -1);
+//                            CameraActivity.this.shutter_button.setImageResource(R.drawable.btn_new_shutter);
+//                            return;
+//                        } else {
+//                            return;
+//                        }
+//                    }
+//                    return;
+//                }
+//                CameraActivity.this.shutter_button.setEnabled(true);
+//                if (CameraActivity.this.mWheelview.getSelectedPosition() == 0) {
+//                    if (CameraActivity.this.camera.getFacing().equals(Facing.FRONT)) {
+//                        CameraActivity.this.frontPhoto();
+//                    } else {
+//                        CameraActivity.this.backPhoto();
+//                    }
+//                    CameraActivity.this.mWheelview.selectIndex(1);
+//                    CameraActivity cameraActivity4 = CameraActivity.this;
+//                    cameraActivity4.startTime = 0L;
+//                    cameraActivity4.timeInMilliseconds = 0L;
+//                    cameraActivity4.timeSwapBuff = 0L;
+//                    cameraActivity4.updatedTime = 0L;
+//                    cameraActivity4.camera.setMode(Mode.PICTURE);
+//                    CameraActivity.this.llTimer.setVisibility(View.GONE);
+//                    ViewGroup.LayoutParams layoutParams3 = CameraActivity.this.camera.getLayoutParams();
+//                    layoutParams3.width = -1;
+//                    layoutParams3.height = -1;
+//                    CameraActivity cameraActivity5 = CameraActivity.this;
+//                    cameraActivity5.set(cameraActivity5.camera, -1);
+//                    CameraActivity.this.camera.setLayoutParams(layoutParams3);
+//                    CameraActivity.this.shutter_button.setImageResource(R.drawable.btn_photo_shutter);
+//                } else if (CameraActivity.this.mWheelview.getSelectedPosition() == 1) {
+//                    if (CameraActivity.this.camera.getFacing().equals(Facing.FRONT)) {
+//                        CameraActivity.this.frontPhoto();
+//                    } else {
+//                        CameraActivity.this.backPhoto();
+//                    }
+//                    CameraActivity.this.mWheelview.selectIndex(2);
+//                    CameraActivity cameraActivity6 = CameraActivity.this;
+//                    cameraActivity6.startTime = 0L;
+//                    cameraActivity6.timeInMilliseconds = 0L;
+//                    cameraActivity6.timeSwapBuff = 0L;
+//                    cameraActivity6.updatedTime = 0L;
+//                    cameraActivity6.camera.setMode(Mode.PICTURE);
+//                    CameraActivity.this.llTimer.setVisibility(View.GONE);
+//                    ViewGroup.LayoutParams layoutParams4 = CameraActivity.this.camera.getLayoutParams();
+//                    int measuredWidth = CameraActivity.this.camera.getMeasuredWidth();
+//                    layoutParams4.width = -1;
+//                    layoutParams4.height = measuredWidth;
+//                    CameraActivity.this.camera.setLayoutParams(layoutParams4);
+//                    CameraActivity cameraActivity7 = CameraActivity.this;
+//                    cameraActivity7.set(cameraActivity7.camera, Integer.valueOf(measuredWidth));
+//                    CameraActivity.this.shutter_button.setImageResource(R.drawable.btn_photo_shutter);
+//                }
+//            }
+//
+//            public void onTapValue(int i) {
+//                if (CameraActivity.this.setting_feature.getVisibility() == View.VISIBLE) {
+//                    CameraActivity.this.menu_setting.performClick();
+//                }
+//                if (CameraActivity.this.llTimerClick.getVisibility() == View.VISIBLE) {
+//                    CameraActivity.this.menu_time.performClick();
+//                }
+//                CameraActivity.this.rvFilterList.setVisibility(View.GONE);
+//            }
+//        });
         new Handler().postDelayed(new Runnable() { // from class: com.cameraediter.iphone11pro.CameraActivity.36
             @Override // java.lang.Runnable
             public void run() {
@@ -1284,7 +1298,6 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
         } catch (Exception e) {
             e.printStackTrace();
         }
-        this.mFirebaseAnalytics.setCurrentScreen(this, "CurrentScreen: " + getClass().getSimpleName(), null);
     }
 
     @Override // androidx.fragment.app.FragmentActivity, android.app.Activity
@@ -1505,40 +1518,75 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
     }
 
     public void checkPermission() {
-        if (ContextCompat.checkSelfPermission(this, "android.permission.CAMERA") + ContextCompat.checkSelfPermission(this, "android.permission.READ_EXTERNAL_STORAGE") + ContextCompat.checkSelfPermission(this, "android.permission.WRITE_EXTERNAL_STORAGE") + ContextCompat.checkSelfPermission(this, "android.permission.RECORD_AUDIO") + ContextCompat.checkSelfPermission(this, "android.permission.ACCESS_FINE_LOCATION") + ContextCompat.checkSelfPermission(this, "android.permission.ACCESS_COARSE_LOCATION") == 0) {
-            this.camera = (CameraView) findViewById(R.id.camera);
-            this.camera.open();
-            File file = new File(Const.PATH);
-            if (!file.exists()) {
-                file.mkdir();
-                file.mkdirs();
-            }
-            if (!Environment.getExternalStorageState().equals("mounted")) {
-                Toast.makeText(this, "Error! No SDCARD Found!", Toast.LENGTH_LONG).show();
-            } else {
-                this.file = new File(Environment.getExternalStorageDirectory() + File.separator + "iCamera");
-                this.file.mkdirs();
-            }
-            getcurrentlocationinfo();
-        } else if (ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.CAMERA") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.RECORD_AUDIO") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.READ_EXTERNAL_STORAGE") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.WRITE_EXTERNAL_STORAGE") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.ACCESS_FINE_LOCATION") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.ACCESS_COARSE_LOCATION")) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Camera, Read External, and Write External Storage permissions are required to do the task.");
-            builder.setTitle("Please grant those permissions");
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.43
-                @Override // android.content.DialogInterface.OnClickListener
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    ActivityCompat.requestPermissions(CameraActivity.this, new String[]{"android.permission.CAMERA", "android.permission.RECORD_AUDIO", "android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION"}, 123);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            if (ContextCompat.checkSelfPermission(this, "android.permission.CAMERA") + ContextCompat.checkSelfPermission(this, "android.permission.READ_MEDIA_IMAGES") + ContextCompat.checkSelfPermission(this, "android.permission.RECORD_AUDIO") + ContextCompat.checkSelfPermission(this, "android.permission.ACCESS_FINE_LOCATION") + ContextCompat.checkSelfPermission(this, "android.permission.ACCESS_COARSE_LOCATION") == 0) {
+                this.camera = (CameraView) findViewById(R.id.camera);
+                this.camera.open();
+                File file = new File(Const.PATH);
+                if (!file.exists()) {
+                    file.mkdir();
+                    file.mkdirs();
                 }
-            });
-            builder.setNeutralButton("Cancel", (DialogInterface.OnClickListener) null);
-            builder.create().show();
-        } else {
-            ActivityCompat.requestPermissions(this, new String[]{"android.permission.CAMERA", "android.permission.RECORD_AUDIO", "android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION"}, 123);
+                if (!Environment.getExternalStorageState().equals("mounted")) {
+                    Toast.makeText(this, "Error! No SDCARD Found!", Toast.LENGTH_LONG).show();
+                } else {
+                     this.file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + File.separator + "iCamera");
+                    this.file.mkdirs();
+                }
+                getcurrentlocationinfo();
+            } else if (ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.CAMERA") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.RECORD_AUDIO") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.READ_MEDIA_IMAGES") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.READ_MEDIA_AUDIO") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.ACCESS_FINE_LOCATION") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.ACCESS_COARSE_LOCATION")) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("Camera, Read External, and Write External Storage permissions are required to do the task.");
+                builder.setTitle("Please grant those permissions");
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.43
+                    @Override // android.content.DialogInterface.OnClickListener
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        ActivityCompat.requestPermissions(CameraActivity.this, new String[]{"android.permission.CAMERA", "android.permission.RECORD_AUDIO", "android.permission.READ_MEDIA_IMAGES",  "android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION"}, 123);
+                    }
+                });
+                builder.setNeutralButton("Cancel", (DialogInterface.OnClickListener) null);
+                builder.create().show();
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{"android.permission.CAMERA", "android.permission.RECORD_AUDIO", "android.permission.READ_MEDIA_IMAGES","android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION"}, 123);
+            }
+        }else {
+            if (ContextCompat.checkSelfPermission(this, "android.permission.CAMERA") + ContextCompat.checkSelfPermission(this, "android.permission.READ_EXTERNAL_STORAGE") + ContextCompat.checkSelfPermission(this, "android.permission.WRITE_EXTERNAL_STORAGE") + ContextCompat.checkSelfPermission(this, "android.permission.RECORD_AUDIO") + ContextCompat.checkSelfPermission(this, "android.permission.ACCESS_FINE_LOCATION") + ContextCompat.checkSelfPermission(this, "android.permission.ACCESS_COARSE_LOCATION") == 0) {
+                this.camera = (CameraView) findViewById(R.id.camera);
+                this.camera.open();
+                File file = new File(Const.PATH);
+                if (!file.exists()) {
+                    file.mkdir();
+                    file.mkdirs();
+                }
+                if (!Environment.getExternalStorageState().equals("mounted")) {
+                    Toast.makeText(this, "Error! No SDCARD Found!", Toast.LENGTH_LONG).show();
+                } else {
+                     this.file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + File.separator + "iCamera");
+                    this.file.mkdirs();
+                }
+                getcurrentlocationinfo();
+            } else if (ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.CAMERA") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.RECORD_AUDIO") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.READ_EXTERNAL_STORAGE") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.WRITE_EXTERNAL_STORAGE") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.ACCESS_FINE_LOCATION") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.ACCESS_COARSE_LOCATION")) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("Camera, Read External, and Write External Storage permissions are required to do the task.");
+                builder.setTitle("Please grant those permissions");
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.43
+                    @Override // android.content.DialogInterface.OnClickListener
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        ActivityCompat.requestPermissions(CameraActivity.this, new String[]{"android.permission.CAMERA", "android.permission.RECORD_AUDIO", "android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION"}, 123);
+                    }
+                });
+                builder.setNeutralButton("Cancel", (DialogInterface.OnClickListener) null);
+                builder.create().show();
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{"android.permission.CAMERA", "android.permission.RECORD_AUDIO", "android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION"}, 123);
+            }
         }
+
     }
 
     @Override // androidx.fragment.app.FragmentActivity, android.app.Activity, androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback
     public void onRequestPermissionsResult(int i, String[] strArr, int[] iArr) {
+        super.onRequestPermissionsResult(i, strArr, iArr);
         if (i == 123) {
             if (iArr.length <= 0 || iArr[0] + iArr[1] + iArr[2] != 0) {
                 Toast.makeText(this, "Permissions denied.", Toast.LENGTH_SHORT).show();
@@ -1554,7 +1602,7 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
             if (!Environment.getExternalStorageState().equals("mounted")) {
                 Toast.makeText(this, "Error! No SDCARD Found!", Toast.LENGTH_LONG).show();
             } else {
-                this.file = new File(Environment.getExternalStorageDirectory() + File.separator + "iCamera");
+                 this.file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + File.separator + "iCamera");
                 this.file.mkdirs();
             }
             getcurrentlocationinfo();
@@ -1612,7 +1660,7 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
             try {
                 new SimpleDateFormat("yyyyMMdd_HHmmss");
                 String format = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-                File file = new File(Environment.getExternalStorageDirectory() + File.separator + "iCamera");
+                File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + File.separator + "iCamera");
                 try {
                     if (!file.exists()) {
                         file.mkdirs();

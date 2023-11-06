@@ -32,7 +32,7 @@ public class FilterResourceHelper {
         File file;
         FilterType[] values;
         if (z) {
-            file = new File(Environment.getExternalStorageDirectory(), "/Omoshiroi/thumbs");
+            file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath(), "/Omoshiroi/thumbs");
         } else {
             file = new File(context.getFilesDir().getAbsolutePath(), "thumbs");
         }

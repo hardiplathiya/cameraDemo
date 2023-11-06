@@ -37,7 +37,7 @@ public class BitmapUtils {
             this.width = i;
             this.height = i2;
             this.context = context;
-            File file = new File(Environment.getExternalStorageDirectory() + File.separator + "Camera");
+            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + File.separator + "Camera");
             if (!file.exists()) {
                 file.mkdirs();
             }

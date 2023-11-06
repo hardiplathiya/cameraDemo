@@ -327,7 +327,7 @@ public class StorageHelper {
             if (isExternalStorageDocument(uri)) {
                 String[] split = DocumentsContract.getDocumentId(uri).split(":");
                 if (PRIMARY_VOLUME_NAME.equalsIgnoreCase(split[0])) {
-                    return Environment.getExternalStorageDirectory() + "/" + split[1];
+                    return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + "/" + split[1];
                 }
             } else if (isDownloadsDocument(uri)) {
                 return getDataColumn(context, ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(DocumentsContract.getDocumentId(uri)).longValue()), null, null);

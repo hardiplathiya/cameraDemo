@@ -6,19 +6,19 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import plant.testtree.camerademo.R;
-import plant.testtree.camerademo.model.Image;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.TreeSet;
+
+import butterknife.ButterKnife;
+import plant.testtree.camerademo.R;
+import plant.testtree.camerademo.model.Image;
 
 /* loaded from: classes.dex */
 public class SelectImageListActivity extends AppCompatActivity {
