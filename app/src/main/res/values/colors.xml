@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black_primary">#ff000000</color>
+    <color name="colorAccent">#000000</color>
+    <color name="colorBlack">#000000</color>
+    <color name="colorPrimary">#000000</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorWhite">#ffffffff</color>
+    <color name="color_back">#ff188dfb</color>
+    <color name="color_phone">#ff007aff</color>
+    <color name="color_white">#ffffffff</color>
+    <color name="tv_value_dialog">#ff838080</color>
+    <color name="yellow">#DAB009</color>
+</resources>
