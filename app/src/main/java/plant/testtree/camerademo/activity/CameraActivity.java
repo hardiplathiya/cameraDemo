@@ -60,6 +60,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import plant.testtree.camerademo.R;
 import plant.testtree.camerademo.activity.gallary.GalleryappActivity;
 import plant.testtree.camerademo.adapter.FilterAdapter;
+import plant.testtree.camerademo.databinding.ActivityCameraBinding;
 import plant.testtree.camerademo.filter.BrightnessFilter;
 import plant.testtree.camerademo.model.ListModel;
 import plant.testtree.camerademo.util.Const;
@@ -93,8 +94,6 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
     CircleImageView image_thumb;
     double latitude;
     public File[] listFile;
-    LinearLayout llAllFeature;
-    LinearLayout llBrightness;
     LinearLayout llFunction;
     LinearLayout llGrid;
     LinearLayout llSce;
@@ -112,7 +111,6 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
     ImageView menu_cloudy;
     ImageView menu_daylight;
     ImageView menu_filter;
-    ImageView menu_flash;
     ImageView menu_fluorescent;
     ImageView menu_hdr;
     ImageView menu_image;
@@ -147,8 +145,6 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
     ImageView shutter_button;
     TextView timerCounter;
     TextView timerText;
-    TextView tvFunctionName;
-    TextView tvToast;
     int adLoad = 0;
     ArrayList<ListModel> arrayPhotoVideo = new ArrayList<>();
     int clickCount = 0;
@@ -169,7 +165,7 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
     long timeInMilliseconds = 0;
     long timeSwapBuff = 0;
     int timer = 0;
-    private Runnable updateTimerThread = new Runnable() { // from class: com.cameraediter.iphone11pro.CameraActivity.1
+    private Runnable updateTimerThread = new Runnable() {
         @Override // java.lang.Runnable
         public void run() {
             CameraActivity.this.timeInMilliseconds = SystemClock.uptimeMillis() - CameraActivity.this.startTime;
@@ -185,7 +181,7 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
     };
     long updatedTime = 0;
 
-    @Override // com.cameraediter.iphone11pro.WheelView.OnWheelItemSelectedListener
+    @Override
     public void onWheelItemChanged(WheelView wheelView, int i) {
     }
 
@@ -199,12 +195,15 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
         return "jpeg";
     }
 
-    @Override // androidx.appcompat.app.AppCompatActivity, androidx.fragment.app.FragmentActivity, androidx.activity.ComponentActivity, androidx.core.app.ComponentActivity, android.app.Activity
+    ActivityCameraBinding binding;
+    @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-//        requestWindowFeature(1);
-//        getWindow().setFlags(1024, 1024);
-        setContentView(R.layout.activity_camera);
+        requestWindowFeature(1);
+        getWindow().setFlags(1024, 1024);
+        binding =  ActivityCameraBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
         this.mp = MediaPlayer.create(this, (int) R.raw.camera);
         this.audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
         AudioManager audioManager = this.audioManager;
@@ -217,19 +216,16 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
         } catch (Exception e) {
             e.printStackTrace();
         }
-        this.menu_flash = (ImageView) findViewById(R.id.menu_flash);
         this.menu_hdr = (ImageView) findViewById(R.id.menu_hdr);
         this.menu_time = (ImageView) findViewById(R.id.menu_time);
         this.menu_filter = (ImageView) findViewById(R.id.menu_filter);
         this.shutter_button = (ImageView) findViewById(R.id.shutter_button);
         this.image_thumb = (CircleImageView) findViewById(R.id.image_thumb);
         this.timerCounter = (TextView) findViewById(R.id.timerCounter);
-        this.tvToast = (TextView) findViewById(R.id.tvToast);
         this.llFunction = (LinearLayout) findViewById(R.id.llFunction);
         this.llTimer = (LinearLayout) findViewById(R.id.llTimer);
         this.timerText = (TextView) findViewById(R.id.timerText);
         this.setting_feature = (LinearLayout) findViewById(R.id.setting_feature);
-        this.llAllFeature = (LinearLayout) findViewById(R.id.llAllFeature);
         this.llWhiteBalance = (LinearLayout) findViewById(R.id.llWhiteBalance);
         this.llSce = (LinearLayout) findViewById(R.id.llSce);
         this.menu_setting = (ImageView) findViewById(R.id.menu_setting);
@@ -245,7 +241,6 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
         this.menu_night = (ImageView) findViewById(R.id.menu_night);
         this.menu_scenone = (ImageView) findViewById(R.id.menu_scenone);
         this.menu_volume = (ImageView) findViewById(R.id.menu_volume);
-        this.tvFunctionName = (TextView) findViewById(R.id.tvFunctionName);
         this.menu_timerclose = (TextView) findViewById(R.id.menu_timerclose);
         this.menu_timer3s = (TextView) findViewById(R.id.menu_timer3s);
         this.menu_timer5s = (TextView) findViewById(R.id.menu_timer5s);
@@ -258,7 +253,6 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
         this.menu_phi = (TextView) findViewById(R.id.menu_phi);
         this.llTimerClick = (LinearLayout) findViewById(R.id.llTimerClick);
         this.llGrid = (LinearLayout) findViewById(R.id.llGrid);
-        this.llBrightness = (LinearLayout) findViewById(R.id.llBrightness);
         this.rlFlash = (RelativeLayout) findViewById(R.id.rlFlash);
         this.rlSetting = (RelativeLayout) findViewById(R.id.rlSetting);
         this.rlHdr = (RelativeLayout) findViewById(R.id.rlHdr);
@@ -319,7 +313,7 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
                 CameraActivity.this.toggleCamera();
             }
         });
-        this.menu_flash.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.4
+        binding.futuremain.menuFlash.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.4
             @Override // android.view.View.OnClickListener
             public void onClick(View view) {
                 CameraActivity.this.toggleFlash();
@@ -419,12 +413,12 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
                 if (CameraActivity.this.llTimerClick.getVisibility() == View.VISIBLE) {
                     CameraActivity.this.llTimerClick.setVisibility(View.GONE);
                     CameraActivity.this.menu_time.setImageResource(R.drawable.timer);
-                    CameraActivity.this.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"));
+                    binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"));
                     return;
                 }
                 CameraActivity.this.llTimerClick.setVisibility(View.VISIBLE);
                 CameraActivity.this.menu_time.setImageResource(R.drawable.timer_on);
-                CameraActivity.this.llAllFeature.setBackgroundColor(Color.parseColor("#66000000"));
+                binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#66000000"));
             }
         });
         this.menu_filter.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.9
@@ -448,19 +442,19 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
                     CameraActivity.this.menu_aw.setImageResource(R.drawable.aw);
                     CameraActivity.this.llSce.setVisibility(View.GONE);
                     CameraActivity.this.menu_sce.setImageResource(R.drawable.sce_white_off);
-                    CameraActivity.this.llBrightness.setVisibility(View.GONE);
+                    binding.futuremain.llBrightness.setVisibility(View.GONE);
                     CameraActivity.this.menu_brightness.setImageResource(R.drawable.brigh);
                     CameraActivity.this.llGrid.setVisibility(View.GONE);
                     CameraActivity.this.menu_image.setImageResource(R.drawable.grid);
                     CameraActivity.this.menu_setting.setImageResource(R.drawable.setting_white);
-                    CameraActivity.this.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"));
+                    binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"));
                     return;
                 }
                 CameraActivity.this.llTimerClick.setVisibility(View.GONE);
                 CameraActivity.this.menu_time.setImageResource(R.drawable.timer);
                 CameraActivity.this.setting_feature.setVisibility(View.VISIBLE);
                 CameraActivity.this.menu_setting.setImageResource(R.drawable.setting);
-                CameraActivity.this.llAllFeature.setBackgroundColor(Color.parseColor("#66000000"));
+                binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#66000000"));
             }
         });
         this.menu_location.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.11
@@ -491,7 +485,7 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
                 CameraActivity.this.menu_sce.setImageResource(R.drawable.sce_white_off);
                 CameraActivity.this.llGrid.setVisibility(View.GONE);
                 CameraActivity.this.menu_image.setImageResource(R.drawable.grid);
-                CameraActivity.this.llBrightness.setVisibility(View.GONE);
+                binding.futuremain.llBrightness.setVisibility(View.GONE);
                 CameraActivity.this.menu_brightness.setImageResource(R.drawable.brigh);
             }
         });
@@ -509,7 +503,7 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
                 CameraActivity.this.menu_aw.setImageResource(R.drawable.aw);
                 CameraActivity.this.llGrid.setVisibility(View.GONE);
                 CameraActivity.this.menu_image.setImageResource(R.drawable.grid);
-                CameraActivity.this.llBrightness.setVisibility(View.GONE);
+                binding.futuremain.llBrightness.setVisibility(View.GONE);
                 CameraActivity.this.menu_brightness.setImageResource(R.drawable.brigh);
             }
         });
@@ -781,12 +775,12 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
         this.menu_brightness.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.32
             @Override // android.view.View.OnClickListener
             public void onClick(View view) {
-                if (CameraActivity.this.llBrightness.getVisibility() == View.VISIBLE) {
-                    CameraActivity.this.llBrightness.setVisibility(View.GONE);
+                if (binding.futuremain.llBrightness.getVisibility() == View.VISIBLE) {
+                    binding.futuremain.llBrightness.setVisibility(View.GONE);
                     CameraActivity.this.menu_brightness.setImageResource(R.drawable.brigh);
                     return;
                 }
-                CameraActivity.this.llBrightness.setVisibility(View.VISIBLE);
+                binding.futuremain.llBrightness.setVisibility(View.VISIBLE);
                 CameraActivity.this.menu_brightness.setImageResource(R.drawable.brigh_on);
                 CameraActivity.this.llSce.setVisibility(View.GONE);
                 CameraActivity.this.menu_sce.setImageResource(R.drawable.sce_white_off);
@@ -810,7 +804,7 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
                 CameraActivity.this.menu_sce.setImageResource(R.drawable.sce_white_off);
                 CameraActivity.this.llWhiteBalance.setVisibility(View.GONE);
                 CameraActivity.this.menu_aw.setImageResource(R.drawable.aw);
-                CameraActivity.this.llBrightness.setVisibility(View.GONE);
+                binding.futuremain.llBrightness.setVisibility(View.GONE);
                 CameraActivity.this.menu_brightness.setImageResource(R.drawable.brigh);
             }
         });
@@ -820,29 +814,19 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
         this.rvFilterList.setLayoutManager(linearLayoutManager);
         FilterAdapter filterAdapter = new FilterAdapter(this, this.mAllFilters);
         this.rvFilterList.setAdapter(filterAdapter);
-        filterAdapter.setOnFilterChangeListener(new FilterAdapter.OnFilterChangeListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.34
-            @Override // com.cameraediter.iphone11pro.adapter.FilterAdapter.OnFilterChangeListener
+        filterAdapter.setOnFilterChangeListener(new FilterAdapter.OnFilterChangeListener() {
+            @Override
             public void onFilterChanged(int i) {
                 if (CameraActivity.this.camera.getPreview() == Preview.GL_SURFACE) {
                     CameraActivity cameraActivity = CameraActivity.this;
                     cameraActivity.mCurrentFilter = i;
                     Filters filters = cameraActivity.mAllFilters[CameraActivity.this.mCurrentFilter];
-                    TextView textView = CameraActivity.this.tvToast;
-                    textView.setText(filters.toString() + "");
-                    CameraActivity.this.tvToast.setVisibility(View.VISIBLE);
+                    binding.tvToast.setText(filters.toString() + "");
+                    binding.tvToast.setVisibility(View.VISIBLE);
                     Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() { // from class: com.cameraediter.iphone11pro.CameraActivity.34.1
-                        @Override // java.lang.Runnable
-                        public void run() {
-                            CameraActivity.this.tvToast.startAnimation(AnimationUtils.loadAnimation(CameraActivity.this, R.anim.toast));
-                        }
-                    }, 300L);
-                    handler.postDelayed(new Runnable() { // from class: com.cameraediter.iphone11pro.CameraActivity.34.2
-                        @Override // java.lang.Runnable
-                        public void run() {
-                            CameraActivity.this.tvToast.setVisibility(View.GONE);
-                        }
-                    }, 1300L);
+                    // java.lang.Runnable
+                    handler.postDelayed(() -> binding.tvToast.startAnimation(AnimationUtils.loadAnimation(CameraActivity.this, R.anim.toast)), 300L);
+                    handler.postDelayed(() -> binding.tvToast.setVisibility(View.GONE), 1300L);
                     CameraActivity.this.camera.setFilter(filters.newInstance());
                 }
             }
@@ -958,7 +942,7 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
 //                CameraActivity.this.rvFilterList.setVisibility(View.GONE);
 //            }
 //        });
-        new Handler().postDelayed(new Runnable() { // from class: com.cameraediter.iphone11pro.CameraActivity.36
+        new Handler().postDelayed(new Runnable() {
             @Override // java.lang.Runnable
             public void run() {
                 CameraActivity.this.getcurrentlocationinfo();
@@ -967,7 +951,6 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
         this.date = new Date();
     }
 
-    /* JADX WARN: Type inference failed for: r0v16, types: [com.cameraediter.iphone11pro.CameraActivity$37] */
     public void capturePhoto() {
         System.currentTimeMillis();
         this.camera.addCameraListener(new Listener());
@@ -975,7 +958,7 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
         if (i != 0) {
             this.count = (i * 1000) + 1000;
             this.counter = i;
-            new CountDownTimer(this.count, 1000L) { // from class: com.cameraediter.iphone11pro.CameraActivity.37
+            new CountDownTimer(this.count, 1000L) {
                 @Override // android.os.CountDownTimer
                 public void onTick(long j) {
                     CameraActivity.this.timerCounter.startAnimation(AnimationUtils.loadAnimation(CameraActivity.this.getApplicationContext(), R.anim.fadeout));
@@ -984,14 +967,14 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
                     cameraActivity.counter--;
                 }
 
-                @Override // android.os.CountDownTimer
+                @Override
                 public void onFinish() {
                     CameraActivity.this.timerCounter.setText("");
                     if (CameraActivity.this.camera.getFlash() == Flash.ON) {
                         CameraActivity cameraActivity = CameraActivity.this;
                         cameraActivity.flashPos = 2;
                         cameraActivity.camera.setFlash(Flash.TORCH);
-                        new Handler().postDelayed(new Runnable() { // from class: com.cameraediter.iphone11pro.CameraActivity.37.1
+                        new Handler().postDelayed(new Runnable() {
                             @Override // java.lang.Runnable
                             public void run() {
                                 if (CameraActivity.this.isSound) {
@@ -1004,7 +987,7 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
                         CameraActivity cameraActivity2 = CameraActivity.this;
                         cameraActivity2.flashPos = 1;
                         cameraActivity2.camera.setFlash(Flash.TORCH);
-                        new Handler().postDelayed(new Runnable() { // from class: com.cameraediter.iphone11pro.CameraActivity.37.2
+                        new Handler().postDelayed(new Runnable() {
                             @Override // java.lang.Runnable
                             public void run() {
                                 if (CameraActivity.this.isSound) {
@@ -1026,7 +1009,7 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
         } else if (this.camera.getFlash() == Flash.ON) {
             this.flashPos = 2;
             this.camera.setFlash(Flash.TORCH);
-            new Handler().postDelayed(new Runnable() { // from class: com.cameraediter.iphone11pro.CameraActivity.38
+            new Handler().postDelayed(new Runnable() {
                 @Override // java.lang.Runnable
                 public void run() {
                     if (CameraActivity.this.isSound) {
@@ -1038,7 +1021,7 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
         } else if (this.camera.getFlash() == Flash.AUTO) {
             this.flashPos = 1;
             this.camera.setFlash(Flash.TORCH);
-            new Handler().postDelayed(new Runnable() { // from class: com.cameraediter.iphone11pro.CameraActivity.39
+            new Handler().postDelayed(new Runnable() {
                 @Override // java.lang.Runnable
                 public void run() {
                     if (CameraActivity.this.isSound) {
@@ -1073,8 +1056,8 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
         } catch (Exception e) {
             e.printStackTrace();
         }
-        runOnUiThread(new Runnable() { // from class: com.cameraediter.iphone11pro.CameraActivity.40
-            @Override // java.lang.Runnable
+        runOnUiThread(new Runnable() {
+            @Override
             public void run() {
                 Glide.with((FragmentActivity) CameraActivity.this).load(file.getAbsolutePath()).into(CameraActivity.this.image_thumb);
                 CameraActivity.this.image_thumb.setImageURI(Uri.fromFile(file));
@@ -1133,7 +1116,7 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
         cameraView.setLayoutParams(cameraView.getLayoutParams());
     }
 
-    @Override // com.cameraediter.iphone11pro.WheelView.OnWheelItemSelectedListener
+    @Override
     public void onWheelItemSelected(WheelView wheelView, int i) {
         if (i == 0) {
             if (this.camera.getFacing().equals(Facing.FRONT)) {
@@ -1195,23 +1178,21 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
         if (this.camera.getFlash() == Flash.OFF) {
             titleShow("FLASH MODE\nFLASH ON");
             this.camera.setFlash(Flash.ON);
-            this.menu_flash.setImageResource(R.drawable.flash);
+            binding.futuremain.menuFlash.setImageResource(R.drawable.flash);
         } else if (this.camera.getFlash() == Flash.ON) {
             titleShow("FLASH MODE\nFLASH AUTO");
             this.camera.setFlash(Flash.AUTO);
-            this.menu_flash.setImageResource(R.drawable.flash_auto);
+            binding.futuremain.menuFlash.setImageResource(R.drawable.flash_auto);
         } else if (this.camera.getFlash() == Flash.AUTO) {
             titleShow("FLASH MODE\nFLASH OFF");
             this.camera.setFlash(Flash.OFF);
-            this.menu_flash.setImageResource(R.drawable.flash_off);
+            binding.futuremain.menuFlash.setImageResource(R.drawable.flash_off);
         }
     }
 
-    /* renamed from: com.cameraediter.iphone11pro.CameraActivity$44 */
-    /* loaded from: classes.dex */
-    public static /* synthetic */ class AnonymousClass44 {
-        static final /* synthetic */ int[] $SwitchMap$android$graphics$Bitmap$CompressFormat;
-        static final /* synthetic */ int[] $SwitchMap$com$otaliastudios$cameraview$controls$Facing = new int[Facing.values().length];
+    public static class AnonymousClass44 {
+        static final int[] $SwitchMap$android$graphics$Bitmap$CompressFormat;
+        static final int[] $SwitchMap$com$otaliastudios$cameraview$controls$Facing = new int[Facing.values().length];
 
         static {
             try {
@@ -1261,7 +1242,7 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
         sendBroadcast(intent);
     }
 
-    @Override // androidx.fragment.app.FragmentActivity, android.app.Activity
+    @Override
     public void onResume() {
         super.onResume();
         this.camera.open();
@@ -1296,13 +1277,13 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
         }
     }
 
-    @Override // androidx.appcompat.app.AppCompatActivity, androidx.fragment.app.FragmentActivity, android.app.Activity
+    @Override
     public void onDestroy() {
         this.camera.close();
         super.onDestroy();
     }
 
-    @Override // androidx.appcompat.app.AppCompatActivity, android.app.Activity, android.view.KeyEvent.Callback
+    @Override
     public boolean onKeyDown(int i, KeyEvent keyEvent) {
         if (i != 4) {
             return true;
@@ -1311,7 +1292,7 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
         return true;
     }
 
-    @Override // androidx.appcompat.app.AppCompatActivity, androidx.core.app.ComponentActivity, android.app.Activity, android.view.Window.Callback
+    @Override
     public boolean dispatchKeyEvent(KeyEvent keyEvent) {
         int action = keyEvent.getAction();
         int keyCode = keyEvent.getKeyCode();
@@ -1333,13 +1314,13 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
     }
 
     public void titleShow(String str) {
-        this.tvFunctionName.setText(str);
-        this.tvFunctionName.setVisibility(View.VISIBLE);
-        this.tvFunctionName.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fadeani));
+        binding.tvFunctionName.setText(str);
+        binding.tvFunctionName.setVisibility(View.VISIBLE);
+        binding.tvFunctionName.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fadeani));
         new Handler().postDelayed(new Runnable() { // from class: com.cameraediter.iphone11pro.CameraActivity.42
             @Override // java.lang.Runnable
             public void run() {
-                CameraActivity.this.tvFunctionName.setVisibility(View.GONE);
+                binding.tvFunctionName.setVisibility(View.GONE);
             }
         }, 1400L);
     }
@@ -1351,7 +1332,7 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
         if (this.llTimerClick.getVisibility() == View.VISIBLE) {
             this.menu_time.performClick();
         }
-        this.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"));
+        binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"));
         this.setting_feature.setVisibility(View.GONE);
         this.menu_setting.setImageResource(R.drawable.setting_white);
         this.llTimerClick.setVisibility(View.GONE);
@@ -1384,7 +1365,7 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
         if (this.llTimerClick.getVisibility() == View.VISIBLE) {
             this.menu_time.performClick();
         }
-        this.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"));
+        binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"));
         this.setting_feature.setVisibility(View.GONE);
         this.menu_setting.setImageResource(R.drawable.setting_white);
         this.llTimerClick.setVisibility(View.GONE);
@@ -1419,7 +1400,7 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
             this.menu_time.performClick();
         }
         this.brightness_seekbar.setProgress(0.0f);
-        this.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"));
+        binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"));
         this.setting_feature.setVisibility(View.GONE);
         this.menu_setting.setImageResource(R.drawable.setting_white);
         this.llTimerClick.setVisibility(View.GONE);
@@ -1446,7 +1427,7 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
             this.menu_time.performClick();
         }
         this.brightness_seekbar.setProgress(0.0f);
-        this.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"));
+        binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"));
         this.setting_feature.setVisibility(View.GONE);
         this.menu_setting.setImageResource(R.drawable.setting_white);
         this.llTimerClick.setVisibility(View.GONE);

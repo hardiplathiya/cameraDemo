@@ -8,15 +8,14 @@ import plant.testtree.camerademo.filter.FilterMode;
 import plant.testtree.camerademo.filter.SortingMode;
 import plant.testtree.camerademo.filter.SortingOrder;
 
-/* loaded from: classes.dex */
 public class AlbumSettings implements Serializable, Parcelable {
-    public static final Creator<AlbumSettings> CREATOR = new Creator<AlbumSettings>() { // from class: com.cameraediter.iphone11pro.utils.AlbumSettings.1
-        @Override // android.os.Parcelable.Creator
+    public static final Creator<AlbumSettings> CREATOR = new Creator<AlbumSettings>() {
+        @Override
         public AlbumSettings createFromParcel(Parcel parcel) {
             return new AlbumSettings(parcel);
         }
 
-        @Override // android.os.Parcelable.Creator
+        @Override
         public AlbumSettings[] newArray(int i) {
             return new AlbumSettings[i];
         }
@@ -27,7 +26,7 @@ public class AlbumSettings implements Serializable, Parcelable {
     public int sortingMode;
     public int sortingOrder;
 
-    @Override // android.os.Parcelable
+    @Override
     public int describeContents() {
         return 0;
     }
@@ -52,7 +51,7 @@ public class AlbumSettings implements Serializable, Parcelable {
         return SortingOrder.fromValue(this.sortingOrder);
     }
 
-    @Override // android.os.Parcelable
+    @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(this.coverPath);
         parcel.writeInt(this.sortingMode);

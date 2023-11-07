@@ -98,7 +98,7 @@ public class Album implements CursorHandler, Parcelable {
         setLastMedia(new Media(cursor.getString(3)));
     }
 
-    @Override // com.cameraediter.iphone11pro.utils.CursorHandler
+    @Override
     public Album handle(Cursor cursor) {
         return new Album(cursor);
     }
@@ -252,7 +252,7 @@ public class Album implements CursorHandler, Parcelable {
         return super.equals(obj);
     }
 
-    @Override // android.os.Parcelable
+    @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(this.name);
         parcel.writeString(this.path);

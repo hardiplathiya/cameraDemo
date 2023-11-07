@@ -609,7 +609,8 @@ public class WheelView extends View implements GestureDetector.OnGestureListener
         L62:
             return r6
         */
-        throw new UnsupportedOperationException("Method not decompiled: com.cameraediter.iphone11pro.WheelView.onScroll(android.view.MotionEvent, android.view.MotionEvent, float, float):boolean");
+  //      throw new UnsupportedOperationException("Method not decompiled: com.cameraediter.iphone11pro.WheelView.onScroll(android.view.MotionEvent, android.view.MotionEvent, float, float):boolean");
+        return false;
     }
 
     public void setChanged(boolean z) {

@@ -16,15 +16,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -36,7 +32,6 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -48,51 +43,24 @@ import io.reactivex.schedulers.Schedulers;
 import plant.testtree.camerademo.R;
 import plant.testtree.camerademo.activity.EditImageActivity;
 import plant.testtree.camerademo.adapter.ViewPagerAdapter;
+import plant.testtree.camerademo.databinding.ActivityGalleryBinding;
 import plant.testtree.camerademo.fragment.GifFragment;
 import plant.testtree.camerademo.fragment.SingleMediaFragment;
 import plant.testtree.camerademo.fragment.VideoFragment;
 import plant.testtree.camerademo.helper.LegacyCompatFileProvider;
 import plant.testtree.camerademo.helper.MyApp;
-import plant.testtree.camerademo.util.CPHelper;
 import plant.testtree.camerademo.model.Media;
+import plant.testtree.camerademo.util.CPHelper;
 import plant.testtree.camerademo.util.MediaHelper;
 import plant.testtree.camerademo.util.MetaDataItem;
 import plant.testtree.camerademo.util.Prefs;
 import plant.testtree.camerademo.util.StringUtils;
 
-/* loaded from: classes.dex */
 public class GalleryappActivity extends AppCompatActivity {
-    private String[] FilePathStrings;
     Float Latitude;
     Float Longitude;
     private Album album;
-    CardView cardMenuList;
     File file;
-    ViewPager gallery_pager;
-    ImageView iv_back;
-    ImageView iv_menu;
-    private File[] listFile;
-    LinearLayout ll_delete;
-    LinearLayout ll_detail;
-    LinearLayout ll_edit;
-    LinearLayout ll_share;
-    LinearLayout mAdView;
-    MediaPagerAdapter pAdapter;
-    RelativeLayout rlHideShow;
-    RelativeLayout rlMenuList;
-    RelativeLayout rlProgress;
-    RelativeLayout rlSlideShow;
-    TextView tvDetail;
-    TextView tvError;
-    TextView tvRename;
-    TextView tvRotate;
-    TextView tvSetas;
-    TextView tvShowOnMap;
-    TextView tvSlideshow;
-    TextView tvTitleName;
-    TextView tvTitleTime;
-    ViewPagerAdapter viewAdapter;
-    ViewPager vpSlideShow;
     CompositeDisposable disposables = new CompositeDisposable();
     String filename = "";
     String foldername = "iCamera";
@@ -101,35 +69,27 @@ public class GalleryappActivity extends AppCompatActivity {
 
     int itemPosition = -1;
     public SparseArray<Fragment> registeredFragments = new SparseArray<>();
+    private MediaPagerAdapter pAdapter;
+    private ViewPagerAdapter viewAdapter;
 
-    public static void lambda$loadAlbum$6(Throwable th) throws Exception {
-    }
-
-    public static void lambda$loadAlbum$7() throws Exception {
-    }
-
-    /* loaded from: classes.dex */
     public class MediaPagerAdapter extends FragmentStatePagerAdapter {
-        @Override // androidx.viewpager.widget.PagerAdapter
+        @Override
         public int getItemPosition(Object obj) {
             return -2;
         }
 
-        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
         public MediaPagerAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
-            //  GalleryappActivity.this = r1;
         }
 
         @Override
-        // androidx.fragment.app.FragmentStatePagerAdapter, androidx.viewpager.widget.PagerAdapter
         public Object instantiateItem(ViewGroup viewGroup, int i) {
             Fragment fragment = (Fragment) super.instantiateItem(viewGroup, i);
             GalleryappActivity.this.registeredFragments.put(i, fragment);
             return fragment;
         }
 
-        @Override // androidx.fragment.app.FragmentStatePagerAdapter
+        @Override
         public Fragment getItem(int i) {
             Media media = GalleryappActivity.this.mediaItems.get(i);
             if (media.isVideo()) {
@@ -142,7 +102,6 @@ public class GalleryappActivity extends AppCompatActivity {
         }
 
         @Override
-        // androidx.fragment.app.FragmentStatePagerAdapter, androidx.viewpager.widget.PagerAdapter
         public void destroyItem(ViewGroup viewGroup, int i, Object obj) {
             GalleryappActivity.this.registeredFragments.remove(i);
             super.destroyItem(viewGroup, i, obj);
@@ -152,7 +111,7 @@ public class GalleryappActivity extends AppCompatActivity {
             return GalleryappActivity.this.registeredFragments.get(i);
         }
 
-        @Override // androidx.viewpager.widget.PagerAdapter
+        @Override
         public int getCount() {
             return GalleryappActivity.this.mediaItems.size();
         }
@@ -188,34 +147,14 @@ public class GalleryappActivity extends AppCompatActivity {
         return decimalFormat.format(d).concat(" Bytes");
     }
 
+
+   public static ActivityGalleryBinding binding;
     @Override
-    // androidx.appcompat.app.AppCompatActivity, androidx.fragment.app.FragmentActivity, androidx.activity.ComponentActivity, androidx.core.app.ComponentActivity, android.app.Activity
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        setContentView(R.layout.activity_gallery1);
+        binding = ActivityGalleryBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        this.gallery_pager = (ViewPager) findViewById(R.id.gallery_pager);
-        this.iv_back = (ImageView) findViewById(R.id.iv_back);
-        this.iv_menu = (ImageView) findViewById(R.id.iv_menu);
-        this.cardMenuList = (CardView) findViewById(R.id.cardMenuList);
-        this.rlMenuList = (RelativeLayout) findViewById(R.id.rlMenuList);
-        this.tvSlideshow = (TextView) findViewById(R.id.tvSlideshow);
-        this.tvRotate = (TextView) findViewById(R.id.tvRotate);
-        this.tvRename = (TextView) findViewById(R.id.tvRename);
-        this.tvSetas = (TextView) findViewById(R.id.tvSetas);
-        this.tvDetail = (TextView) findViewById(R.id.tvDetail);
-        this.tvShowOnMap = (TextView) findViewById(R.id.tvShowOnMap);
-        this.ll_edit = (LinearLayout) findViewById(R.id.ll_edit);
-        this.ll_share = (LinearLayout) findViewById(R.id.ll_share);
-        this.ll_delete = (LinearLayout) findViewById(R.id.ll_delete);
-        this.ll_detail = (LinearLayout) findViewById(R.id.ll_detail);
-        this.tvError = (TextView) findViewById(R.id.tvError);
-        this.rlSlideShow = (RelativeLayout) findViewById(R.id.rlSlideShow);
-        this.vpSlideShow = (ViewPager) findViewById(R.id.vpSlideShow);
-        this.rlHideShow = (RelativeLayout) findViewById(R.id.rlHideShow);
-        this.rlProgress = (RelativeLayout) findViewById(R.id.rlProgress);
-        this.tvTitleName = (TextView) findViewById(R.id.tvTitleName);
-        this.tvTitleTime = (TextView) findViewById(R.id.tvTitleTime);
         MyApp.getInstance().isFromPuzzle = false;
         try {
             Prefs.init(this);
@@ -224,220 +163,163 @@ public class GalleryappActivity extends AppCompatActivity {
         }
 
         if (getIntent().hasExtra("path")) {
-            this.foldername = getIntent().getStringExtra("path");
-            this.file = new File(getIntent().getStringExtra("dir"));
-            this.filename = getIntent().getStringExtra("name");
+            foldername = getIntent().getStringExtra("path");
+            String file1 = getIntent().getStringExtra("dir");
+            if (file1 != null)
+                file = new File(file1);
+            filename = getIntent().getStringExtra("name");
         } else {
-            this.file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + File.separator + this.foldername);
+            file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + File.separator + foldername);
         }
-        this.album = new Album(this.file.getAbsolutePath(), this.foldername);
-        this.pAdapter = new MediaPagerAdapter(getSupportFragmentManager());
-        this.gallery_pager.setAdapter(this.pAdapter);
-        new Handler().postDelayed(new Runnable() { // from class: com.cameraediter.iphone11pro.GalleryappActivity.1
-            @Override // java.lang.Runnable
-            public void run() {
-                GalleryappActivity.this.loadAlbum();
-            }
-        }, 500L);
-        new Handler().postDelayed(new Runnable() { // from class: com.cameraediter.iphone11pro.GalleryappActivity.2
+        album = new Album(file.getAbsolutePath(), foldername);
+        pAdapter = new MediaPagerAdapter(getSupportFragmentManager());
+        binding.galleryPager.setAdapter(pAdapter);
+        // java.lang.Runnable
+        new Handler().postDelayed(this::loadAlbum, 500L);
+        new Handler().postDelayed(new Runnable() {
             @Override // java.lang.Runnable
             public void run() {
                 for (int i = 0; i < GalleryappActivity.this.mediaItems.size(); i++) {
                     if (GalleryappActivity.this.filename.contains(GalleryappActivity.this.mediaItems.get(i).getName())) {
-                        GalleryappActivity.this.gallery_pager.setCurrentItem(i);
+                        binding.galleryPager.setCurrentItem(i);
                         return;
                     }
                 }
             }
         }, 1000L);
-        this.gallery_pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() { // from class: com.cameraediter.iphone11pro.GalleryappActivity.3
-            @Override // androidx.viewpager.widget.ViewPager.OnPageChangeListener
+        binding.galleryPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
             public void onPageScrollStateChanged(int i) {
             }
 
-            @Override // androidx.viewpager.widget.ViewPager.OnPageChangeListener
+            @Override
             public void onPageSelected(int i) {
             }
 
-            @Override // androidx.viewpager.widget.ViewPager.OnPageChangeListener
+            @Override
             public void onPageScrolled(int i, float f, int i2) {
                 Date date = new Date(System.currentTimeMillis() - 86400000);
                 Date date2 = new Date(System.currentTimeMillis());
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMMM");
                 String format = simpleDateFormat.format(date);
                 if (simpleDateFormat.format(date2).equalsIgnoreCase(DateFormat.format("dd MMMM", new Date(GalleryappActivity.this.mediaItems.get(i).getDateModified().longValue())).toString())) {
-                    GalleryappActivity.this.tvTitleName.setText("Today");
-                    GalleryappActivity.this.tvTitleTime.setText(DateFormat.format("hh:mm a", new Date(GalleryappActivity.this.mediaItems.get(i).getDateModified().longValue())).toString());
+                    binding.tvTitleName.setText("Today");
+                    binding.tvTitleTime.setText(DateFormat.format("hh:mm a", new Date(GalleryappActivity.this.mediaItems.get(i).getDateModified().longValue())).toString());
                 } else if (format.equalsIgnoreCase(DateFormat.format("dd MMMM", new Date(GalleryappActivity.this.mediaItems.get(i).getDateModified().longValue())).toString())) {
-                    GalleryappActivity.this.tvTitleName.setText("Yesterday");
-                    GalleryappActivity.this.tvTitleTime.setText(DateFormat.format("hh:mm a", new Date(GalleryappActivity.this.mediaItems.get(i).getDateModified().longValue())).toString());
+                    binding.tvTitleName.setText("Yesterday");
+                    binding.tvTitleTime.setText(DateFormat.format("hh:mm a", new Date(GalleryappActivity.this.mediaItems.get(i).getDateModified().longValue())).toString());
                 } else {
-                    GalleryappActivity.this.tvTitleName.setText(DateFormat.format("dd MMMM", new Date(GalleryappActivity.this.mediaItems.get(i).getDateModified().longValue())).toString());
-                    GalleryappActivity.this.tvTitleTime.setText(DateFormat.format("hh:mm a", new Date(GalleryappActivity.this.mediaItems.get(i).getDateModified().longValue())).toString());
+                    binding.tvTitleName.setText(DateFormat.format("dd MMMM", new Date(GalleryappActivity.this.mediaItems.get(i).getDateModified().longValue())).toString());
+                    binding.tvTitleTime.setText(DateFormat.format("hh:mm a", new Date(GalleryappActivity.this.mediaItems.get(i).getDateModified().longValue())).toString());
                 }
                 if (GalleryappActivity.this.mediaItems.get(i).isVideo() || GalleryappActivity.this.mediaItems.get(i).isGif()) {
-                    GalleryappActivity.this.ll_edit.setVisibility(View.GONE);
-                    GalleryappActivity.this.tvRotate.setVisibility(View.GONE);
-                    GalleryappActivity.this.ll_detail.setVisibility(View.VISIBLE);
-                    GalleryappActivity.this.tvSetas.setVisibility(View.GONE);
+                    binding.llEdit.setVisibility(View.GONE);
+                    binding.tvRotate.setVisibility(View.GONE);
+                    binding.llDetail.setVisibility(View.VISIBLE);
+                    binding.tvSetas.setVisibility(View.GONE);
                 } else {
-                    GalleryappActivity.this.ll_edit.setVisibility(View.VISIBLE);
-                    GalleryappActivity.this.tvRotate.setVisibility(View.VISIBLE);
-                    GalleryappActivity.this.ll_detail.setVisibility(View.VISIBLE);
-                    GalleryappActivity.this.tvSetas.setVisibility(View.VISIBLE);
+                    binding.llEdit.setVisibility(View.VISIBLE);
+                    binding.tvRotate.setVisibility(View.VISIBLE);
+                    binding.llDetail.setVisibility(View.VISIBLE);
+                    binding.tvSetas.setVisibility(View.VISIBLE);
                 }
                 if (GalleryappActivity.this.mediaItems.get(i).getLatitude() == 0.0d || GalleryappActivity.this.mediaItems.get(i).getLongitude() == 0.0d) {
-                    GalleryappActivity.this.tvShowOnMap.setVisibility(View.GONE);
+                    binding.tvShowOnMap.setVisibility(View.GONE);
                 } else {
-                    GalleryappActivity.this.tvShowOnMap.setVisibility(View.VISIBLE);
+                    binding.tvShowOnMap.setVisibility(View.VISIBLE);
                 }
             }
         });
-        this.iv_back.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.GalleryappActivity.4
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                GalleryappActivity.this.onBackPressed();
-            }
+
+        binding.ivBack.setOnClickListener(view ->onBackPressed());
+
+        binding.rlMenuList.setOnClickListener(view -> {
+            binding.cardMenuList.setVisibility(View.GONE);
+            binding.rlMenuList.setVisibility(View.GONE);
         });
-        this.rlMenuList.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.GalleryappActivity.5
-            @Override // android.view.View.OnClickListener
-            public final void onClick(View view) {
-                GalleryappActivity.lambda$onCreate$0(GalleryappActivity.this, view);
+
+        binding.ivMenu.setOnClickListener(view -> {
+            if (binding.cardMenuList.getVisibility() == View.VISIBLE) {
+                binding.cardMenuList.setVisibility(View.GONE);
+                binding.rlMenuList.setVisibility(View.GONE);
+                return;
             }
+            binding.cardMenuList.setVisibility(View.VISIBLE);
+            binding.rlMenuList.setVisibility(View.VISIBLE);
         });
-        this.iv_menu.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.GalleryappActivity.6
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                if (GalleryappActivity.this.cardMenuList.getVisibility() == View.VISIBLE) {
-                    GalleryappActivity.this.cardMenuList.setVisibility(View.GONE);
-                    GalleryappActivity.this.rlMenuList.setVisibility(View.GONE);
-                    return;
-                }
-                GalleryappActivity.this.cardMenuList.setVisibility(View.VISIBLE);
-                GalleryappActivity.this.rlMenuList.setVisibility(View.VISIBLE);
-            }
+
+        binding.llShare.setOnClickListener(view -> {
+            GalleryappActivity galleryappActivity = GalleryappActivity.this;
+            Uri uriForFile = FileProvider.getUriForFile(galleryappActivity, GalleryappActivity.this.getPackageName() + ".provider", new File(GalleryappActivity.this.mediaItems.get(binding.galleryPager.getCurrentItem()).getPath()));
+            Intent intent = new Intent();
+            intent.setAction("android.intent.action.SEND");
+            intent.putExtra("android.intent.extra.STREAM", uriForFile);
+            intent.setType("image/png");
+            GalleryappActivity.this.startActivityForResult(Intent.createChooser(intent, "Share File"), 33);
         });
-        this.ll_share.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.GalleryappActivity.7
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                GalleryappActivity galleryappActivity = GalleryappActivity.this;
-                Uri uriForFile = FileProvider.getUriForFile(galleryappActivity, GalleryappActivity.this.getPackageName() + ".provider", new File(GalleryappActivity.this.mediaItems.get(GalleryappActivity.this.gallery_pager.getCurrentItem()).getPath()));
-                Intent intent = new Intent();
-                intent.setAction("android.intent.action.SEND");
-                intent.putExtra("android.intent.extra.STREAM", uriForFile);
-                intent.setType("image/png");
-                GalleryappActivity.this.startActivityForResult(Intent.createChooser(intent, "Share File"), 33);
-            }
+
+        binding.tvDetail.setOnClickListener(view -> {
+            binding.cardMenuList.setVisibility(View.GONE);
+            binding.rlMenuList.setVisibility(View.GONE);
+            GalleryappActivity.this.showDetailsDialog();
         });
-        this.tvDetail.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.GalleryappActivity.8
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                GalleryappActivity.this.cardMenuList.setVisibility(View.GONE);
-                GalleryappActivity.this.rlMenuList.setVisibility(View.GONE);
-                GalleryappActivity.this.showDetailsDialog();
-            }
+
+        binding.tvRename.setOnClickListener(view -> {
+            binding.cardMenuList.setVisibility(View.GONE);
+            binding.rlMenuList.setVisibility(View.GONE);
+            showRenameDialog();
         });
-        this.tvRename.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.GalleryappActivity.9
-            @Override // android.view.View.OnClickListener
-            public final void onClick(View view) {
-                GalleryappActivity.lambda$onCreate$1(GalleryappActivity.this, view);
-            }
+
+        binding.tvSetas.setOnClickListener(view -> {
+            binding.cardMenuList.setVisibility(View.GONE);
+            binding.rlMenuList.setVisibility(View.GONE);
+            useMediaAs();
         });
-        this.tvSetas.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.GalleryappActivity.10
-            @Override // android.view.View.OnClickListener
-            public final void onClick(View view) {
-                GalleryappActivity.lambda$onCreate$2(GalleryappActivity.this, view);
-            }
+
+        binding.tvRotate.setOnClickListener(view -> GalleryappActivity.this.rotateMedia(90));
+
+        binding.llDelete.setOnClickListener(view -> {
+            binding.cardMenuList.setVisibility(View.GONE);
+            binding.rlMenuList.setVisibility(View.GONE);
+            GalleryappActivity.this.showDeleteConfirmationDialog();
         });
-        this.tvRotate.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.GalleryappActivity.11
-            @Override // android.view.View.OnClickListener
-            public final void onClick(View view) {
-                GalleryappActivity.this.rotateMedia(90);
-            }
+        binding.tvSlideshow.setOnClickListener(view -> {
+            binding.cardMenuList.setVisibility(View.GONE);
+            binding.rlMenuList.setVisibility(View.GONE);
+            startSlideShow();
         });
-        this.ll_delete.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.GalleryappActivity.12
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                GalleryappActivity.this.cardMenuList.setVisibility(View.GONE);
-                GalleryappActivity.this.rlMenuList.setVisibility(View.GONE);
-                GalleryappActivity.this.showDeleteConfirmationDialog();
-            }
+
+        binding.llEdit.setOnClickListener(view -> {
+            binding.cardMenuList.setVisibility(View.GONE);
+            binding.rlMenuList.setVisibility(View.GONE);
+            Intent intent = new Intent(GalleryappActivity.this, EditImageActivity.class);
+            intent.putExtra("FilePath", GalleryappActivity.this.mediaItems.get(binding.galleryPager.getCurrentItem()).getPath());
+            GalleryappActivity.this.startActivity(intent);
         });
-        this.tvSlideshow.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.GalleryappActivity.13
-            @Override // android.view.View.OnClickListener
-            public final void onClick(View view) {
-                GalleryappActivity.lambda$onCreate$4(GalleryappActivity.this, view);
-            }
+        binding.tvShowOnMap.setOnClickListener(view -> {
+            binding.cardMenuList.setVisibility(View.GONE);
+            binding.rlMenuList.setVisibility(View.GONE);
+            GalleryappActivity.this.startActivity(new Intent("android.intent.action.VIEW", Uri.parse(String.format(Locale.ENGLISH, "http://maps.google.com/maps?q=loc:%f,%f", Double.valueOf(GalleryappActivity.this.mediaItems.get(binding.galleryPager.getCurrentItem()).getLatitude()), Double.valueOf(GalleryappActivity.this.mediaItems.get(binding.galleryPager.getCurrentItem()).getLongitude())))));
+            Log.d("lat_long", GalleryappActivity.this.mediaItems.get(binding.galleryPager.getCurrentItem()).getLatitude() + "  " + GalleryappActivity.this.mediaItems.get(binding.galleryPager.getCurrentItem()).getLongitude());
         });
-        this.ll_edit.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.GalleryappActivity.14
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                GalleryappActivity.this.cardMenuList.setVisibility(View.GONE);
-                GalleryappActivity.this.rlMenuList.setVisibility(View.GONE);
-                Intent intent = new Intent(GalleryappActivity.this, EditImageActivity.class);
-                intent.putExtra("FilePath", GalleryappActivity.this.mediaItems.get(GalleryappActivity.this.gallery_pager.getCurrentItem()).getPath());
-                GalleryappActivity.this.startActivity(intent);
-            }
+        binding.llDetail.setOnClickListener(view -> {
+            binding.cardMenuList.setVisibility(View.GONE);
+            binding.rlMenuList.setVisibility(View.GONE);
+            GalleryappActivity.this.showDetailsDialog();
         });
-        this.tvShowOnMap.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.GalleryappActivity.15
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                GalleryappActivity.this.cardMenuList.setVisibility(View.GONE);
-                GalleryappActivity.this.rlMenuList.setVisibility(View.GONE);
-                GalleryappActivity.this.startActivity(new Intent("android.intent.action.VIEW", Uri.parse(String.format(Locale.ENGLISH, "http://maps.google.com/maps?q=loc:%f,%f", Double.valueOf(GalleryappActivity.this.mediaItems.get(GalleryappActivity.this.gallery_pager.getCurrentItem()).getLatitude()), Double.valueOf(GalleryappActivity.this.mediaItems.get(GalleryappActivity.this.gallery_pager.getCurrentItem()).getLongitude())))));
-                Log.d("lat_long", GalleryappActivity.this.mediaItems.get(GalleryappActivity.this.gallery_pager.getCurrentItem()).getLatitude() + "  " + GalleryappActivity.this.mediaItems.get(GalleryappActivity.this.gallery_pager.getCurrentItem()).getLongitude());
-            }
-        });
-        this.rlHideShow.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.GalleryappActivity.16
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                GalleryappActivity.this.rlSlideShow.setVisibility(View.GONE);
-                GalleryappActivity.this.gallery_pager.setCurrentItem(GalleryappActivity.this.vpSlideShow.getCurrentItem());
-            }
-        });
-        this.ll_detail.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.GalleryappActivity.17
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                GalleryappActivity.this.cardMenuList.setVisibility(View.GONE);
-                GalleryappActivity.this.rlMenuList.setVisibility(View.GONE);
-                GalleryappActivity.this.showDetailsDialog();
-            }
+        binding.rlHideShow.setOnClickListener(view -> {
+            binding.rlSlideShow.setVisibility(View.GONE);
+            binding.galleryPager.setCurrentItem(binding.vpSlideShow.getCurrentItem());
         });
     }
 
-    public static void lambda$onCreate$0(GalleryappActivity galleryappActivity, View view) {
-        galleryappActivity.cardMenuList.setVisibility(View.GONE);
-        galleryappActivity.rlMenuList.setVisibility(View.GONE);
-    }
-
-    public static void lambda$onCreate$1(GalleryappActivity galleryappActivity, View view) {
-        galleryappActivity.cardMenuList.setVisibility(View.GONE);
-        galleryappActivity.rlMenuList.setVisibility(View.GONE);
-        galleryappActivity.showRenameDialog();
-    }
-
-    public static void lambda$onCreate$2(GalleryappActivity galleryappActivity, View view) {
-        galleryappActivity.cardMenuList.setVisibility(View.GONE);
-        galleryappActivity.rlMenuList.setVisibility(View.GONE);
-        galleryappActivity.useMediaAs();
-    }
-
-    public static void lambda$onCreate$4(GalleryappActivity galleryappActivity, View view) {
-        galleryappActivity.cardMenuList.setVisibility(View.GONE);
-        galleryappActivity.rlMenuList.setVisibility(View.GONE);
-        galleryappActivity.startSlideShow();
-    }
-
-    @Override // androidx.fragment.app.FragmentActivity, android.app.Activity
+    @Override
     public void onResume() {
         super.onResume();
         if (MyApp.getInstance().isFromEdit) {
-            new Handler().postDelayed(new Runnable() { // from class: com.cameraediter.iphone11pro.GalleryappActivity.18
-                @Override // java.lang.Runnable
-                public void run() {
-                    MyApp.getInstance().isFromEdit = false;
-                    GalleryappActivity.this.loadAlbum();
-                }
+            new Handler().postDelayed(() -> {
+                MyApp.getInstance().isFromEdit = false;
+                GalleryappActivity.this.loadAlbum();
             }, 500L);
         }
     }
@@ -446,8 +328,9 @@ public class GalleryappActivity extends AppCompatActivity {
         return String.valueOf(this.Latitude) + ", " + String.valueOf(this.Longitude);
     }
 
+    @SuppressLint("CheckResult")
     public void loadAlbum() {
-        this.rlProgress.setVisibility(View.VISIBLE);
+        binding.rlProgress.setVisibility(View.VISIBLE);
         this.mediaItems.clear();
         this.pAdapter.notifyDataSetChanged();
         if (getIntent().hasExtra("path")) {
@@ -458,76 +341,60 @@ public class GalleryappActivity extends AppCompatActivity {
             this.file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + File.separator + this.foldername);
         }
         this.album = new Album(this.file.getAbsolutePath(), this.foldername);
-        CPHelper.getMedia(this, this.album).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new io.reactivex.functions.Consumer<Media>() {
-            @SuppressLint("CheckResult")
-            @Override
-            public void accept(Media media) throws Exception {
-                try {
-                    mediaItems.add(media);
-                    Collections.sort(mediaItems, new Comparator<Media>() { // from class: com.cameraediter.iphone11pro.GalleryappActivity.20
-                        @Override // java.util.Comparator
-                        public int compare(Media media2, Media media3) {
-                            return media3.getDateModified().compareTo(media2.getDateModified());
-                        }
-                    });
-                    if (mediaItems.size() == 0) {
-                        tvError.setVisibility(View.VISIBLE);
-                        rlProgress.setVisibility(View.GONE);
-                        return;
-                    }
-                    pAdapter.notifyDataSetChanged();
-                    tvError.setVisibility(View.GONE);
-                    new Handler().postDelayed(new Runnable() { // from class: com.cameraediter.iphone11pro.GalleryappActivity.21
-                        @Override // java.lang.Runnable
-                        public void run() {
-                            int i;
-                            MyApp.getInstance().setSize(GalleryappActivity.this.mediaItems.size());
-                            Date date = new Date(System.currentTimeMillis() - 86400000);
-                            Date date2 = new Date(System.currentTimeMillis());
-                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMMM");
-                            String format = simpleDateFormat.format(date);
-                            if (simpleDateFormat.format(date2).equalsIgnoreCase(DateFormat.format("dd MMMM", new Date(GalleryappActivity.this.mediaItems.get(0).getDateModified().longValue())).toString())) {
-                                GalleryappActivity.this.tvTitleName.setText("Today");
-                                GalleryappActivity.this.tvTitleTime.setText(DateFormat.format("hh:mm a", new Date(GalleryappActivity.this.mediaItems.get(0).getDateModified().longValue())).toString());
-                            } else if (format.equalsIgnoreCase(DateFormat.format("dd MMMM", new Date(GalleryappActivity.this.mediaItems.get(0).getDateModified().longValue())).toString())) {
-                                GalleryappActivity.this.tvTitleName.setText("Yesterday");
-                                GalleryappActivity.this.tvTitleTime.setText(DateFormat.format("hh:mm a", new Date(GalleryappActivity.this.mediaItems.get(0).getDateModified().longValue())).toString());
-                            } else {
-                                GalleryappActivity.this.tvTitleName.setText(DateFormat.format("dd MMMM", new Date(GalleryappActivity.this.mediaItems.get(0).getDateModified().longValue())).toString());
-                                GalleryappActivity.this.tvTitleTime.setText(DateFormat.format("hh:mm a", new Date(GalleryappActivity.this.mediaItems.get(0).getDateModified().longValue())).toString());
-                            }
-                            if (GalleryappActivity.this.isImageEdited) {
-                                GalleryappActivity.this.gallery_pager.setCurrentItem(GalleryappActivity.this.gallery_pager.getCurrentItem());
-                                i = GalleryappActivity.this.gallery_pager.getCurrentItem();
-                            } else {
-                                i = 0;
-                            }
-                            if (GalleryappActivity.this.mediaItems.get(0).isVideo() || GalleryappActivity.this.mediaItems.get(0).isGif()) {
-                                GalleryappActivity.this.ll_edit.setVisibility(View.GONE);
-                                GalleryappActivity.this.tvRotate.setVisibility(View.GONE);
-                                GalleryappActivity.this.ll_detail.setVisibility(View.VISIBLE);
-                            } else {
-                                GalleryappActivity.this.ll_edit.setVisibility(View.VISIBLE);
-                                GalleryappActivity.this.tvRotate.setVisibility(View.VISIBLE);
-                                GalleryappActivity.this.ll_detail.setVisibility(View.VISIBLE);
-                            }
-                            GalleryappActivity.this.rlProgress.setVisibility(View.GONE);
-                            if (GalleryappActivity.this.mediaItems.get(0).getLatitude() == 0.0d || GalleryappActivity.this.mediaItems.get(i).getLongitude() == 0.0d) {
-                                GalleryappActivity.this.tvShowOnMap.setVisibility(View.GONE);
-                            } else {
-                                GalleryappActivity.this.tvShowOnMap.setVisibility(View.VISIBLE);
-                            }
-                        }
-                    }, 500L);
-                } catch (Exception e) {
-                    e.printStackTrace();
+        CPHelper.getMedia(this, this.album).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(media -> {
+            try {
+                mediaItems.add(media);
+                Collections.sort(mediaItems, (media2, media3) -> media3.getDateModified().compareTo(media2.getDateModified()));
+                if (mediaItems.size() == 0) {
+                    binding.tvError.setVisibility(View.VISIBLE);
+                    binding.rlProgress.setVisibility(View.GONE);
+                    return;
                 }
+                pAdapter.notifyDataSetChanged();
+                binding.tvError.setVisibility(View.GONE);
+                new Handler().postDelayed(() -> {
+                    int i;
+                    MyApp.getInstance().setSize(GalleryappActivity.this.mediaItems.size());
+                    Date date = new Date(System.currentTimeMillis() - 86400000);
+                    Date date2 = new Date(System.currentTimeMillis());
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMMM");
+                    String format = simpleDateFormat.format(date);
+                    if (simpleDateFormat.format(date2).equalsIgnoreCase(DateFormat.format("dd MMMM", new Date(GalleryappActivity.this.mediaItems.get(0).getDateModified().longValue())).toString())) {
+                        binding.tvTitleName.setText("Today");
+                        binding.tvTitleTime.setText(DateFormat.format("hh:mm a", new Date(GalleryappActivity.this.mediaItems.get(0).getDateModified().longValue())).toString());
+                    } else if (format.equalsIgnoreCase(DateFormat.format("dd MMMM", new Date(GalleryappActivity.this.mediaItems.get(0).getDateModified().longValue())).toString())) {
+                        binding.tvTitleName.setText("Yesterday");
+                        binding.tvTitleTime.setText(DateFormat.format("hh:mm a", new Date(GalleryappActivity.this.mediaItems.get(0).getDateModified().longValue())).toString());
+                    } else {
+                        binding.tvTitleName.setText(DateFormat.format("dd MMMM", new Date(GalleryappActivity.this.mediaItems.get(0).getDateModified().longValue())).toString());
+                        binding.tvTitleTime.setText(DateFormat.format("hh:mm a", new Date(GalleryappActivity.this.mediaItems.get(0).getDateModified().longValue())).toString());
+                    }
+                    if (GalleryappActivity.this.isImageEdited) {
+                        binding.galleryPager.setCurrentItem(binding.galleryPager.getCurrentItem());
+                        i = binding.galleryPager.getCurrentItem();
+                    } else {
+                        i = 0;
+                    }
+                    if (GalleryappActivity.this.mediaItems.get(0).isVideo() || GalleryappActivity.this.mediaItems.get(0).isGif()) {
+                        binding.llEdit.setVisibility(View.GONE);
+                        binding.tvRotate.setVisibility(View.GONE);
+                        binding.llDetail.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.llEdit.setVisibility(View.VISIBLE);
+                        binding.tvRotate.setVisibility(View.VISIBLE);
+                        binding.llDetail.setVisibility(View.VISIBLE);
+                    }
+                    binding.rlProgress.setVisibility(View.GONE);
+                    if (GalleryappActivity.this.mediaItems.get(0).getLatitude() == 0.0d || GalleryappActivity.this.mediaItems.get(i).getLongitude() == 0.0d) {
+                        binding.tvShowOnMap.setVisibility(View.GONE);
+                    } else {
+                        binding.tvShowOnMap.setVisibility(View.VISIBLE);
+                    }
+                }, 500L);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
-    }
-
-    public void lambda$loadAlbum$5(GalleryappActivity galleryappActivity, Media media) throws Exception {
-
     }
 
     private void useMediaAs() {
@@ -536,13 +403,13 @@ public class GalleryappActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-        intent.setDataAndType(LegacyCompatFileProvider.getUri(this, this.mediaItems.get(this.gallery_pager.getCurrentItem()).getFile()), this.mediaItems.get(this.gallery_pager.getCurrentItem()).getMimeType());
-        intent.putExtra("mimeType", this.mediaItems.get(this.gallery_pager.getCurrentItem()).getMimeType());
+        intent.setDataAndType(LegacyCompatFileProvider.getUri(this, this.mediaItems.get(binding.galleryPager.getCurrentItem()).getFile()), this.mediaItems.get(binding.galleryPager.getCurrentItem()).getMimeType());
+        intent.putExtra("mimeType", this.mediaItems.get(binding.galleryPager.getCurrentItem()).getMimeType());
         startActivity(Intent.createChooser(intent, "Use as"));
     }
 
     public void showDetailsDialog() {
-        MetaDataItem metadata = MetaDataItem.getMetadata(this, this.mediaItems.get(this.gallery_pager.getCurrentItem()).getUri());
+        MetaDataItem metadata = MetaDataItem.getMetadata(this, this.mediaItems.get(binding.galleryPager.getCurrentItem()).getUri());
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View inflate = LayoutInflater.from(this).inflate(R.layout.image_dialog_details, (ViewGroup) null);
         builder.setView(inflate);
@@ -553,10 +420,9 @@ public class GalleryappActivity extends AppCompatActivity {
         TextView textView5 = (TextView) inflate.findViewById(R.id.tvResolutionValue);
         TextView textView6 = (TextView) inflate.findViewById(R.id.tvDateValue);
         TextView textView7 = (TextView) inflate.findViewById(R.id.tvTimeValue);
-        //   loadintertialads.getInstance().refreshAd(this, (FrameLayout) inflate.findViewById(R.id.frameLayout));
         AlertDialog create = builder.create();
         create.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-        Media media = this.mediaItems.get(this.gallery_pager.getCurrentItem());
+        Media media = this.mediaItems.get(binding.galleryPager.getCurrentItem());
         if (!TextUtils.isEmpty(media.getDisplayPath())) {
             textView.setText(media.getDisplayPath());
         } else {
@@ -592,38 +458,31 @@ public class GalleryappActivity extends AppCompatActivity {
         final AlertDialog create = builder.create();
         create.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         final EditText editText = (EditText) inflate.findViewById(R.id.etRename);
-        editText.setText(StringUtils.getPhotoNameByPath(this.mediaItems.get(this.gallery_pager.getCurrentItem()).getPath()));
-        ((Button) inflate.findViewById(R.id.btnCancel)).setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.GalleryappActivity.22
-            @Override // android.view.View.OnClickListener
-            public final void onClick(View view) {
-                create.dismiss();
+        editText.setText(StringUtils.getPhotoNameByPath(this.mediaItems.get(binding.galleryPager.getCurrentItem()).getPath()));
+        ((Button) inflate.findViewById(R.id.btnCancel)).setOnClickListener(view -> create.dismiss());
+
+        ((Button) inflate.findViewById(R.id.btnOK)).setOnClickListener(view -> {
+            if (TextUtils.isEmpty(editText.getText().toString())) {
+                Toast.makeText(GalleryappActivity.this, "Enter file name!", Toast.LENGTH_SHORT).show();
+                editText.requestFocus();
+                return;
             }
-        });
-        ((Button) inflate.findViewById(R.id.btnOK)).setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.GalleryappActivity.23
-            @Override // android.view.View.OnClickListener
-            public final void onClick(View view) {
-                if (TextUtils.isEmpty(editText.getText().toString())) {
-                    Toast.makeText(GalleryappActivity.this, "Enter file name!", Toast.LENGTH_SHORT).show();
-                    editText.requestFocus();
-                    return;
-                }
-                create.dismiss();
-                GalleryappActivity galleryappActivity = GalleryappActivity.this;
-                boolean renameMedia = MediaHelper.renameMedia(galleryappActivity, galleryappActivity.mediaItems.get(GalleryappActivity.this.gallery_pager.getCurrentItem()), editText.getText().toString());
-                GalleryappActivity.this.setResult(-1);
-                if (renameMedia) {
-                    return;
-                }
-                StringUtils.showToast(GalleryappActivity.this, "Unable to rename this file");
+            create.dismiss();
+            GalleryappActivity galleryappActivity = GalleryappActivity.this;
+            boolean renameMedia = MediaHelper.renameMedia(galleryappActivity, galleryappActivity.mediaItems.get(binding.galleryPager.getCurrentItem()), editText.getText().toString());
+            GalleryappActivity.this.setResult(-1);
+            if (renameMedia) {
+                return;
             }
+            StringUtils.showToast(GalleryappActivity.this, "Unable to rename this file");
         });
         create.show();
     }
 
     public void rotateMedia(int i) {
-        this.cardMenuList.setVisibility(View.GONE);
-        this.rlMenuList.setVisibility(View.GONE);
-        Fragment registeredFragment = this.pAdapter.getRegisteredFragment(this.gallery_pager.getCurrentItem());
+        binding.cardMenuList.setVisibility(View.GONE);
+        binding.rlMenuList.setVisibility(View.GONE);
+        Fragment registeredFragment = this.pAdapter.getRegisteredFragment(binding.galleryPager.getCurrentItem());
         if (registeredFragment instanceof SingleMediaFragment) {
             ((SingleMediaFragment) registeredFragment).rotateImage(i);
         }
@@ -635,49 +494,26 @@ public class GalleryappActivity extends AppCompatActivity {
         builder.setView(inflate);
         final AlertDialog create = builder.create();
         ((TextView) inflate.findViewById(R.id.tvTitle)).setText("Are you sure you want to delete this media?");
-        ((Button) inflate.findViewById(R.id.btnNo)).setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.GalleryappActivity.24
-            @Override // android.view.View.OnClickListener
-            public final void onClick(View view) {
-                create.dismiss();
-            }
-        });
-        ((Button) inflate.findViewById(R.id.btnYes)).setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.GalleryappActivity.25
-            @Override // android.view.View.OnClickListener
-            public final void onClick(View view) {
-                create.dismiss();
-                // GalleryappActivity.this.setResult(-1);
-                GalleryappActivity.this.deleteCurrentMedia();
-            }
+        ((Button) inflate.findViewById(R.id.btnNo)).setOnClickListener(view -> create.dismiss());
+
+        ((Button) inflate.findViewById(R.id.btnYes)).setOnClickListener(view -> {
+            create.dismiss();
+            GalleryappActivity.this.deleteCurrentMedia();
         });
         create.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         create.show();
     }
 
     public void deleteCurrentMedia() {
-        File file1 = this.mediaItems.get(this.gallery_pager.getCurrentItem()).getFile();
+        File file1 = this.mediaItems.get(binding.galleryPager.getCurrentItem()).getFile();
         if (file1.exists()) {
             file1.delete();
-            mediaItems.remove(this.gallery_pager.getCurrentItem());
+            mediaItems.remove(binding.galleryPager.getCurrentItem());
             pAdapter.addData(mediaItems);
-            if(mediaItems.size() == 0){
+            if (mediaItems.size() == 0) {
                 displayAlbums();
             }
         }
-
-    /*
-        Uri uri = U_DeleteFile.getUriFromPathImages(GalleryappActivity.this, this.mediaItems.get(this.gallery_pager.getCurrentItem()).getFile());
-        U_DeleteFile.deleteMedia(GalleryappActivity.this, uri, 101, () -> {
-            viewAdapter.notifyDataSetChanged();
-            Toast.makeText(GalleryappActivity.this,"delete Completed", Toast.LENGTH_SHORT).show();
-        });*/
-
-//        disposeLater(MediaHelper.deleteMedia(GalleryappActivity.this, this.mediaItems.get(this.gallery_pager.getCurrentItem())).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(media -> {
-//            GalleryappActivity.this.mediaItems.remove((Media) media);
-//            GalleryappActivity.this.setResult(-1);
-//            if (GalleryappActivity.this.mediaItems.size() == 0) {
-//                GalleryappActivity.this.displayAlbums();
-//            }
-//        }));
     }
 
     public void displayAlbums() {
@@ -690,24 +526,22 @@ public class GalleryappActivity extends AppCompatActivity {
     }
 
     private void startSlideShow() {
-        this.rlSlideShow.setVisibility(View.VISIBLE);
-        this.viewAdapter = new ViewPagerAdapter(this, this.mediaItems);
-        this.vpSlideShow.setAdapter(this.viewAdapter);
-        this.vpSlideShow.setPageTransformer(true, new ViewPager.PageTransformer() { // from class: com.cameraediter.iphone11pro.GalleryappActivity.29
-            @Override // androidx.viewpager.widget.ViewPager.PageTransformer
-            public void transformPage(View view, float f) {
-                view.setTranslationX(view.getWidth() * (-f));
-                if (f <= -1.0f || f >= 1.0f) {
-                    view.setAlpha(0.0f);
-                } else if (f == 0.0f) {
-                    view.setAlpha(1.0f);
-                } else {
-                    view.setAlpha(1.0f - Math.abs(f));
-                }
+        binding.rlSlideShow.setVisibility(View.VISIBLE);
+        viewAdapter = new ViewPagerAdapter(this, this.mediaItems);
+        binding.vpSlideShow.setAdapter(this.viewAdapter);
+        // androidx.viewpager.widget.ViewPager.PageTransformer
+        binding.vpSlideShow.setPageTransformer(true, (view, f) -> {
+            view.setTranslationX(view.getWidth() * (-f));
+            if (f <= -1.0f || f >= 1.0f) {
+                view.setAlpha(0.0f);
+            } else if (f == 0.0f) {
+                view.setAlpha(1.0f);
+            } else {
+                view.setAlpha(1.0f - Math.abs(f));
             }
         });
 
-        vpSlideShow.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        binding.vpSlideShow.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -726,36 +560,22 @@ public class GalleryappActivity extends AppCompatActivity {
         animate();
     }
 
-    public void transformPage(View view, float f) {
-        view.setTranslationX(view.getWidth() * (-f));
-        if (f <= -1.0f || f >= 1.0f) {
-            view.setAlpha(0.0f);
-        } else if (f == 0.0f) {
-            view.setAlpha(1.0f);
-        } else {
-            view.setAlpha(1.0f - Math.abs(f));
-        }
-    }
-
     public void animate() {
-        if (this.vpSlideShow.getCurrentItem() != this.mediaItems.size() - 1) {
-            new Handler().postDelayed(new Runnable() { // from class: com.cameraediter.iphone11pro.GalleryappActivity.30
-                @Override // java.lang.Runnable
-                public void run() {
-                    GalleryappActivity.this.vpSlideShow.setCurrentItem(GalleryappActivity.this.vpSlideShow.getCurrentItem() + 1);
-                    GalleryappActivity.this.animate();
-                }
+        if (binding.vpSlideShow.getCurrentItem() != this.mediaItems.size() - 1) {
+            new Handler().postDelayed(() -> {
+                GalleryappActivity.binding.vpSlideShow.setCurrentItem(GalleryappActivity.binding.vpSlideShow.getCurrentItem() + 1);
+                GalleryappActivity.this.animate();
             }, 3500L);
         }
     }
 
-    @Override // androidx.activity.ComponentActivity, android.app.Activity
+    @Override
     public void onBackPressed() {
-        if (this.rlMenuList.getVisibility() == View.VISIBLE) {
-            this.cardMenuList.setVisibility(View.GONE);
-            this.rlMenuList.setVisibility(View.GONE);
-        } else if (this.rlSlideShow.getVisibility() == View.VISIBLE) {
-            this.rlSlideShow.setVisibility(View.GONE);
+        if (binding.rlMenuList.getVisibility() == View.VISIBLE) {
+            binding.cardMenuList.setVisibility(View.GONE);
+            binding.rlMenuList.setVisibility(View.GONE);
+        } else if (binding.rlSlideShow.getVisibility() == View.VISIBLE) {
+            binding.rlSlideShow.setVisibility(View.GONE);
         } else {
             super.onBackPressed();
         }

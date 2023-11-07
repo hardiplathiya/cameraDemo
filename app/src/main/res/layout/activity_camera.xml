@@ -30,7 +30,9 @@
         app:cameraPreview="glSurface"
         app:cameraWhiteBalance="auto" />
 
-    <include layout="@layout/feature_main" />
+    <include
+        android:id="@+id/futuremain"
+        layout="@layout/feature_main" />
 
     <LinearLayout
         android:id="@+id/wheel_llt"

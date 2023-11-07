@@ -20,7 +20,6 @@ import butterknife.ButterKnife;
 import plant.testtree.camerademo.R;
 import plant.testtree.camerademo.model.Image;
 
-/* loaded from: classes.dex */
 public class SelectImageListActivity extends AppCompatActivity {
     SelectImageAdapter adapter;
     ArrayList<Image> imgList = new ArrayList<>();
@@ -34,12 +33,7 @@ public class SelectImageListActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         ivBack = findViewById(R.id.ivBack);
         rv_listimage = findViewById(R.id.rv_listimage);
-        this.ivBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SelectImageListActivity.this.onBackPressed();
-            }
-        });
+        this.ivBack.setOnClickListener(v -> SelectImageListActivity.this.onBackPressed());
 
         this.adapter = new SelectImageAdapter(this.imgList, this);
         this.rv_listimage.setLayoutManager(new GridLayoutManager(this, 3));
@@ -49,8 +43,7 @@ public class SelectImageListActivity extends AppCompatActivity {
     }
 
     public void addList() {
-        ArrayList arrayList = new ArrayList();
-        arrayList.addAll(getFilePaths());
+        ArrayList arrayList = new ArrayList(getFilePaths());
         for (int i = 0; i < arrayList.size(); i++) {
             this.imgList.add(new Image((String) arrayList.get(i), false));
         }
@@ -98,7 +91,7 @@ public class SelectImageListActivity extends AppCompatActivity {
         return arrayList;
     }
 
-    @Override // androidx.fragment.app.FragmentActivity, android.app.Activity
+    @Override
     public void onResume() {
         super.onResume();
     }
