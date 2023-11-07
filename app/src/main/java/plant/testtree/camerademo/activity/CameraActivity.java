@@ -78,11 +78,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Timer;
 import java.util.concurrent.TimeUnit;
-
-/* loaded from: classes.dex */
 public class CameraActivity extends AppCompatActivity implements WheelView.OnWheelItemSelectedListener {
-    private static final int MY_PERMISSIONS_REQUEST_CODE = 123;
-    private static final int REQUEST_CAMERA_PERMISSIONS = 931;
     public String[] FilePathStrings;
     Timer T;
     AlertDialog alertDialog;
@@ -206,8 +202,8 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
     @Override // androidx.appcompat.app.AppCompatActivity, androidx.fragment.app.FragmentActivity, androidx.activity.ComponentActivity, androidx.core.app.ComponentActivity, android.app.Activity
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        requestWindowFeature(1);
-        getWindow().setFlags(1024, 1024);
+//        requestWindowFeature(1);
+//        getWindow().setFlags(1024, 1024);
         setContentView(R.layout.activity_camera);
         this.mp = MediaPlayer.create(this, (int) R.raw.camera);
         this.audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
@@ -284,7 +280,7 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
             if (this.file.isDirectory()) {
                 this.listFile = this.file.listFiles();
                 try {
-                    Arrays.sort(this.listFile, new Comparator<File>() { // from class: com.cameraediter.iphone11pro.CameraActivity.2
+                    Arrays.sort(listFile, new Comparator<File>() { // from class: com.cameraediter.iphone11pro.CameraActivity.2
                         @Override // java.util.Comparator
                         public int compare(File file, File file2) {
                             return Long.valueOf(file.lastModified()).compareTo(Long.valueOf(file2.lastModified()));
@@ -1275,7 +1271,7 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
         try {
             if (this.file.isDirectory()) {
                 this.listFile = this.file.listFiles();
-                Arrays.sort(this.listFile, new Comparator<File>() { // from class: com.cameraediter.iphone11pro.CameraActivity.41
+                Arrays.sort(this.listFile, new Comparator<File>() {
                     @Override // java.util.Comparator
                     public int compare(File file, File file2) {
                         return Long.valueOf(file.lastModified()).compareTo(Long.valueOf(file2.lastModified()));
@@ -1298,12 +1294,6 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    @Override // androidx.fragment.app.FragmentActivity, android.app.Activity
-    public void onPause() {
-        this.camera.open();
-        super.onPause();
     }
 
     @Override // androidx.appcompat.app.AppCompatActivity, androidx.fragment.app.FragmentActivity, android.app.Activity
@@ -1718,5 +1708,11 @@ public class CameraActivity extends AppCompatActivity implements WheelView.OnWhe
                 Log.e("Exception", "" + e4);
             }
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        this.camera.close();
     }
 }

@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,6 +17,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.otaliastudios.cameraview.CameraView;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -23,6 +26,7 @@ import plant.testtree.camerademo.R;
 import plant.testtree.camerademo.activity.gallary.GalleryappActivity;
 import plant.testtree.camerademo.activity.selectlist.SelectImageListActivity;
 import plant.testtree.camerademo.model.Modelother;
+import plant.testtree.camerademo.util.Const;
 
 /* loaded from: classes.dex */
 public class Activitystart extends AppCompatActivity implements View.OnClickListener {
@@ -89,23 +93,45 @@ public class Activitystart extends AppCompatActivity implements View.OnClickList
     }
 
     public void checkPermission() {
-        if (ContextCompat.checkSelfPermission(this, "android.permission.CAMERA") + ContextCompat.checkSelfPermission(this, "android.permission.READ_EXTERNAL_STORAGE") + ContextCompat.checkSelfPermission(this, "android.permission.WRITE_EXTERNAL_STORAGE") + ContextCompat.checkSelfPermission(this, "android.permission.RECORD_AUDIO") + ContextCompat.checkSelfPermission(this, "android.permission.ACCESS_FINE_LOCATION") + ContextCompat.checkSelfPermission(this, "android.permission.ACCESS_COARSE_LOCATION") == 0) {
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            if (ContextCompat.checkSelfPermission(this, "android.permission.CAMERA") + ContextCompat.checkSelfPermission(this, "android.permission.READ_MEDIA_IMAGES")  + ContextCompat.checkSelfPermission(this, "android.permission.RECORD_AUDIO") + ContextCompat.checkSelfPermission(this, "android.permission.ACCESS_FINE_LOCATION") + ContextCompat.checkSelfPermission(this, "android.permission.ACCESS_COARSE_LOCATION") == 0) {
             startActivity(new Intent(this, SelectImageListActivity.class));
             Log.e("@@@@TAHHArdip","BUG----2");
-        } else if (ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.CAMERA") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.RECORD_AUDIO") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.READ_EXTERNAL_STORAGE") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.WRITE_EXTERNAL_STORAGE") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.ACCESS_FINE_LOCATION") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.ACCESS_COARSE_LOCATION")) {
+        } else if (ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.CAMERA") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.RECORD_AUDIO") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.READ_MEDIA_IMAGES") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.ACCESS_FINE_LOCATION") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.ACCESS_COARSE_LOCATION")) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Camera, Read External, and Write External Storage permissions are required to do the task.");
             builder.setTitle("Please grant those permissions");
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() { // from class: com.cameraediter.iphone11pro.Activitystart.5
                 @Override // android.content.DialogInterface.OnClickListener
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    ActivityCompat.requestPermissions(Activitystart.this, new String[]{"android.permission.CAMERA", "android.permission.RECORD_AUDIO", "android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION"}, 123);
+                    ActivityCompat.requestPermissions(Activitystart.this, new String[]{"android.permission.CAMERA", "android.permission.RECORD_AUDIO", "android.permission.READ_MEDIA_IMAGES", "android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION"}, 123);
                 }
             });
             builder.setNeutralButton("Cancel", (DialogInterface.OnClickListener) null);
             builder.create().show();
         } else {
-            ActivityCompat.requestPermissions(this, new String[]{"android.permission.CAMERA", "android.permission.RECORD_AUDIO", "android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION"}, 123);
+            ActivityCompat.requestPermissions(this, new String[]{"android.permission.CAMERA", "android.permission.RECORD_AUDIO", "android.permission.READ_MEDIA_IMAGES", "android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION"}, 123);
+        }
+        }else {
+            if (ContextCompat.checkSelfPermission(this, "android.permission.CAMERA") + ContextCompat.checkSelfPermission(this, "android.permission.READ_MEDIA_IMAGES")  + ContextCompat.checkSelfPermission(this, "android.permission.RECORD_AUDIO") + ContextCompat.checkSelfPermission(this, "android.permission.ACCESS_FINE_LOCATION") + ContextCompat.checkSelfPermission(this, "android.permission.ACCESS_COARSE_LOCATION") == 0) {
+                startActivity(new Intent(this, SelectImageListActivity.class));
+                Log.e("@@@@TAHHArdip","BUG----2");
+            } else if (ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.CAMERA") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.RECORD_AUDIO") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.READ_EXTERNAL_STORAGE") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.WRITE_EXTERNAL_STORAGE") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.ACCESS_FINE_LOCATION") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.ACCESS_COARSE_LOCATION")) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("Camera, Read External, and Write External Storage permissions are required to do the task.");
+                builder.setTitle("Please grant those permissions");
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() { // from class: com.cameraediter.iphone11pro.Activitystart.5
+                    @Override // android.content.DialogInterface.OnClickListener
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        ActivityCompat.requestPermissions(Activitystart.this, new String[]{"android.permission.CAMERA", "android.permission.RECORD_AUDIO", "android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION"}, 123);
+                    }
+                });
+                builder.setNeutralButton("Cancel", (DialogInterface.OnClickListener) null);
+                builder.create().show();
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{"android.permission.CAMERA", "android.permission.RECORD_AUDIO", "android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION"}, 123);
+            }
         }
     }
 
@@ -117,7 +143,7 @@ public class Activitystart extends AppCompatActivity implements View.OnClickList
                 Toast.makeText(this, "Permissions denied.", Toast.LENGTH_SHORT).show();
             } else {
                 Activitystart activitystart = Activitystart.this;
-             //   activitystart.startActivity(new Intent(activitystart, SelectImageListActivity.class));
+                activitystart.startActivity(new Intent(activitystart, SelectImageListActivity.class));
                 Log.e("@@@@TAHHArdip","BUG----3");
             }
         }

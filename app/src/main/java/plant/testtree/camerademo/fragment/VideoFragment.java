@@ -13,7 +13,7 @@ import com.bumptech.glide.request.RequestOptions;
 
 import plant.testtree.camerademo.R;
 import plant.testtree.camerademo.helper.StorageHelper;
-import plant.testtree.camerademo.util.Media;
+import plant.testtree.camerademo.model.Media;
 
 /* loaded from: classes.dex */
 public class VideoFragment extends BaseMediaFragment {

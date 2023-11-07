@@ -6,8 +6,6 @@ import android.net.Uri;
 import androidx.core.content.FileProvider;
 import java.io.File;
 
-import plant.testtree.camerademo.util.ApplicationUtils;
-
 /* loaded from: classes.dex */
 public class LegacyCompatFileProvider extends FileProvider {
     @Override // androidx.core.content.FileProvider, android.content.ContentProvider

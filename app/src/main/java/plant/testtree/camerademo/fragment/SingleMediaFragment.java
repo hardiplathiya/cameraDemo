@@ -22,7 +22,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import plant.testtree.camerademo.R;
-import plant.testtree.camerademo.util.Media;
+import plant.testtree.camerademo.model.Media;
 
 /* loaded from: classes.dex */
 public class SingleMediaFragment extends BaseMediaFragment {

@@ -1,4 +1,4 @@
-package plant.testtree.camerademo.util;
+package plant.testtree.camerademo.model;
 
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -12,6 +12,10 @@ import java.io.File;
 import java.io.IOException;
 
 import plant.testtree.camerademo.activity.gallary.CursorHandler;
+import plant.testtree.camerademo.util.ArrayUtils;
+import plant.testtree.camerademo.util.MimeTypeUtils;
+import plant.testtree.camerademo.util.StringUtils;
+import plant.testtree.camerademo.util.TimelineItem;
 
 /* loaded from: classes.dex */
 public class Media implements TimelineItem, CursorHandler, Parcelable {

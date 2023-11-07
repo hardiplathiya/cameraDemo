@@ -31,6 +31,7 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
 }
 
 dependencies {
@@ -56,7 +57,7 @@ dependencies {
     implementation 'com.intuit.sdp:sdp-android:1.1.0'
 
     implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.10.0'
-   // implementation 'it.chengdazhi.styleimageview:styleimageview:1.0.4'
+  //  implementation 'it.chengdazhi.styleimageview:styleimageview:1.0.2'
 
     implementation 'com.jakewharton:butterknife:10.2.3'
 
@@ -66,6 +67,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.github.Theophrast:SquareImageView:1.0.1'
     implementation project(path: ':cameraview')
+//    implementation project(path: ':styleimageview')
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

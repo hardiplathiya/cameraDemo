@@ -47,7 +47,11 @@
             </intent-filter>
         </activity>
         <activity android:name="plant.testtree.camerademo.activity.Activitystart" />
-        <activity android:name="plant.testtree.camerademo.activity.CameraActivity" />
+        <activity
+            android:name="plant.testtree.camerademo.activity.CameraActivity"
+            android:configChanges="screenLayout|keyboardHidden"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait" />
         <activity android:name="plant.testtree.camerademo.activity.gallary.GalleryappActivity" />
         <activity android:name="plant.testtree.camerademo.activity.EditImageActivity" />
         <activity android:name="plant.testtree.camerademo.activity.selectlist.SelectImageListActivity" />

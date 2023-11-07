@@ -45,11 +45,11 @@ import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.opengles.GL10;
 
+import it.chengdazhi.styleimageview.StyleImageView;
 import plant.testtree.camerademo.R;
 import plant.testtree.camerademo.adapter.FilterAdapterGalalry;
 import plant.testtree.camerademo.adapter.FilterType;
 import plant.testtree.camerademo.helper.MyApp;
-import plant.testtree.camerademo.stylableimage.StyleImageView;
 import plant.testtree.camerademo.util.BitmapUtils;
 import plant.testtree.camerademo.util.Const;
 import plant.testtree.camerademo.util.FileUtils;

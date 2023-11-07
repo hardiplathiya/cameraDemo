@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import plant.testtree.camerademo.util.ApplicationUtils;
 import plant.testtree.camerademo.util.Prefs;
 
 /* loaded from: classes.dex */

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:n5="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/colorBlack"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:background="@color/colorBlack">
 
     <RelativeLayout
         android:id="@+id/rlView1"
@@ -15,7 +15,7 @@
             android:layout_width="@dimen/_40sdp"
             android:layout_height="@dimen/_40sdp"
             android:src="@drawable/back_new"
-            app:tint="@color/colorWhite" />
+            n5:tint="@color/colorWhite" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -135,10 +135,11 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="60dp">
+            android:minHeight="?attr/actionBarSize">
 
             <TextView
                 android:id="@+id/toolbar_title"
+                style="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center" />
@@ -165,7 +166,7 @@
                 android:layout_height="@dimen/_40sdp"
                 android:padding="@dimen/_12sdp"
                 android:src="@drawable/close"
-                app:tint="@color/colorWhite" />
+                n5:tint="@color/colorWhite" />
 
             <ImageView
                 android:id="@+id/ivFilterDone"
@@ -174,7 +175,7 @@
                 android:layout_alignParentRight="true"
                 android:padding="@dimen/_10sdp"
                 android:src="@drawable/tick"
-                app:tint="@color/colorWhite" />
+                n5:tint="@color/colorWhite" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -220,7 +221,7 @@
                 android:layout_height="@dimen/_40sdp"
                 android:padding="@dimen/_12sdp"
                 android:src="@drawable/close"
-                app:tint="@color/colorWhite" />
+                n5:tint="@color/colorWhite" />
 
             <ImageView
                 android:id="@+id/ivColorDone"
@@ -229,7 +230,7 @@
                 android:layout_alignParentRight="true"
                 android:padding="@dimen/_10sdp"
                 android:src="@drawable/tick"
-                app:tint="@color/colorWhite" />
+                n5:tint="@color/colorWhite" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -238,7 +239,7 @@
             android:layout_above="@+id/progress"
             android:layout_below="@+id/rlDoneFilter">
 
-            <plant.testtree.camerademo.stylableimage.StyleImageView
+            <it.chengdazhi.styleimageview.StyleImageView
                 android:id="@+id/ivEditImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -286,16 +287,16 @@
                     android:layout_marginLeft="@dimen/_10sdp"
                     android:layout_marginRight="@dimen/_10sdp"
                     android:visibility="gone"
-                    app:dsb_indicatorColor="@color/colorWhite"
-                    app:dsb_indicatorPopupEnabled="false"
-                    app:dsb_max="350"
-                    app:dsb_min="200"
-                    app:dsb_progressColor="@color/colorWhite"
-                    app:dsb_scrubberHeight="1dp"
-                    app:dsb_thumbSize="18dp"
-                    app:dsb_trackColor="#ffd3d3d3"
-                    app:dsb_trackHeight="1dp"
-                    app:dsb_value="270" />
+                    n5:dsb_indicatorColor="@color/colorWhite"
+                    n5:dsb_indicatorPopupEnabled="false"
+                    n5:dsb_max="350"
+                    n5:dsb_min="200"
+                    n5:dsb_progressColor="@color/colorWhite"
+                    n5:dsb_scrubberHeight="1dp"
+                    n5:dsb_thumbSize="18dp"
+                    n5:dsb_trackColor="#ffd3d3d3"
+                    n5:dsb_trackHeight="1dp"
+                    n5:dsb_value="270" />
 
                 <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
                     android:id="@+id/seekbarContrast"
@@ -305,16 +306,16 @@
                     android:layout_marginLeft="@dimen/_10sdp"
                     android:layout_marginRight="@dimen/_10sdp"
                     android:visibility="gone"
-                    app:dsb_indicatorColor="@color/colorWhite"
-                    app:dsb_indicatorPopupEnabled="false"
-                    app:dsb_max="200"
-                    app:dsb_min="100"
-                    app:dsb_progressColor="@color/colorWhite"
-                    app:dsb_scrubberHeight="1dp"
-                    app:dsb_thumbSize="18dp"
-                    app:dsb_trackColor="#ffd3d3d3"
-                    app:dsb_trackHeight="1dp"
-                    app:dsb_value="115" />
+                    n5:dsb_indicatorColor="@color/colorWhite"
+                    n5:dsb_indicatorPopupEnabled="false"
+                    n5:dsb_max="200"
+                    n5:dsb_min="100"
+                    n5:dsb_progressColor="@color/colorWhite"
+                    n5:dsb_scrubberHeight="1dp"
+                    n5:dsb_thumbSize="18dp"
+                    n5:dsb_trackColor="#ffd3d3d3"
+                    n5:dsb_trackHeight="1dp"
+                    n5:dsb_value="115" />
 
                 <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
                     android:id="@+id/seekbarSaturation"
@@ -324,16 +325,16 @@
                     android:layout_marginLeft="@dimen/_10sdp"
                     android:layout_marginRight="@dimen/_10sdp"
                     android:visibility="gone"
-                    app:dsb_indicatorColor="@color/colorWhite"
-                    app:dsb_indicatorPopupEnabled="false"
-                    app:dsb_max="200"
-                    app:dsb_min="100"
-                    app:dsb_progressColor="@color/colorWhite"
-                    app:dsb_scrubberHeight="1dp"
-                    app:dsb_thumbSize="18dp"
-                    app:dsb_trackColor="#ffd3d3d3"
-                    app:dsb_trackHeight="1dp"
-                    app:dsb_value="130" />
+                    n5:dsb_indicatorColor="@color/colorWhite"
+                    n5:dsb_indicatorPopupEnabled="false"
+                    n5:dsb_max="200"
+                    n5:dsb_min="100"
+                    n5:dsb_progressColor="@color/colorWhite"
+                    n5:dsb_scrubberHeight="1dp"
+                    n5:dsb_thumbSize="18dp"
+                    n5:dsb_trackColor="#ffd3d3d3"
+                    n5:dsb_trackHeight="1dp"
+                    n5:dsb_value="130" />
             </RelativeLayout>
         </RelativeLayout>
 

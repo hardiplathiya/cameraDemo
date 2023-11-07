@@ -3,7 +3,7 @@ package plant.testtree.camerademo.fragment;
 import android.content.Context;
 import android.os.Bundle;
 
-import plant.testtree.camerademo.util.Media;
+import plant.testtree.camerademo.model.Media;
 
 /* loaded from: classes.dex */
 public abstract class BaseMediaFragment extends BaseFragment {

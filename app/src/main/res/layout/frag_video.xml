@@ -14,6 +14,5 @@
     <ImageView
         android:id="@+id/ivImage"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/color_back" />
+        android:layout_height="match_parent" />
 </FrameLayout>

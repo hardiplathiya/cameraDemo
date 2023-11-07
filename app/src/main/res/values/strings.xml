@@ -10,4 +10,9 @@
     <string name="exposed_dropdown_menu_content_description">Show dropdown menu</string>
     <string name="icon_content_description">Dialog Icon</string>
     <string name="preference_internal_uri_extsdcard_photos">uri_extsdcard_photos</string>
+    <string name="a_delete">Are you sure to delete this file\n</string>
+    <string name="b_delete">Delete File</string>
+    <string name="yes">Yes</string>
+    <string name="no">No\n</string>
+    <string name="sucsess">The file has been deleted successfully!</string>
 </resources>

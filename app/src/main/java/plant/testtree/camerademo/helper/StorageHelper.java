@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import plant.testtree.camerademo.R;
-import plant.testtree.camerademo.util.ApplicationUtils;
 import plant.testtree.camerademo.util.ErrorCause;
 import plant.testtree.camerademo.util.MediaHelper;
 import plant.testtree.camerademo.util.ProgressException;

@@ -12,19 +12,18 @@ import plant.testtree.camerademo.activity.AlbumSettings;
 import plant.testtree.camerademo.filter.FilterMode;
 import plant.testtree.camerademo.filter.SortingMode;
 import plant.testtree.camerademo.filter.SortingOrder;
-import plant.testtree.camerademo.util.Media;
+import plant.testtree.camerademo.model.Media;
 import plant.testtree.camerademo.util.StringUtils;
 
-/* loaded from: classes.dex */
 public class Album implements CursorHandler, Parcelable {
     public static final long ALL_MEDIA_ALBUM_ID = 8000;
-    public static final Creator<Album> CREATOR = new Creator<Album>() { // from class: com.cameraediter.iphone11pro.utils.Album.1
-        @Override // android.os.Parcelable.Creator
+    public static final Creator<Album> CREATOR = new Creator<Album>() {
+        @Override
         public Album createFromParcel(Parcel parcel) {
             return new Album(parcel);
         }
 
-        @Override // android.os.Parcelable.Creator
+        @Override
         public Album[] newArray(int i) {
             return new Album[i];
         }
@@ -39,19 +38,7 @@ public class Album implements CursorHandler, Parcelable {
     private boolean selected;
     public AlbumSettings settings;
 
-    public static String[] getProjection() {
-        return new String[]{"parent", "bucket_display_name", "count(*)", "_data", "max(date_modified)"};
-    }
-
-    public boolean copySelectedPhotos(Context context, String str) {
-        return false;
-    }
-
-    public boolean deleteSelectedMedia(Context context) {
-        return false;
-    }
-
-    @Override // android.os.Parcelable
+    @Override
     @Deprecated
     public int describeContents() {
         return 0;

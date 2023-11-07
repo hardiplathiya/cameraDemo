@@ -16,12 +16,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -30,8 +30,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-
-import com.otaliastudios.cameraview.engine.action.Action;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -42,7 +40,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.function.Consumer;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -57,7 +54,7 @@ import plant.testtree.camerademo.fragment.VideoFragment;
 import plant.testtree.camerademo.helper.LegacyCompatFileProvider;
 import plant.testtree.camerademo.helper.MyApp;
 import plant.testtree.camerademo.util.CPHelper;
-import plant.testtree.camerademo.util.Media;
+import plant.testtree.camerademo.model.Media;
 import plant.testtree.camerademo.util.MediaHelper;
 import plant.testtree.camerademo.util.MetaDataItem;
 import plant.testtree.camerademo.util.Prefs;
@@ -101,6 +98,8 @@ public class GalleryappActivity extends AppCompatActivity {
     String foldername = "iCamera";
     public boolean isImageEdited = false;
     public List<Media> mediaItems = new ArrayList();
+
+    int itemPosition = -1;
     public SparseArray<Fragment> registeredFragments = new SparseArray<>();
 
     public static void lambda$loadAlbum$6(Throwable th) throws Exception {
@@ -119,10 +118,11 @@ public class GalleryappActivity extends AppCompatActivity {
         /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
         public MediaPagerAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
-          //  GalleryappActivity.this = r1;
+            //  GalleryappActivity.this = r1;
         }
 
-        @Override // androidx.fragment.app.FragmentStatePagerAdapter, androidx.viewpager.widget.PagerAdapter
+        @Override
+        // androidx.fragment.app.FragmentStatePagerAdapter, androidx.viewpager.widget.PagerAdapter
         public Object instantiateItem(ViewGroup viewGroup, int i) {
             Fragment fragment = (Fragment) super.instantiateItem(viewGroup, i);
             GalleryappActivity.this.registeredFragments.put(i, fragment);
@@ -141,7 +141,8 @@ public class GalleryappActivity extends AppCompatActivity {
             return SingleMediaFragment.newInstance(GalleryappActivity.this.mediaItems.get(i));
         }
 
-        @Override // androidx.fragment.app.FragmentStatePagerAdapter, androidx.viewpager.widget.PagerAdapter
+        @Override
+        // androidx.fragment.app.FragmentStatePagerAdapter, androidx.viewpager.widget.PagerAdapter
         public void destroyItem(ViewGroup viewGroup, int i, Object obj) {
             GalleryappActivity.this.registeredFragments.remove(i);
             super.destroyItem(viewGroup, i, obj);
@@ -155,6 +156,13 @@ public class GalleryappActivity extends AppCompatActivity {
         public int getCount() {
             return GalleryappActivity.this.mediaItems.size();
         }
+
+        public void addData(List<Media> Itemlist) {
+            mediaItems = new ArrayList<>();
+            mediaItems.addAll(Itemlist);
+            notifyDataSetChanged();
+        }
+
     }
 
     public static String formatFileSize(long j) {
@@ -180,7 +188,8 @@ public class GalleryappActivity extends AppCompatActivity {
         return decimalFormat.format(d).concat(" Bytes");
     }
 
-    @Override // androidx.appcompat.app.AppCompatActivity, androidx.fragment.app.FragmentActivity, androidx.activity.ComponentActivity, androidx.core.app.ComponentActivity, android.app.Activity
+    @Override
+    // androidx.appcompat.app.AppCompatActivity, androidx.fragment.app.FragmentActivity, androidx.activity.ComponentActivity, androidx.core.app.ComponentActivity, android.app.Activity
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.activity_gallery1);
@@ -213,6 +222,7 @@ public class GalleryappActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         if (getIntent().hasExtra("path")) {
             this.foldername = getIntent().getStringExtra("path");
             this.file = new File(getIntent().getStringExtra("dir"));
@@ -543,7 +553,7 @@ public class GalleryappActivity extends AppCompatActivity {
         TextView textView5 = (TextView) inflate.findViewById(R.id.tvResolutionValue);
         TextView textView6 = (TextView) inflate.findViewById(R.id.tvDateValue);
         TextView textView7 = (TextView) inflate.findViewById(R.id.tvTimeValue);
-     //   loadintertialads.getInstance().refreshAd(this, (FrameLayout) inflate.findViewById(R.id.frameLayout));
+        //   loadintertialads.getInstance().refreshAd(this, (FrameLayout) inflate.findViewById(R.id.frameLayout));
         AlertDialog create = builder.create();
         create.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         Media media = this.mediaItems.get(this.gallery_pager.getCurrentItem());
@@ -635,7 +645,7 @@ public class GalleryappActivity extends AppCompatActivity {
             @Override // android.view.View.OnClickListener
             public final void onClick(View view) {
                 create.dismiss();
-                GalleryappActivity.this.setResult(-1);
+                // GalleryappActivity.this.setResult(-1);
                 GalleryappActivity.this.deleteCurrentMedia();
             }
         });
@@ -644,13 +654,30 @@ public class GalleryappActivity extends AppCompatActivity {
     }
 
     public void deleteCurrentMedia() {
-        disposeLater(MediaHelper.deleteMedia(getApplicationContext(), this.mediaItems.get(this.gallery_pager.getCurrentItem())).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(media -> {
-            GalleryappActivity.this.mediaItems.remove((Media) media);
-            GalleryappActivity.this.setResult(-1);
-            if (GalleryappActivity.this.mediaItems.size() == 0) {
-                GalleryappActivity.this.displayAlbums();
+        File file1 = this.mediaItems.get(this.gallery_pager.getCurrentItem()).getFile();
+        if (file1.exists()) {
+            file1.delete();
+            mediaItems.remove(this.gallery_pager.getCurrentItem());
+            pAdapter.addData(mediaItems);
+            if(mediaItems.size() == 0){
+                displayAlbums();
             }
-        }));
+        }
+
+    /*
+        Uri uri = U_DeleteFile.getUriFromPathImages(GalleryappActivity.this, this.mediaItems.get(this.gallery_pager.getCurrentItem()).getFile());
+        U_DeleteFile.deleteMedia(GalleryappActivity.this, uri, 101, () -> {
+            viewAdapter.notifyDataSetChanged();
+            Toast.makeText(GalleryappActivity.this,"delete Completed", Toast.LENGTH_SHORT).show();
+        });*/
+
+//        disposeLater(MediaHelper.deleteMedia(GalleryappActivity.this, this.mediaItems.get(this.gallery_pager.getCurrentItem())).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(media -> {
+//            GalleryappActivity.this.mediaItems.remove((Media) media);
+//            GalleryappActivity.this.setResult(-1);
+//            if (GalleryappActivity.this.mediaItems.size() == 0) {
+//                GalleryappActivity.this.displayAlbums();
+//            }
+//        }));
     }
 
     public void displayAlbums() {
@@ -677,6 +704,23 @@ public class GalleryappActivity extends AppCompatActivity {
                 } else {
                     view.setAlpha(1.0f - Math.abs(f));
                 }
+            }
+        });
+
+        vpSlideShow.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                itemPosition = position;
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
             }
         });
         animate();

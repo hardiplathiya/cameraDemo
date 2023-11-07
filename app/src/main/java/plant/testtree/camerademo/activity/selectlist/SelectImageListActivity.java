@@ -27,16 +27,16 @@ public class SelectImageListActivity extends AppCompatActivity {
     ImageView ivBack;
     RecyclerView rv_listimage;
 
-    @Override // androidx.appcompat.app.AppCompatActivity, androidx.fragment.app.FragmentActivity, androidx.activity.ComponentActivity, androidx.core.app.ComponentActivity, android.app.Activity
+    @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.activity_select_image_list);
         ButterKnife.bind(this);
         ivBack = findViewById(R.id.ivBack);
         rv_listimage = findViewById(R.id.rv_listimage);
-        this.ivBack.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.SelectImageListActivity.1
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
+        this.ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 SelectImageListActivity.this.onBackPressed();
             }
         });

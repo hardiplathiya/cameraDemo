@@ -1,5 +1,6 @@
 package plant.testtree.camerademo.util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -13,6 +14,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import plant.testtree.camerademo.activity.gallary.Album;
 import plant.testtree.camerademo.helper.StorageHelper;
+import plant.testtree.camerademo.model.Media;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -24,12 +26,11 @@ public class MediaHelper {
     public static void lambda$null$2(Media media) throws Exception {
     }
 
-    public static Observable<Media> deleteMedia(final Context context, final Media media) {
+    public static Observable<Media> deleteMedia(final Activity context, final Media media) {
         return Observable.create(new ObservableOnSubscribe<Media>() { // from class: com.cameraediter.iphone11pro.utils.MediaHelper.1
             @Override // io.reactivex.ObservableOnSubscribe
             public void subscribe(ObservableEmitter<Media> observableEmitter) throws Exception {
                 try {
-                    MediaHelper.internalDeleteMedia(context, media);
                     observableEmitter.onNext(media);
                 } catch (Exception e) {
                     observableEmitter.onError(e);
@@ -44,9 +45,9 @@ public class MediaHelper {
     /* loaded from: classes.dex */
     public static class AnonymousClass2 implements ObservableOnSubscribe {
         final /* synthetic */ Album val$album;
-        final /* synthetic */ Context val$context;
+        final /* synthetic */ Activity val$context;
 
-        AnonymousClass2(Album album, Context context) {
+        AnonymousClass2(Album album, Activity context) {
             this.val$album = album;
             this.val$context = context;
         }
@@ -58,7 +59,7 @@ public class MediaHelper {
             Consumer<? super Media> consumer = new Consumer() { // from class: com.cameraediter.iphone11pro.utils.MediaHelper.2.1
                 @Override // io.reactivex.functions.Consumer
                 public final void accept(Object obj) {
-                    arrayList.add(MediaHelper.deleteMedia(AnonymousClass2.this.val$context.getApplicationContext(), (Media) obj));
+                    arrayList.add(MediaHelper.deleteMedia(val$context, (Media) obj));
                 }
             };
             observableEmitter.getClass();
@@ -99,7 +100,7 @@ public class MediaHelper {
         }
     }
 
-    public static Observable<Album> deleteAlbum(Context context, Album album) {
+    public static Observable<Album> deleteAlbum(Activity context, Album album) {
         return Observable.create(new AnonymousClass2(album, context));
     }
 

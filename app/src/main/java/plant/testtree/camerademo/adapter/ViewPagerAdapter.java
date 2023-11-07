@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import plant.testtree.camerademo.R;
-import plant.testtree.camerademo.util.Media;
+import plant.testtree.camerademo.model.Media;
 
 /* loaded from: classes.dex */
 public class ViewPagerAdapter extends PagerAdapter {
@@ -46,5 +46,12 @@ public class ViewPagerAdapter extends PagerAdapter {
     @Override // androidx.viewpager.widget.PagerAdapter
     public void destroyItem(ViewGroup viewGroup, int i, Object obj) {
         ((ViewPager) viewGroup).removeView((View) obj);
+    }
+
+    public void addDataList(List<Media> listitem) {
+        this.mediaItems = new ArrayList<>();
+        this.mediaItems.addAll(listitem);
+        notifyDataSetChanged();
+
     }
 }

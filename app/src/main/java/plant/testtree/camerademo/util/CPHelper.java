@@ -11,6 +11,7 @@ import plant.testtree.camerademo.activity.gallary.CursorHandler;
 import plant.testtree.camerademo.filter.ImageFileFilter;
 import plant.testtree.camerademo.filter.SortingMode;
 import plant.testtree.camerademo.filter.SortingOrder;
+import plant.testtree.camerademo.model.Media;
 
 import java.io.File;
 
