@@ -4,7 +4,7 @@ import android.database.Cursor;
 import android.database.CursorWrapper;
 import java.util.Arrays;
 
-/* loaded from: classes.dex */
+
 public class LegacyCompatCursorWrapper extends CursorWrapper {
     final int fakeDataColumn;
     final int fakeMimeTypeColumn;
@@ -34,7 +34,7 @@ public class LegacyCompatCursorWrapper extends CursorWrapper {
         this.mimeType = str;
     }
 
-    @Override // android.database.CursorWrapper, android.database.Cursor
+    @Override 
     public int getColumnCount() {
         int columnCount = super.getColumnCount();
         if (!cursorHasDataColumn()) {
@@ -43,7 +43,7 @@ public class LegacyCompatCursorWrapper extends CursorWrapper {
         return !cursorHasMimeTypeColumn() ? columnCount + 1 : columnCount;
     }
 
-    @Override // android.database.CursorWrapper, android.database.Cursor
+    @Override 
     public int getColumnIndex(String str) {
         if (cursorHasDataColumn() || !"_data".equalsIgnoreCase(str)) {
             return (cursorHasMimeTypeColumn() || !"mime_type".equalsIgnoreCase(str)) ? super.getColumnIndex(str) : this.fakeMimeTypeColumn;
@@ -51,12 +51,12 @@ public class LegacyCompatCursorWrapper extends CursorWrapper {
         return this.fakeDataColumn;
     }
 
-    @Override // android.database.CursorWrapper, android.database.Cursor
+    @Override 
     public String getColumnName(int i) {
         return i == this.fakeDataColumn ? "_data" : i == this.fakeMimeTypeColumn ? "mime_type" : super.getColumnName(i);
     }
 
-    @Override // android.database.CursorWrapper, android.database.Cursor
+    @Override 
     public String[] getColumnNames() {
         if (cursorHasDataColumn() && cursorHasMimeTypeColumn()) {
             return super.getColumnNames();
@@ -71,7 +71,7 @@ public class LegacyCompatCursorWrapper extends CursorWrapper {
         return strArr;
     }
 
-    @Override // android.database.CursorWrapper, android.database.Cursor
+    @Override 
     public String getString(int i) {
         if (cursorHasDataColumn() || i != this.fakeDataColumn) {
             return (cursorHasMimeTypeColumn() || i != this.fakeMimeTypeColumn) ? super.getString(i) : this.mimeType;
@@ -79,7 +79,7 @@ public class LegacyCompatCursorWrapper extends CursorWrapper {
         return null;
     }
 
-    @Override // android.database.CursorWrapper, android.database.Cursor
+    @Override 
     public int getType(int i) {
         if (cursorHasDataColumn() || i != this.fakeDataColumn) {
             if (cursorHasMimeTypeColumn() || i != this.fakeMimeTypeColumn) {

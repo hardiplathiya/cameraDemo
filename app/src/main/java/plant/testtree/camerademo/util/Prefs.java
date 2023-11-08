@@ -5,7 +5,7 @@ import android.content.Context;
 import plant.testtree.camerademo.filter.SortingMode;
 import plant.testtree.camerademo.filter.SortingOrder;
 
-/* loaded from: classes.dex */
+
 public class Prefs {
     private static SharedPrefs sharedPrefs;
 

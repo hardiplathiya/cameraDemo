@@ -3,7 +3,7 @@ package plant.testtree.camerademo.util;
 import android.content.Context;
 import android.opengl.GLES20;
 
-/* loaded from: classes.dex */
+
 public class GLSimpleProgram extends GLAbsProgram {
     private int uTextureSamplerHandle;
 

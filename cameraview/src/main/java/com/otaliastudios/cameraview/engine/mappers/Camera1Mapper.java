@@ -15,9 +15,6 @@ import java.util.Map;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-/**
- * A Mapper maps camera engine constants to CameraView constants.
- */
 public class Camera1Mapper {
 
     private static Camera1Mapper sInstance;
@@ -59,24 +56,20 @@ public class Camera1Mapper {
 
     @NonNull
     public String mapFlash(@NonNull Flash flash) {
-        //noinspection ConstantConditions
         return FLASH.get(flash);
     }
 
     public int mapFacing(@NonNull Facing facing) {
-        //noinspection ConstantConditions
         return FACING.get(facing);
     }
 
     @NonNull
     public String mapWhiteBalance(@NonNull WhiteBalance whiteBalance) {
-        //noinspection ConstantConditions
         return WB.get(whiteBalance);
     }
 
     @NonNull
     public String mapHdr(@NonNull Hdr hdr) {
-        //noinspection ConstantConditions
         return HDR.get(hdr);
     }
 

@@ -6,7 +6,7 @@ import android.opengl.GLES20;
 import plant.testtree.camerademo.util.GLAbsProgram;
 import plant.testtree.camerademo.util.ShaderUtils;
 
-/* loaded from: classes.dex */
+
 public class GLPassThroughProgram extends GLAbsProgram {
     private int uMVPMatrixHandle;
     private int uTextureSamplerHandle;

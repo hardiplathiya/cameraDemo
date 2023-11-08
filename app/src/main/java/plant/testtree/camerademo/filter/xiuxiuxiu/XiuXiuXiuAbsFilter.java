@@ -12,13 +12,13 @@ import plant.testtree.camerademo.filter.MultipleTextureFilter;
 import plant.testtree.camerademo.util.FileUtils;
 import plant.testtree.camerademo.util.ShaderUtils;
 
-/* loaded from: classes.dex */
+
 public class XiuXiuXiuAbsFilter extends MultipleTextureFilter {
     public static final boolean DUMP_DATA = false;
     private Vector<BitmapFileDescription> bitmapFileDescriptions;
     private ByteBuffer mDataBuffer;
 
-    /* loaded from: classes.dex */
+   
     public class BitmapFileDescription {
         int endPos;
         String name;
@@ -41,7 +41,7 @@ public class XiuXiuXiuAbsFilter extends MultipleTextureFilter {
         readData(str2, str3);
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.MultipleTextureFilter, com.cameraediter.iphone11pro.filter.base.SimpleFragmentShaderFilter, com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void init() {
         super.init();
         for (int i = 0; i < this.textureSize; i++) {

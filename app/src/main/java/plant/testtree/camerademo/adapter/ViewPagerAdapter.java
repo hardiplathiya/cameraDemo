@@ -14,28 +14,27 @@ import java.util.List;
 import plant.testtree.camerademo.R;
 import plant.testtree.camerademo.model.Media;
 
-/* loaded from: classes.dex */
+
 public class ViewPagerAdapter extends PagerAdapter {
     private Context context;
-    private List<Media> mediaItems;
+    private List<Media> mediaItems = new ArrayList<>();
 
-    @Override // androidx.viewpager.widget.PagerAdapter
+    @Override
     public boolean isViewFromObject(View view, Object obj) {
         return view == obj;
     }
 
     public ViewPagerAdapter(Context context, List<Media> list) {
-        this.mediaItems = new ArrayList();
         this.context = context;
         this.mediaItems = list;
     }
 
-    @Override // androidx.viewpager.widget.PagerAdapter
+    @Override 
     public int getCount() {
         return this.mediaItems.size();
     }
 
-    @Override // androidx.viewpager.widget.PagerAdapter
+    @Override 
     public Object instantiateItem(ViewGroup viewGroup, int i) {
         View inflate = ((LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.custom_layout, (ViewGroup) null);
         Glide.with(this.context).load(this.mediaItems.get(i).getPath()).into((ImageView) inflate.findViewById(R.id.imageView));
@@ -43,15 +42,8 @@ public class ViewPagerAdapter extends PagerAdapter {
         return inflate;
     }
 
-    @Override // androidx.viewpager.widget.PagerAdapter
+    @Override 
     public void destroyItem(ViewGroup viewGroup, int i, Object obj) {
         ((ViewPager) viewGroup).removeView((View) obj);
-    }
-
-    public void addDataList(List<Media> listitem) {
-        this.mediaItems = new ArrayList<>();
-        this.mediaItems.addAll(listitem);
-        notifyDataSetChanged();
-
     }
 }

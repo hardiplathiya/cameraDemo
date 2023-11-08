@@ -11,9 +11,6 @@ import com.otaliastudios.cameraview.filter.OneParameterFilter;
 import com.otaliastudios.opengl.core.Egloo;
 
 
-/**
- * Tints the frames with specified color.
- */
 public class TintFilter extends BaseFilter implements OneParameterFilter {
 
     private final static String FRAGMENT_SHADER = "#extension GL_OES_EGL_image_external : require\n"
@@ -36,22 +33,11 @@ public class TintFilter extends BaseFilter implements OneParameterFilter {
 
     public TintFilter() { }
 
-    /**
-     * Sets the current tint.
-     * @param color current tint
-     */
     @SuppressWarnings("WeakerAccess")
     public void setTint(@ColorInt int color) {
-        // Remove any alpha.
         this.tint = Color.rgb(Color.red(color), Color.green(color), Color.blue(color));
     }
 
-    /**
-     * Returns the current tint.
-     *
-     * @see #setTint(int)
-     * @return tint
-     */
     @SuppressWarnings("WeakerAccess")
     @ColorInt
     public int getTint() {
@@ -60,7 +46,6 @@ public class TintFilter extends BaseFilter implements OneParameterFilter {
 
     @Override
     public void setParameter1(float value) {
-        // no easy way to transform 0...1 into a color.
         setTint((int) (value * 0xFFFFFF));
     }
 

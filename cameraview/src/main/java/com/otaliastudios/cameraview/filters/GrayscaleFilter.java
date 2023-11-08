@@ -4,9 +4,6 @@ import androidx.annotation.NonNull;
 
 import com.otaliastudios.cameraview.filter.BaseFilter;
 
-/**
- * Converts frames to gray scale.
- */
 public class GrayscaleFilter extends BaseFilter {
 
     private final static String FRAGMENT_SHADER = "#extension GL_OES_EGL_image_external : require\n"

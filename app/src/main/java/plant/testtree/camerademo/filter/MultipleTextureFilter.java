@@ -7,7 +7,7 @@ import plant.testtree.camerademo.util.BitmapTexture;
 import plant.testtree.camerademo.util.SimpleFragmentShaderFilter;
 import plant.testtree.camerademo.util.TextureUtils;
 
-/* loaded from: classes.dex */
+
 public abstract class MultipleTextureFilter extends SimpleFragmentShaderFilter {
     protected Context context;
     protected BitmapTexture[] externalBitmapTextures;
@@ -20,7 +20,7 @@ public abstract class MultipleTextureFilter extends SimpleFragmentShaderFilter {
         this.context = context;
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.SimpleFragmentShaderFilter, com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void init() {
         int i;
         super.init();
@@ -42,7 +42,7 @@ public abstract class MultipleTextureFilter extends SimpleFragmentShaderFilter {
         }
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.SimpleFragmentShaderFilter, com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void destroy() {
         this.glSimpleProgram.onDestroy();
         for (BitmapTexture bitmapTexture : this.externalBitmapTextures) {
@@ -50,7 +50,7 @@ public abstract class MultipleTextureFilter extends SimpleFragmentShaderFilter {
         }
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.SimpleFragmentShaderFilter, com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void onPreDrawElements() {
         super.onPreDrawElements();
         int i = 0;
@@ -61,7 +61,7 @@ public abstract class MultipleTextureFilter extends SimpleFragmentShaderFilter {
         }
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.SimpleFragmentShaderFilter, com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void onDrawFrame(int i) {
         onPreDrawElements();
         TextureUtils.bindTexture2D(i, 33984, this.glSimpleProgram.getTextureSamplerHandle(), 0);

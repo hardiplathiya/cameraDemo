@@ -4,9 +4,6 @@ import androidx.annotation.NonNull;
 
 import com.otaliastudios.cameraview.filter.BaseFilter;
 
-/**
- * Converts the frames into black and white colors.
- */
 public class BlackAndWhiteFilter extends BaseFilter {
 
     private final static String FRAGMENT_SHADER = "#extension GL_OES_EGL_image_external : require\n"

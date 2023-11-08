@@ -8,9 +8,6 @@ import com.otaliastudios.cameraview.filter.BaseFilter;
 import com.otaliastudios.cameraview.filter.OneParameterFilter;
 import com.otaliastudios.opengl.core.Egloo;
 
-/**
- * Applies a hue effect on the input frames.
- */
 public class HueFilter extends BaseFilter implements OneParameterFilter {
 
     private final static String FRAGMENT_SHADER = "#extension GL_OES_EGL_image_external : require\n"
@@ -44,23 +41,11 @@ public class HueFilter extends BaseFilter implements OneParameterFilter {
 
     public HueFilter() { }
 
-    /**
-     * Sets the hue value in degrees. See the values chart:
-     * https://cloud.githubusercontent.com/assets/2201511/21810115/b99ac22a-d74a-11e6-9f6c-ef74d15c88c7.jpg
-     *
-     * @param hue hue degrees
-     */
     @SuppressWarnings({"unused", "WeakerAccess"})
     public void setHue(float hue) {
         this.hue = hue % 360;
     }
 
-    /**
-     * Returns the current hue value.
-     *
-     * @see #setHue(float)
-     * @return hue
-     */
     @SuppressWarnings("WeakerAccess")
     public float getHue() {
         return hue;
@@ -98,7 +83,6 @@ public class HueFilter extends BaseFilter implements OneParameterFilter {
     @Override
     protected void onPreDraw(long timestampUs, @NonNull float[] transformMatrix) {
         super.onPreDraw(timestampUs, transformMatrix);
-        // map it on 360 degree circle
         float shaderHue = ((hue - 45) / 45f + 0.5f) * -1;
         GLES20.glUniform1f(hueLocation, shaderHue);
         Egloo.checkGlError("glUniform1f");

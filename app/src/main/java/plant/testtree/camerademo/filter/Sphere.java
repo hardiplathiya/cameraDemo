@@ -10,7 +10,7 @@ import java.nio.ShortBuffer;
 
 import plant.testtree.camerademo.util.ShaderUtils;
 
-/* loaded from: classes.dex */
+
 public class Sphere {
     private static final int sPositionDataSize = 3;
     private static final int sTextureCoordinateDataSize = 2;

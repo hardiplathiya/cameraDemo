@@ -11,21 +11,21 @@ import com.drew.metadata.exif.makernotes.NikonType2MakernoteDirectory;
 import com.drew.metadata.mp4.media.Mp4VideoDirectory;
 import okhttp3.internal.ws.WebSocketProtocol;
 
-/* loaded from: classes.dex */
+
 public class InsHealthyFilter extends MultipleTextureFilter {
     public InsHealthyFilter(Context context) {
         super(context, "filter/fsh/insta/healthy.glsl");
         this.textureSize = 2;
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.MultipleTextureFilter, com.cameraediter.iphone11pro.filter.base.SimpleFragmentShaderFilter, com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void init() {
         super.init();
         this.externalBitmapTextures[0].setImageTextureId(prepareRawTexture1());
         this.externalBitmapTextures[1].load(this.context, "filter/textures/inst/healthy_mask_1.jpg");
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.MultipleTextureFilter, com.cameraediter.iphone11pro.filter.base.SimpleFragmentShaderFilter, com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void onPreDrawElements() {
         super.onPreDrawElements();
         setUniform1f(this.glSimpleProgram.getProgramId(), "texelWidthOffset", 1.0f / this.surfaceWidth);

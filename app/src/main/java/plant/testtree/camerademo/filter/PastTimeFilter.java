@@ -9,14 +9,14 @@ import com.drew.metadata.mp4.media.Mp4VideoDirectory;
 import okhttp3.internal.ws.WebSocketProtocol;
 import plant.testtree.camerademo.util.MxOneHashBaseFilter;
 
-/* loaded from: classes.dex */
+
 public class PastTimeFilter extends MxOneHashBaseFilter {
-    @Override // com.cameraediter.iphone11pro.filter.effect.mx.MxOneHashBaseFilter, com.cameraediter.iphone11pro.filter.base.SimpleFragmentShaderFilter, com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void init() {
         super.init();
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.effect.mx.MxOneHashBaseFilter, com.cameraediter.iphone11pro.filter.base.SimpleFragmentShaderFilter, com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void onDrawFrame(int i) {
         super.onDrawFrame(i);
     }

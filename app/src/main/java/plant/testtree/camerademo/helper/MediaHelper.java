@@ -1,5 +1,6 @@
-package plant.testtree.camerademo.util;
+package plant.testtree.camerademo.helper;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.media.MediaScannerConnection;
@@ -9,17 +10,17 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import plant.testtree.camerademo.activity.gallary.Album;
-import plant.testtree.camerademo.helper.StorageHelper;
 import plant.testtree.camerademo.model.Media;
+import plant.testtree.camerademo.util.ProgressException;
+import plant.testtree.camerademo.util.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
 
-/* loaded from: classes.dex */
+
 public class MediaHelper {
     public static Uri external = MediaStore.Files.getContentUri("external");
 
@@ -27,75 +28,53 @@ public class MediaHelper {
     }
 
     public static Observable<Media> deleteMedia(final Activity context, final Media media) {
-        return Observable.create(new ObservableOnSubscribe<Media>() { // from class: com.cameraediter.iphone11pro.utils.MediaHelper.1
-            @Override // io.reactivex.ObservableOnSubscribe
-            public void subscribe(ObservableEmitter<Media> observableEmitter) throws Exception {
-                try {
-                    observableEmitter.onNext(media);
-                } catch (Exception e) {
-                    observableEmitter.onError(e);
-                }
-                observableEmitter.onComplete();
+   
+        return Observable.create(observableEmitter -> {
+            try {
+                observableEmitter.onNext(media);
+            } catch (Exception e) {
+                observableEmitter.onError(e);
             }
+            observableEmitter.onComplete();
         });
     }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.cameraediter.iphone11pro.utils.MediaHelper$2 */
-    /* loaded from: classes.dex */
+   
     public static class AnonymousClass2 implements ObservableOnSubscribe {
-        final /* synthetic */ Album val$album;
-        final /* synthetic */ Activity val$context;
+        final  Album val$album;
+        final  Activity val$context;
 
         AnonymousClass2(Album album, Activity context) {
             this.val$album = album;
             this.val$context = context;
         }
 
-        @Override // io.reactivex.ObservableOnSubscribe
+        @SuppressLint("CheckResult")
+        @Override
         public final void subscribe(final ObservableEmitter observableEmitter) {
             final ArrayList arrayList = new ArrayList(this.val$album.getCount());
             Observable<Media> observeOn = CPHelper.getMedia(this.val$context, this.val$album).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
-            Consumer<? super Media> consumer = new Consumer() { // from class: com.cameraediter.iphone11pro.utils.MediaHelper.2.1
-                @Override // io.reactivex.functions.Consumer
+            Consumer<? super Media> consumer = new Consumer() { 
+                @Override
                 public final void accept(Object obj) {
                     arrayList.add(MediaHelper.deleteMedia(val$context, (Media) obj));
                 }
             };
             observableEmitter.getClass();
-            observeOn.subscribe(consumer, new Consumer() { // from class: com.cameraediter.iphone11pro.utils.MediaHelper.2.2
-                @Override // io.reactivex.functions.Consumer
-                public final void accept(Object obj) {
-                    observableEmitter.onError((Throwable) obj);
-                }
-            }, new Action() { // from class: com.cameraediter.iphone11pro.utils.MediaHelper.2.3
-                @Override // io.reactivex.functions.Action
-                public final void run() {
-                    Observable subscribeOn = Observable.mergeDelayError(arrayList).observeOn(AndroidSchedulers.mainThread(), true).subscribeOn(Schedulers.newThread());
-                    Consumer consumer1 = new Consumer() { // from class: com.cameraediter.iphone11pro.utils.$$Lambda$MediaHelper$sY6We7D3BeVWaDSmiQ4M6aibfI
-                        @Override // io.reactivex.functions.Consumer
-                        public final void accept(Object obj) {
-                            try {
-                                MediaHelper.lambda$null$2((Media) obj);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    };
-                    observableEmitter.getClass();
-                    subscribeOn.subscribe(consumer1, new Consumer() { // from class: com.cameraediter.iphone11pro.utils.MediaHelper.2.3.1
-                        @Override // io.reactivex.functions.Consumer
-                        public final void accept(Object obj) {
-                            observableEmitter.onError((Throwable) obj);
-                        }
-                    }, new Action() { // from class: com.cameraediter.iphone11pro.utils.MediaHelper.2.3.2
-                        @Override // io.reactivex.functions.Action
-                        public final void run() {
-                            observableEmitter.onNext(AnonymousClass2.this.val$album);
-                            observableEmitter.onComplete();
-                        }
-                    });
-                }
+            observeOn.subscribe(consumer, (Consumer) obj -> observableEmitter.onError((Throwable) obj), () -> {
+                Observable subscribeOn = Observable.mergeDelayError(arrayList).observeOn(AndroidSchedulers.mainThread(), true).subscribeOn(Schedulers.newThread());
+                Consumer consumer1 = obj -> {
+                    try {
+                        MediaHelper.lambda$null$2((Media) obj);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                };
+                observableEmitter.getClass();
+
+                subscribeOn.subscribe(consumer1, obj -> observableEmitter.onError((Throwable) obj), () -> {
+                    observableEmitter.onNext(AnonymousClass2.this.val$album);
+                    observableEmitter.onComplete();
+                });
             });
         }
     }

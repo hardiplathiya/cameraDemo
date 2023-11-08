@@ -1,4 +1,4 @@
-package plant.testtree.camerademo.util;
+package plant.testtree.camerademo.filter;
 
 import android.opengl.GLES20;
 
@@ -7,7 +7,9 @@ import com.drew.metadata.exif.makernotes.FujifilmMakernoteDirectory;
 import java.nio.FloatBuffer;
 import java.util.LinkedList;
 
-/* loaded from: classes.dex */
+import plant.testtree.camerademo.util.Plane;
+
+
 public abstract class AbsFilter {
     protected static final String TAG = "AbsFilter";
     private final LinkedList<Runnable> mPostDrawTaskList = new LinkedList<>();

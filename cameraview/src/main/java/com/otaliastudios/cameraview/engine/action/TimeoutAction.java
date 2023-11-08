@@ -7,10 +7,6 @@ import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
-/**
- * An {@link Action} that wraps another, and forces the completion
- * after the given timeout in milliseconds is reached.
- */
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 class TimeoutAction extends ActionWrapper {
 
@@ -42,7 +38,6 @@ class TimeoutAction extends ActionWrapper {
         super.onCaptureCompleted(holder, request, result);
         if (!isCompleted()) {
             if (System.currentTimeMillis() > startMillis + timeoutMillis) {
-                // This will set our state to COMPLETED and stop requests.
                 getAction().abort(holder);
             }
         }

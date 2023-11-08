@@ -1,6 +1,6 @@
 package plant.testtree.camerademo.filter;
 
-/* loaded from: classes.dex */
+
 public enum SortingOrder {
     ASCENDING(1),
     DESCENDING(0);

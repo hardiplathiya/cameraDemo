@@ -12,7 +12,7 @@ import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
 import javax.microedition.khronos.opengles.GL10;
 
-/* loaded from: classes.dex */
+
 public class PixelBuffer {
     static final boolean LIST_CONFIGS = false;
     static final String TAG = "PixelBuffer";

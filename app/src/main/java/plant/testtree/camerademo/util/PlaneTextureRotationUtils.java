@@ -1,6 +1,6 @@
 package plant.testtree.camerademo.util;
 
-/* loaded from: classes.dex */
+
 public class PlaneTextureRotationUtils {
     public static final float[] TEXTURE_NO_ROTATION = {0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f};
     public static final float[] TEXTURE_ROTATED_180 = {1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f};
@@ -13,24 +13,21 @@ public class PlaneTextureRotationUtils {
 
     private PlaneTextureRotationUtils() {
     }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.cameraediter.iphone11pro.filter.util.PlaneTextureRotationUtils$1 */
-    /* loaded from: classes.dex */
-    public static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$cameraediter$iphone11pro$filter$constant$Rotation = new int[Rotation.values().length];
+   
+    public static  class AnonymousClass1 {
+        static final  int[] filterconstantRotation = new int[Rotation.values().length];
 
         static {
             try {
-                $SwitchMap$com$cameraediter$iphone11pro$filter$constant$Rotation[Rotation.ROTATION_90.ordinal()] = 1;
+                filterconstantRotation[Rotation.ROTATION_90.ordinal()] = 1;
             } catch (NoSuchFieldError unused) {
             }
             try {
-                $SwitchMap$com$cameraediter$iphone11pro$filter$constant$Rotation[Rotation.ROTATION_180.ordinal()] = 2;
+                filterconstantRotation[Rotation.ROTATION_180.ordinal()] = 2;
             } catch (NoSuchFieldError unused2) {
             }
             try {
-                $SwitchMap$com$cameraediter$iphone11pro$filter$constant$Rotation[Rotation.ROTATION_270.ordinal()] = 3;
+                filterconstantRotation[Rotation.ROTATION_270.ordinal()] = 3;
             } catch (NoSuchFieldError unused3) {
             }
         }
@@ -38,7 +35,7 @@ public class PlaneTextureRotationUtils {
 
     public static float[] getRotation(Rotation rotation, boolean z, boolean z2) {
         float[] fArr;
-        int i = AnonymousClass1.$SwitchMap$com$cameraediter$iphone11pro$filter$constant$Rotation[rotation.ordinal()];
+        int i = AnonymousClass1.filterconstantRotation[rotation.ordinal()];
         if (i == 1) {
             fArr = TEXTURE_ROTATED_90;
         } else if (i == 2) {

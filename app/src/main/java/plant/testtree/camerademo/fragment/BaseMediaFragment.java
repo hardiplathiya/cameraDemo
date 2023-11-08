@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import plant.testtree.camerademo.model.Media;
 
-/* loaded from: classes.dex */
+
 public abstract class BaseMediaFragment extends BaseFragment {
     private static final String ARGS_MEDIA = "args_media";
     protected Media media;
@@ -17,7 +17,7 @@ public abstract class BaseMediaFragment extends BaseFragment {
         return t;
     }
 
-    @Override // androidx.fragment.app.Fragment
+    @Override 
     public void onAttach(Context context) {
         super.onAttach(context);
     }
@@ -30,7 +30,7 @@ public abstract class BaseMediaFragment extends BaseFragment {
         throw new RuntimeException("Must pass arguments to Media Fragments!");
     }
 
-    @Override // androidx.fragment.app.Fragment
+    @Override 
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         fetchArgs();

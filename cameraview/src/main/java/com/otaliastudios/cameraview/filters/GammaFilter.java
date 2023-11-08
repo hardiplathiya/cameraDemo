@@ -8,9 +8,6 @@ import com.otaliastudios.cameraview.filter.BaseFilter;
 import com.otaliastudios.cameraview.filter.OneParameterFilter;
 import com.otaliastudios.opengl.core.Egloo;
 
-/**
- * Applies gamma correction to the frames.
- */
 public class GammaFilter extends BaseFilter implements OneParameterFilter {
 
     private final static String FRAGMENT_SHADER = "#extension GL_OES_EGL_image_external : require\n"
@@ -29,12 +26,7 @@ public class GammaFilter extends BaseFilter implements OneParameterFilter {
 
     public GammaFilter() { }
 
-    /**
-     * Sets the new gamma value in the 0.0 - 2.0 range.
-     * The 1.0 value means no correction will be applied.
-     *
-     * @param gamma gamma value
-     */
+
     @SuppressWarnings("WeakerAccess")
     public void setGamma(float gamma) {
         if (gamma < 0.0f) gamma = 0.0f;
@@ -42,12 +34,6 @@ public class GammaFilter extends BaseFilter implements OneParameterFilter {
         this.gamma = gamma;
     }
 
-    /**
-     * Returns the current gamma.
-     *
-     * @see #setGamma(float)
-     * @return gamma
-     */
     @SuppressWarnings("WeakerAccess")
     public float getGamma() {
         return gamma;

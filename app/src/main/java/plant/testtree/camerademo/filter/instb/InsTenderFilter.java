@@ -10,14 +10,14 @@ import com.drew.metadata.mp4.media.Mp4VideoDirectory;
 import okhttp3.internal.ws.WebSocketProtocol;
 import plant.testtree.camerademo.util.TextureUtils;
 
-/* loaded from: classes.dex */
+
 public class InsTenderFilter extends MultipleTextureFilter {
     public InsTenderFilter(Context context) {
         super(context, "filter/fsh/instb/tender.glsl");
         this.textureSize = 2;
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.MultipleTextureFilter, com.cameraediter.iphone11pro.filter.base.SimpleFragmentShaderFilter, com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void init() {
         super.init();
         this.externalBitmapTextures[0].setImageTextureId(prepareRawTexture1());

@@ -5,10 +5,8 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
-/* loaded from: classes.dex */
+
 public class BufferUtils {
-    public static final int FLOAT_SIZE_BYTES = 4;
-    public static final int SHORT_SIZE_BYTES = 2;
 
     public static FloatBuffer getFloatBuffer(float[] fArr, int i) {
         FloatBuffer put = ByteBuffer.allocateDirect(fArr.length * 4).order(ByteOrder.nativeOrder()).asFloatBuffer().put(fArr);

@@ -92,10 +92,6 @@ public class Camera1Engine extends CameraBaseEngine implements
         throw new CameraException(runtime, reason);
     }
 
-    //endregion
-
-    //region Protected APIs
-
     @EngineThread
     @NonNull
     @Override
@@ -120,8 +116,6 @@ public class Camera1Engine extends CameraBaseEngine implements
     @NonNull
     @Override
     protected List<Size> getFrameProcessingAvailableSizes() {
-        // We don't choose the frame processing size.
-        // It comes from the preview stream.
         return Collections.singletonList(mPreviewStreamSize);
     }
 
@@ -150,10 +144,6 @@ public class Camera1Engine extends CameraBaseEngine implements
         }
         return false;
     }
-
-    //endregion
-
-    //region Start
 
     @NonNull
     @EngineThread
@@ -239,20 +229,12 @@ public class Camera1Engine extends CameraBaseEngine implements
             LOG.e("onStartPreview:", "Failed to get params from camera. Maybe low level problem with camera or camera has already released?");
             throw new CameraException(e, CameraException.REASON_FAILED_TO_START_PREVIEW);
         }
-        // NV21 should be the default, but let's make sure, since YuvImage will only support this
-        // and a few others
         params.setPreviewFormat(ImageFormat.NV21);
-        // setPreviewSize is not allowed during preview
         params.setPreviewSize(mPreviewStreamSize.getWidth(), mPreviewStreamSize.getHeight());
         if (getMode() == Mode.PICTURE) {
-            // setPictureSize is allowed during preview
+
             params.setPictureSize(mCaptureSize.getWidth(), mCaptureSize.getHeight());
         } else {
-            // mCaptureSize in this case is a video size. The available video sizes are not
-            // necessarily a subset of the picture sizes, so we can't use the mCaptureSize value:
-            // it might crash. However, the setPictureSize() passed here is useless : we don't allow
-            // HQ pictures in video mode.
-            // While this might be lifted in the future, for now, just use a picture capture size.
             Size pictureSize = computeCaptureSize(Mode.PICTURE);
             params.setPictureSize(pictureSize.getWidth(), pictureSize.getHeight());
         }
@@ -277,10 +259,6 @@ public class Camera1Engine extends CameraBaseEngine implements
         LOG.i("onStartPreview", "Started preview.");
         return Tasks.forResult(null);
     }
-
-    //endregion
-
-    //region Stop
 
     @EngineThread
     @NonNull
@@ -320,8 +298,6 @@ public class Camera1Engine extends CameraBaseEngine implements
                 throw new RuntimeException("Unknown CameraPreview output class.");
             }
         } catch (IOException e) {
-            // NOTE: when this happens, the next onStopEngine() call hangs on camera.release(),
-            // Not sure for how long. This causes the destroy() flow to fail the timeout.
             LOG.e("onStopBind", "Could not release surface", e);
         }
         return Tasks.forResult(null);
@@ -337,20 +313,6 @@ public class Camera1Engine extends CameraBaseEngine implements
         if (mCamera != null) {
             try {
                 LOG.i("onStopEngine:", "Clean up.", "Releasing camera.");
-                // Just like Camera2Engine, this call can hang (at least on emulators) and if
-                // we don't find a way around the lock, it leaves the camera in a bad state.
-                // This is anticipated by the exception in onStopBind() (see above).
-                //
-                // 12:29:32.163 E Camera3-Device: Camera 0: clearStreamingRequest: Device has encountered a serious error[0m
-                // 12:29:32.163 E Camera2-StreamingProcessor: stopStream: Camera 0: Can't clear stream request: Function not implemented (-38)[0m
-                // 12:29:32.163 E Camera2Client: stopPreviewL: Camera 0: Can't stop streaming: Function not implemented (-38)[0m
-                // 12:29:32.273 E Camera2-StreamingProcessor: deletePreviewStream: Unable to delete old preview stream: Device or resource busy (-16)[0m
-                // 12:29:32.274 E Camera2-CallbackProcessor: deleteStream: Unable to delete callback stream: Device or resource busy (-16)[0m
-                // 12:29:32.274 E Camera3-Device: Camera 0: disconnect: Shutting down in an error state[0m
-                //
-                // I believe there is a thread deadlock due to this call internally waiting to
-                // dispatch some callback to us (pending captures, ...), but the callback thread
-                // is blocked here. We try to workaround this in CameraEngine.destroy().
                 mCamera.release();
                 LOG.i("onStopEngine:", "Clean up.", "Released camera.");
             } catch (Exception e) {
@@ -365,10 +327,6 @@ public class Camera1Engine extends CameraBaseEngine implements
         LOG.w("onStopEngine:", "Clean up.", "Returning.");
         return Tasks.forResult(null);
     }
-
-    //endregion
-
-    //region Pictures
 
     @EngineThread
     @Override
@@ -402,10 +360,6 @@ public class Camera1Engine extends CameraBaseEngine implements
         LOG.i("onTakePictureSnapshot:", "executed.");
     }
 
-    //endregion
-
-    //region Videos
-
     @EngineThread
     @Override
     protected void onTakeVideo(@NonNull VideoResult.Stub stub) {
@@ -413,12 +367,9 @@ public class Camera1Engine extends CameraBaseEngine implements
                 Axis.RELATIVE_TO_SENSOR);
         stub.size = getAngles().flip(Reference.SENSOR, Reference.OUTPUT) ? mCaptureSize.flip()
                 : mCaptureSize;
-        // Unlock the camera and start recording.
         try {
             mCamera.unlock();
         } catch (Exception e) {
-            // If this failed, we are unlikely able to record the video.
-            // Dispatch an error.
             onVideoResult(null, e);
             return;
         }
@@ -445,15 +396,6 @@ public class Camera1Engine extends CameraBaseEngine implements
         Rect outputCrop = CropHelper.computeCrop(outputSize, outputRatio);
         outputSize = new Size(outputCrop.width(), outputCrop.height());
         stub.size = outputSize;
-        // Vertical:               0   (270-0-0)
-        // Left (unlocked):        0   (270-90-270)
-        // Right (unlocked):       0   (270-270-90)
-        // Upside down (unlocked): 0   (270-180-180)
-        // Left (locked):          270 (270-0-270)
-        // Right (locked):         90  (270-0-90)
-        // Upside down (locked):   180 (270-0-180)
-        // The correct formula seems to be deviceOrientation+displayOffset,
-        // which means offset(Reference.VIEW, Reference.OUTPUT, Axis.ABSOLUTE).
         stub.rotation = getAngles().offset(Reference.VIEW, Reference.OUTPUT, Axis.ABSOLUTE);
         stub.videoFrameRate = Math.round(mPreviewFrameRate);
         LOG.i("onTakeVideoSnapshot", "rotation:", stub.rotation, "size:", stub.size);
@@ -472,9 +414,6 @@ public class Camera1Engine extends CameraBaseEngine implements
         }
     }
 
-    //endregion
-
-    //region Parameters
 
     private void applyAllParameters(@NonNull Camera.Parameters params) {
         params.setRecordingHint(getMode() == Mode.VIDEO);
@@ -510,7 +449,6 @@ public class Camera1Engine extends CameraBaseEngine implements
 
         if (modes.contains(Camera.Parameters.FOCUS_MODE_FIXED)) {
             params.setFocusMode(Camera.Parameters.FOCUS_MODE_FIXED);
-            //noinspection UnnecessaryReturnStatement
             return;
         }
     }
@@ -585,9 +523,6 @@ public class Camera1Engine extends CameraBaseEngine implements
     private boolean applyWhiteBalance(@NonNull Camera.Parameters params,
                                       @NonNull WhiteBalance oldWhiteBalance) {
         if (mCameraOptions.supports(mWhiteBalance)) {
-            // If this lock key is present, the engine can throw when applying the
-            // parameters, not sure why. Since we never lock it, this should be
-            // harmless for the rest of the engine.
             params.setWhiteBalance(mMapper.mapWhiteBalance(mWhiteBalance));
             params.remove("auto-whitebalance-lock");
             return true;
@@ -624,7 +559,6 @@ public class Camera1Engine extends CameraBaseEngine implements
     public void setZoom(final float zoom, @Nullable final PointF[] points, final boolean notify) {
         final float old = mZoomValue;
         mZoomValue = zoom;
-        // Zoom requests can be high frequency (e.g. linked to touch events), let's trim the oldest.
         getOrchestrator().trim("zoom", ALLOWED_ZOOM_OPS);
         mZoomTask = getOrchestrator().scheduleStateful("zoom",
                 CameraState.ENGINE,
@@ -658,7 +592,6 @@ public class Camera1Engine extends CameraBaseEngine implements
                                       @Nullable final PointF[] points, final boolean notify) {
         final float old = mExposureCorrectionValue;
         mExposureCorrectionValue = EVvalue;
-        // EV requests can be high frequency (e.g. linked to touch events), let's trim the oldest.
         getOrchestrator().trim("exposure correction", ALLOWED_EV_OPS);
         mExposureCorrectionTask = getOrchestrator().scheduleStateful(
                 "exposure correction",
@@ -681,7 +614,6 @@ public class Camera1Engine extends CameraBaseEngine implements
     private boolean applyExposureCorrection(@NonNull Camera.Parameters params,
                                             float oldExposureCorrection) {
         if (mCameraOptions.isExposureCorrectionSupported()) {
-            // Just make sure we're inside boundaries.
             float max = mCameraOptions.getExposureCorrectionMaxValue();
             float min = mCameraOptions.getExposureCorrectionMinValue();
             float val = mExposureCorrectionValue;
@@ -720,7 +652,6 @@ public class Camera1Engine extends CameraBaseEngine implements
             Camera.getCameraInfo(mCameraId, info);
             if (info.canDisableShutterSound) {
                 try {
-                    // this method is documented to throw on some occasions. #377
                     return mCamera.enableShutterSound(mPlaySounds);
                 } catch (RuntimeException exception) {
                     return false;
@@ -755,7 +686,6 @@ public class Camera1Engine extends CameraBaseEngine implements
         List<int[]> fpsRanges = params.getSupportedPreviewFpsRange();
         sortRanges(fpsRanges);
         if (mPreviewFrameRate == 0F) {
-            // 0F is a special value. Fallback to a reasonable default.
             for (int[] fpsRange : fpsRanges) {
                 float lower = (float) fpsRange[0] / 1000F;
                 float upper = (float) fpsRange[1] / 1000F;
@@ -765,7 +695,6 @@ public class Camera1Engine extends CameraBaseEngine implements
                 }
             }
         } else {
-            // If out of boundaries, adjust it.
             mPreviewFrameRate = Math.min(mPreviewFrameRate,
                     mCameraOptions.getPreviewFrameRateMaxValue());
             mPreviewFrameRate = Math.max(mPreviewFrameRate,
@@ -792,7 +721,7 @@ public class Camera1Engine extends CameraBaseEngine implements
                     return (range1[1] - range1[0]) - (range2[1] - range2[0]);
                 }
             });
-        } else { // sort by range width in descending order
+        } else {
             Collections.sort(fpsRanges, new Comparator<int[]>() {
                 @Override
                 public int compare(int[] range1, int[] range2) {
@@ -810,10 +739,6 @@ public class Camera1Engine extends CameraBaseEngine implements
         mPictureFormat = pictureFormat;
     }
 
-    //endregion
-
-    //region Frame Processing
-
     @NonNull
     @Override
     protected FrameManager instantiateFrameManager(int poolSize) {
@@ -828,13 +753,11 @@ public class Camera1Engine extends CameraBaseEngine implements
 
     @Override
     public void setHasFrameProcessors(boolean hasFrameProcessors) {
-        // we don't care, FP is always on
         mHasFrameProcessors = hasFrameProcessors;
     }
 
     @Override
     public void setFrameProcessingFormat(int format) {
-        // Ignore input: we only support NV21.
         mFrameProcessingFormat = ImageFormat.NV21;
     }
 
@@ -849,7 +772,6 @@ public class Camera1Engine extends CameraBaseEngine implements
     @Override
     public void onPreviewFrame(byte[] data, Camera camera) {
         if (data == null) {
-            // Seen this happen in logs.
             return;
         }
         Frame frame = getFrameManager().getFrame(data, System.currentTimeMillis());
@@ -857,10 +779,6 @@ public class Camera1Engine extends CameraBaseEngine implements
             getCallback().dispatchFrame(frame);
         }
     }
-
-    //endregion
-
-    //region Auto Focus
 
     @Override
     public void startAutoFocus(@Nullable final Gesture gesture,
@@ -889,8 +807,6 @@ public class Camera1Engine extends CameraBaseEngine implements
                 }
                 getCallback().dispatchOnFocusStart(gesture, legacyPoint);
 
-                // The auto focus callback is not guaranteed to be called, but we really want it
-                // to be. So we remove the old runnable if still present and post a new one.
                 getOrchestrator().remove(JOB_FOCUS_END);
                 getOrchestrator().scheduleDelayed(JOB_FOCUS_END, true, AUTOFOCUS_END_DELAY_MILLIS,
                         new Runnable() {
@@ -900,8 +816,6 @@ public class Camera1Engine extends CameraBaseEngine implements
                     }
                 });
 
-                // Wrapping autoFocus in a try catch to handle some device specific exceptions,
-                // see See https://github.com/natario1/CameraView/issues/181.
                 try {
                     mCamera.autoFocus(new Camera.AutoFocusCallback() {
                         @Override
@@ -932,8 +846,6 @@ public class Camera1Engine extends CameraBaseEngine implements
                     });
                 } catch (RuntimeException e) {
                     LOG.e("startAutoFocus:", "Error calling autoFocus", e);
-                    // Let the mFocusEndRunnable do its job. (could remove it and quickly dispatch
-                    // onFocusEnd here, but let's make it simpler).
                 }
             }
         });

@@ -12,14 +12,14 @@ import com.drew.metadata.mp4.media.Mp4VideoDirectory;
 import plant.testtree.camerademo.filter.MultipleTextureFilter;
 import plant.testtree.camerademo.util.TextureUtils;
 
-/* loaded from: classes.dex */
+
 public class InsAntiqueFilter extends MultipleTextureFilter {
     public InsAntiqueFilter(Context context) {
         super(context, "filter/fsh/insta/antique.glsl");
         this.textureSize = 1;
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.MultipleTextureFilter, com.cameraediter.iphone11pro.filter.base.SimpleFragmentShaderFilter, com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void init() {
         super.init();
         this.externalBitmapTextures[0].setImageTextureId(prepareRawTexture1());

@@ -85,12 +85,6 @@ public class Camera2Options extends CameraOptions {
             zoomSupported = maxZoom > 1;
         }
 
-
-        // AutoFocus
-        // This now means 3A metering with respect to a specific region of the screen.
-        // Some controls (AF, AE) have special triggers that might or might not be supported.
-        // But they can also be on some continuous search mode so that the trigger is not needed.
-        // What really matters in my opinion is the availability of regions.
         Integer afRegions = cameraCharacteristics.get(CONTROL_MAX_REGIONS_AF);
         Integer aeRegions = cameraCharacteristics.get(CONTROL_MAX_REGIONS_AE);
         Integer awbRegions = cameraCharacteristics.get(CONTROL_MAX_REGIONS_AWB);
@@ -98,7 +92,6 @@ public class Camera2Options extends CameraOptions {
                 || (aeRegions != null && aeRegions > 0)
                 || (awbRegions != null && awbRegions > 0);
 
-        // Exposure correction
         Range<Integer> exposureRange = cameraCharacteristics.get(CONTROL_AE_COMPENSATION_RANGE);
         Rational exposureStep = cameraCharacteristics.get(CONTROL_AE_COMPENSATION_STEP);
         if (exposureRange != null && exposureStep != null && exposureStep.floatValue() != 0) {
@@ -134,8 +127,6 @@ public class Camera2Options extends CameraOptions {
             supportedPictureAspectRatio.add(AspectRatio.of(width, height));
         }
 
-        // Video Sizes
-        // As a safety measure, remove Sizes bigger than CamcorderProfile.highest
         CamcorderProfile profile = CamcorderProfiles.get(cameraId,
                 new Size(Integer.MAX_VALUE, Integer.MAX_VALUE));
         Size videoMaxSize = new Size(profile.videoFrameWidth, profile.videoFrameHeight);

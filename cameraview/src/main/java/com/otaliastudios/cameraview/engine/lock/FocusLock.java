@@ -20,8 +20,6 @@ public class FocusLock extends BaseLock {
 
     @Override
     protected boolean checkIsSupported(@NonNull ActionHolder holder) {
-        // We'll lock by changing the AF mode to AUTO.
-        // In that mode, AF won't change unless someone starts a trigger operation.
         int[] modes = readCharacteristic(CameraCharacteristics.CONTROL_AF_AVAILABLE_MODES,
                 new int[]{});
         for (int mode : modes) {

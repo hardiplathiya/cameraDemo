@@ -4,10 +4,9 @@ import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
-import plant.testtree.camerademo.util.AbsFilter;
 import plant.testtree.camerademo.util.TextureUtils;
 
-/* loaded from: classes.dex */
+
 public class PassThroughFilter extends AbsFilter {
     protected Context context;
     protected GLPassThroughProgram glPassThroughProgram;
@@ -18,22 +17,22 @@ public class PassThroughFilter extends AbsFilter {
         this.glPassThroughProgram = new GLPassThroughProgram(context);
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void init() {
         this.glPassThroughProgram.create();
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void onPreDrawElements() {
         super.onPreDrawElements();
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void destroy() {
         this.glPassThroughProgram.onDestroy();
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void onDrawFrame(int i) {
         onPreDrawElements();
         this.glPassThroughProgram.use();
@@ -46,7 +45,7 @@ public class PassThroughFilter extends AbsFilter {
         this.plane.draw();
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void onFilterChanged(int i, int i2) {
         super.onFilterChanged(i, i2);
     }

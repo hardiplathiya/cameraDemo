@@ -24,13 +24,13 @@ import java.io.IOException;
 import plant.testtree.camerademo.R;
 import plant.testtree.camerademo.model.Media;
 
-/* loaded from: classes.dex */
+
 public class SingleMediaFragment extends BaseMediaFragment {
     private SubsamplingScaleImageView ivImage;
     int screenHeight;
     int screenWidth;
 
-    @Override // com.cameraediter.iphone11pro.common.BaseFragment
+    @Override 
     public void setListeners() {
     }
 
@@ -38,12 +38,12 @@ public class SingleMediaFragment extends BaseMediaFragment {
         return (SingleMediaFragment) BaseMediaFragment.newInstance(new SingleMediaFragment(), media);
     }
 
-    @Override // androidx.fragment.app.Fragment
+    @Override 
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle) {
         return layoutInflater.inflate(R.layout.frag_single_media, viewGroup, false);
     }
 
-    @Override // androidx.fragment.app.Fragment
+    @Override 
     public void onViewCreated(View view, Bundle bundle) {
         super.onViewCreated(view, bundle);
         initViews(view);
@@ -55,18 +55,18 @@ public class SingleMediaFragment extends BaseMediaFragment {
         this.screenHeight = displayMetrics.heightPixels;
     }
 
-    @Override // androidx.fragment.app.Fragment
+    @Override 
     public void onDestroyView() {
         super.onDestroyView();
     }
 
-    @Override // androidx.fragment.app.Fragment
+    @Override 
     public void onDestroy() {
         this.ivImage.recycle();
         super.onDestroy();
     }
 
-    @Override // com.cameraediter.iphone11pro.common.BaseFragment
+    @Override 
     public void updateViews() {
         if (this.media != null) {
             this.ivImage.setOrientation(BitmapUtils.getOrientation(this.media.getUri(), getContext()));
@@ -78,7 +78,7 @@ public class SingleMediaFragment extends BaseMediaFragment {
         rotate(this.media.getUri().getPath());
     }
 
-    @Override // com.cameraediter.iphone11pro.common.BaseFragment
+    @Override 
     public void initViews(View view) {
         this.ivImage = (SubsamplingScaleImageView) view.findViewById(R.id.ivImage);
     }

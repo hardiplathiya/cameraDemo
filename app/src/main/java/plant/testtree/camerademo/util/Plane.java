@@ -4,7 +4,7 @@ import android.opengl.GLES20;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 
-/* loaded from: classes.dex */
+
 public class Plane {
     private FloatBuffer mTexCoordinateBuffer;
     private final float[] TRIANGLES_DATA = {-1.0f, -1.0f, 0.0f, 1.0f, -1.0f, 0.0f, -1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f};

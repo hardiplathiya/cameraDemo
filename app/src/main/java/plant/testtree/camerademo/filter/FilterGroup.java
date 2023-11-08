@@ -6,9 +6,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import plant.testtree.camerademo.util.AbsFilter;
 
-/* loaded from: classes.dex */
 public class FilterGroup extends AbsFilter {
     private static final String TAG = "FilterGroup";
     protected FBO[] fboList;
@@ -16,7 +14,7 @@ public class FilterGroup extends AbsFilter {
     protected List<AbsFilter> filters = new ArrayList();
     protected boolean isRunning;
 
-    @Override // com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void init() {
         this.fboToRebind = null;
         for (AbsFilter absFilter : this.filters) {
@@ -25,7 +23,7 @@ public class FilterGroup extends AbsFilter {
         this.isRunning = true;
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void destroy() {
         destroyFrameBuffers();
         for (AbsFilter absFilter : this.filters) {
@@ -34,7 +32,7 @@ public class FilterGroup extends AbsFilter {
         this.isRunning = false;
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void onDrawFrame(int i) {
         runPreDrawTasks();
         if (this.fboList != null) {
@@ -65,7 +63,7 @@ public class FilterGroup extends AbsFilter {
         }
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void onFilterChanged(int i, int i2) {
         super.onFilterChanged(i, i2);
         int size = this.filters.size();

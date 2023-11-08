@@ -8,7 +8,7 @@ import plant.testtree.camerademo.util.MatrixUtils;
 import plant.testtree.camerademo.util.Plane;
 import plant.testtree.camerademo.util.TextureUtils;
 
-/* loaded from: classes.dex */
+
 public class DrawImageFilter extends PassThroughFilter {
     private BitmapTexture bitmapTexture;
     private String imagePath;
@@ -21,13 +21,13 @@ public class DrawImageFilter extends PassThroughFilter {
         this.imagePlane = new Plane(false);
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.PassThroughFilter, com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void init() {
         super.init();
         this.bitmapTexture.load(this.context, this.imagePath);
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.PassThroughFilter, com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void onDrawFrame(int i) {
         super.onDrawFrame(i);
         GLES20.glEnable(3042);
@@ -41,7 +41,7 @@ public class DrawImageFilter extends PassThroughFilter {
         GLES20.glDisable(3042);
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.PassThroughFilter, com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void onFilterChanged(int i, int i2) {
         super.onFilterChanged(i, i2);
     }

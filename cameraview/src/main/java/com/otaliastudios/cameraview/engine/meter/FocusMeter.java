@@ -27,7 +27,6 @@ public class FocusMeter extends BaseMeter {
 
     @Override
     protected boolean checkIsSupported(@NonNull ActionHolder holder) {
-        // Exclude OFF and EDOF as per docs. These do no support the trigger.
         Integer afMode = holder.getBuilder(this).get(CaptureRequest.CONTROL_AF_MODE);
         boolean result = afMode != null &&
                 (afMode == CameraCharacteristics.CONTROL_AF_MODE_AUTO
@@ -72,8 +71,6 @@ public class FocusMeter extends BaseMeter {
     @Override
     protected void onCompleted(@NonNull ActionHolder holder) {
         super.onCompleted(holder);
-        // Remove (but not apply) the risky parameter so it is not included in new requests.
-        // Documentation about this key says that this should be allowed.
         holder.getBuilder(this).set(CaptureRequest.CONTROL_AF_TRIGGER, null);
     }
 

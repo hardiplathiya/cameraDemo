@@ -9,9 +9,6 @@ import com.otaliastudios.opengl.core.Egloo;
 
 import java.util.Random;
 
-/**
- * Applies a lomo-camera style effect to the input frames.
- */
 public class LomoishFilter extends BaseFilter {
 
     private final static Random RANDOM = new Random();

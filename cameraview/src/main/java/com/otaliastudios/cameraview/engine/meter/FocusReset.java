@@ -35,7 +35,6 @@ public class FocusReset extends BaseReset {
             changed = true;
         }
 
-        // NOTE: trigger might not be supported, in which case I think it will be ignored.
         CaptureResult lastResult = holder.getLastResult(this);
         Integer trigger = lastResult == null ? null
                 : lastResult.get(CaptureResult.CONTROL_AF_TRIGGER);

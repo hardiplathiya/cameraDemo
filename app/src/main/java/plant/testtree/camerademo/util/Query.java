@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 
-/* loaded from: classes.dex */
+
 public class Query {
     public String[] args;
     public boolean ascending;
@@ -18,7 +18,7 @@ public class Query {
     public String sort;
     public Uri uri;
 
-    /* loaded from: classes.dex */
+   
     public static final class Builder {
         Object[] args = null;
         boolean ascending = false;
@@ -68,29 +68,7 @@ public class Query {
         }
 
         public String[] getStringArgs() {
-            if (Build.VERSION.SDK_INT >= 24) {
-                return (String[]) Arrays.stream(this.args).map(new Function() { // from class: com.cameraediter.iphone11pro.utils.$$Lambda$JsVbJ5mpbRjwJuW_A3bDJMqYpF0
-                    @Override // java.util.function.Function
-                    public final Object apply(Object obj) {
-                        return obj.toString();
-                    }
-                }).toArray(new IntFunction() { // from class: com.cameraediter.iphone11pro.utils.$$Lambda$Query$Builder$gFrgnLoTa3L7XB_UQHF_bPctfc
-                    @Override // java.util.function.IntFunction
-                    public final Object apply(int i) {
-                        return Builder.lambda$getStringArgs$0(i);
-                    }
-                });
-            }
-            String[] strArr = new String[this.args.length];
-            int i = 0;
-            while (true) {
-                Object[] objArr = this.args;
-                if (i >= objArr.length) {
-                    return strArr;
-                }
-                strArr[i] = String.valueOf(objArr[i]);
-                i++;
-            }
+            return (String[]) Arrays.stream(this.args).map((Function) obj -> obj.toString()).toArray(i -> Builder.lambda$getStringArgs$0(i));
         }
 
         public static String[] lambda$getStringArgs$0(int i) {

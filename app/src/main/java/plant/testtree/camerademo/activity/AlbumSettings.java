@@ -2,6 +2,7 @@ package plant.testtree.camerademo.activity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import java.io.Serializable;
 
 import plant.testtree.camerademo.filter.FilterMode;
@@ -9,17 +10,6 @@ import plant.testtree.camerademo.filter.SortingMode;
 import plant.testtree.camerademo.filter.SortingOrder;
 
 public class AlbumSettings implements Serializable, Parcelable {
-    public static final Creator<AlbumSettings> CREATOR = new Creator<AlbumSettings>() {
-        @Override
-        public AlbumSettings createFromParcel(Parcel parcel) {
-            return new AlbumSettings(parcel);
-        }
-
-        @Override
-        public AlbumSettings[] newArray(int i) {
-            return new AlbumSettings[i];
-        }
-    };
     public String coverPath;
     public FilterMode filterMode;
     public boolean pinned;
@@ -70,4 +60,16 @@ public class AlbumSettings implements Serializable, Parcelable {
         int readInt = parcel.readInt();
         this.filterMode = readInt == -1 ? null : FilterMode.values()[readInt];
     }
+
+    public static final Creator<AlbumSettings> CREATOR = new Creator<AlbumSettings>() {
+        @Override
+        public AlbumSettings createFromParcel(Parcel parcel) {
+            return new AlbumSettings(parcel);
+        }
+
+        @Override
+        public AlbumSettings[] newArray(int i) {
+            return new AlbumSettings[i];
+        }
+    };
 }

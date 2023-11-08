@@ -9,9 +9,6 @@ import com.otaliastudios.opengl.core.Egloo;
 
 import java.util.Random;
 
-/**
- * Applies black and white documentary style effect.
- */
 public class DocumentaryFilter extends BaseFilter {
 
     private final static Random RANDOM = new Random();

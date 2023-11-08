@@ -6,7 +6,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import java.util.List;
 
-/* loaded from: classes.dex */
+
 public class Logger {
     public static String TAG = "Logger";
     private static long currentTime;

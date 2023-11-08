@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.regex.Pattern;
 
-/* loaded from: classes.dex */
+
 public class ImageFileFilter implements FilenameFilter {
     private Pattern pattern;
 

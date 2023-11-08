@@ -2,7 +2,7 @@ package plant.testtree.camerademo.util;
 
 import android.webkit.MimeTypeMap;
 
-/* loaded from: classes.dex */
+
 public class MimeTypeUtils {
     public static final String UNKNOWN_MIME_TYPE = "unknown/unknown";
 

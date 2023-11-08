@@ -4,11 +4,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-/* loaded from: classes.dex */
+
 public class CameraUtil {
     private static float sPixelDensity = 1.0f;
-
-    /* loaded from: classes.dex */
     private static class ImageFileNamer {
         private final SimpleDateFormat mFormat;
         private long mLastDate;

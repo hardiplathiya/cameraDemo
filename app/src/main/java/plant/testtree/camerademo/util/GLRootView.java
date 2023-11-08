@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.RelativeLayout;
 
-/* loaded from: classes.dex */
+
 public class GLRootView extends GLSurfaceView {
     private int surfaceHeight;
     private double surfaceRatio;

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.opengl.GLES20;
 
-/* loaded from: classes.dex */
+
 public class BitmapTexture {
     private int[] imageSize = new int[2];
     private int imageTextureId;

@@ -4,9 +4,6 @@ import androidx.annotation.NonNull;
 
 import com.otaliastudios.cameraview.filter.BaseFilter;
 
-/**
- * Converts frames to sepia tone.
- */
 public class SepiaFilter extends BaseFilter {
 
     private final static String FRAGMENT_SHADER = "#extension GL_OES_EGL_image_external : require\n"

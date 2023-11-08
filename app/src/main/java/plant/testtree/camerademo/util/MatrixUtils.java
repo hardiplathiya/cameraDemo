@@ -2,7 +2,7 @@ package plant.testtree.camerademo.util;
 
 import android.opengl.Matrix;
 
-/* loaded from: classes.dex */
+
 public class MatrixUtils {
     public static void updateProjectionFit(int i, int i2, int i3, int i4, float[] fArr) {
         float f = i3 / i4;

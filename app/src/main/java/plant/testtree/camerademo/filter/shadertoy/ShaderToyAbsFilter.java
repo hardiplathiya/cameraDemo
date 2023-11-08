@@ -7,7 +7,7 @@ import java.nio.FloatBuffer;
 import plant.testtree.camerademo.filter.MultipleTextureFilter;
 import plant.testtree.camerademo.util.TextureUtils;
 
-/* loaded from: classes.dex */
+
 public class ShaderToyAbsFilter extends MultipleTextureFilter {
     private final long START_TIME;
 
@@ -16,7 +16,7 @@ public class ShaderToyAbsFilter extends MultipleTextureFilter {
         this.START_TIME = System.currentTimeMillis();
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.MultipleTextureFilter, com.cameraediter.iphone11pro.filter.base.SimpleFragmentShaderFilter, com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void onDrawFrame(int i) {
         onPreDrawElements();
         GLES20.glUniform3fv(GLES20.glGetUniformLocation(this.glSimpleProgram.getProgramId(), "iResolution"), 1, FloatBuffer.wrap(new float[]{this.surfaceWidth, this.surfaceHeight, 1.0f}));

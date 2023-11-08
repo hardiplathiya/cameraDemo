@@ -2,11 +2,11 @@ package plant.testtree.camerademo.filter.imgproc;
 
 import android.opengl.GLES20;
 
-import plant.testtree.camerademo.util.AbsFilter;
+import plant.testtree.camerademo.filter.AbsFilter;
 import plant.testtree.camerademo.util.GLSimpleProgram;
 import plant.testtree.camerademo.util.TextureUtils;
 
-/* loaded from: classes.dex */
+
 public class CustomizedBoxBlurFilter extends AbsFilter {
     protected GLSimpleProgram glSimpleProgram;
     private boolean scale = false;
@@ -17,12 +17,12 @@ public class CustomizedBoxBlurFilter extends AbsFilter {
         this.glSimpleProgram = new GLSimpleProgram(generateCustomizedBoxBlurVertexShader(i), generateCustomizedBoxBlurFragmentShader(i));
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override
     public void init() {
         this.glSimpleProgram.create();
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void onPreDrawElements() {
         super.onPreDrawElements();
         this.glSimpleProgram.use();
@@ -30,12 +30,12 @@ public class CustomizedBoxBlurFilter extends AbsFilter {
         this.plane.uploadVerticesBuffer(this.glSimpleProgram.getPositionHandle());
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void destroy() {
         this.glSimpleProgram.onDestroy();
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void onDrawFrame(int i) {
         onPreDrawElements();
         setUniform1f(this.glSimpleProgram.getProgramId(), "texelWidthOffset", this.texelWidthOffset / this.surfaceWidth);
@@ -55,7 +55,7 @@ public class CustomizedBoxBlurFilter extends AbsFilter {
         return this;
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void onFilterChanged(int i, int i2) {
         if (!this.scale) {
             super.onFilterChanged(i, i2);

@@ -1,6 +1,6 @@
 package plant.testtree.camerademo.model;
 
-/* loaded from: classes.dex */
+
 public class ListModel {
     String path;
 

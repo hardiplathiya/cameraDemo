@@ -17,7 +17,7 @@ import plant.testtree.camerademo.util.MimeTypeUtils;
 import plant.testtree.camerademo.util.StringUtils;
 import plant.testtree.camerademo.util.TimelineItem;
 
-/* loaded from: classes.dex */
+
 public class Media implements TimelineItem, CursorHandler, Parcelable {
     private long dateModified;
     private double latitude;
@@ -28,13 +28,13 @@ public class Media implements TimelineItem, CursorHandler, Parcelable {
     private boolean selected;
     private long size;
     private String uriString;
-    public static final Creator<Media> CREATOR = new Creator<Media>() { // from class: com.cameraediter.iphone11pro.utils.Media.1
-        @Override // android.os.Parcelable.Creator
+    public static final Creator<Media> CREATOR = new Creator<Media>() {
+        @Override
         public Media createFromParcel(Parcel parcel) {
             return new Media(parcel);
         }
 
-        @Override // android.os.Parcelable.Creator
+        @Override 
         public Media[] newArray(int i) {
             return new Media[i];
         }
@@ -53,12 +53,12 @@ public class Media implements TimelineItem, CursorHandler, Parcelable {
         return 1L;
     }
 
-    @Override // android.os.Parcelable
+    @Override
     public int describeContents() {
         return 0;
     }
 
-    @Override // com.cameraediter.iphone11pro.timeline.TimelineItem
+    @Override
     public int getTimelineType() {
         return 102;
     }
@@ -279,18 +279,15 @@ public class Media implements TimelineItem, CursorHandler, Parcelable {
     @Deprecated
     public boolean setOrientation(final int i) {
         this.orientation = i;
-        new Thread(new Runnable() { // from class: com.cameraediter.iphone11pro.utils.Media.2
-            @Override // java.lang.Runnable
-            public void run() {
-                try {
-                    ExifInterface exifInterface = new ExifInterface(Media.this.path);
-                    int i2 = i != 0 ? i != 90 ? i != 180 ? i != 270 ? -1 : 8 : 3 : 6 : 1;
-                    if (i2 != -1) {
-                        exifInterface.setAttribute(androidx.exifinterface.media.ExifInterface.TAG_ORIENTATION, String.valueOf(i2));
-                        exifInterface.saveAttributes();
-                    }
-                } catch (IOException unused) {
+        new Thread(() -> {
+            try {
+                ExifInterface exifInterface = new ExifInterface(Media.this.path);
+                int i2 = i != 0 ? i != 90 ? i != 180 ? i != 270 ? -1 : 8 : 3 : 6 : 1;
+                if (i2 != -1) {
+                    exifInterface.setAttribute(androidx.exifinterface.media.ExifInterface.TAG_ORIENTATION, String.valueOf(i2));
+                    exifInterface.saveAttributes();
                 }
+            } catch (IOException unused) {
             }
         }).start();
         return true;
@@ -325,7 +322,7 @@ public class Media implements TimelineItem, CursorHandler, Parcelable {
         return null;
     }
 
-    @Override // android.os.Parcelable
+    @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(this.path);
         parcel.writeLong(this.dateModified);

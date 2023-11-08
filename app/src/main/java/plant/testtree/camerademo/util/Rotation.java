@@ -1,6 +1,6 @@
 package plant.testtree.camerademo.util;
 
-/* loaded from: classes.dex */
+
 public enum Rotation {
     NORMAL,
     ROTATION_90,

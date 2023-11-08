@@ -8,8 +8,9 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import plant.testtree.camerademo.adapter.FilterType;
+import plant.testtree.camerademo.filter.AbsFilter;
 
-/* loaded from: classes.dex */
+
 public class GLImageRender implements GLSurfaceView.Renderer {
     private Bitmap bitmap;
     private BitmapTexture bitmapTexture = new BitmapTexture();
@@ -22,18 +23,18 @@ public class GLImageRender implements GLSurfaceView.Renderer {
         this.bitmap = bitmap;
     }
 
-    @Override // android.opengl.GLSurfaceView.Renderer
+    @Override 
     public void onSurfaceCreated(GL10 gl10, EGLConfig eGLConfig) {
         this.filter.init();
         this.bitmapTexture.loadBitmap(this.bitmap);
     }
 
-    @Override // android.opengl.GLSurfaceView.Renderer
+    @Override 
     public void onDrawFrame(GL10 gl10) {
         this.filter.onDrawFrame(this.bitmapTexture.getImageTextureId());
     }
 
-    @Override // android.opengl.GLSurfaceView.Renderer
+    @Override 
     public void onSurfaceChanged(GL10 gl10, int i, int i2) {
         GLES20.glViewport(0, 0, i, i2);
         this.filter.onFilterChanged(i, i2);

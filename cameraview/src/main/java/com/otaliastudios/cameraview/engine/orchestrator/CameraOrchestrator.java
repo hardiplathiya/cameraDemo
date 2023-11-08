@@ -20,16 +20,6 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 
-/**
- * Schedules {@link com.otaliastudios.cameraview.engine.CameraEngine} actions,
- * so that they always run on the same thread.
- *
- * We need to be extra careful (not as easy as posting on a Handler) because the engine
- * has different states, and some actions will modify the engine state - turn it on or
- * tear it down. Other actions might need a specific state to be executed.
- * And most importantly, some actions will finish asynchronously, so subsequent actions
- * should wait for the previous to finish, but without blocking the thread.
- */
 @SuppressWarnings("WeakerAccess")
 public class CameraOrchestrator {
 
@@ -111,7 +101,6 @@ public class CameraOrchestrator {
 
     @GuardedBy("mJobsLock")
     private void sync(long after) {
-        // Jumping on the message handler even if after = 0L should avoid StackOverflow errors.
         mCallback.getJobWorker("_sync").post(after, new Runnable() {
             @SuppressWarnings("StatementWithEmptyBody")
             @Override
@@ -139,9 +128,6 @@ public class CameraOrchestrator {
         });
     }
 
-    // Since we use WorkerHandler.run(), the job can end up being executed on the current thread.
-    // For this reason, it's important that this method is never guarded by mJobsLock! Because
-    // all threads can be waiting on that, even the UI thread e.g. through scheduleInternal.
     private <T> void execute(@NonNull final Job<T> job) {
         final WorkerHandler worker = mCallback.getJobWorker(job.name);
         worker.run(new Runnable() {
@@ -211,9 +197,6 @@ public class CameraOrchestrator {
             LOG.v("trim: name=", name, "scheduled=", scheduled.size(), "allowed=", allowed);
             int existing = Math.max(scheduled.size() - allowed, 0);
             if (existing > 0) {
-                // To remove the oldest ones first, we must reverse the list.
-                // Note that we will potentially remove a job that is being executed: we don't
-                // have a mechanism to cancel the ongoing execution, but it shouldn't be a problem.
                 Collections.reverse(scheduled);
                 scheduled = scheduled.subList(0, existing);
                 for (Job<?> job : scheduled) {

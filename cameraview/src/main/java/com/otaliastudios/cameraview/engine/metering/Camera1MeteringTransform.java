@@ -30,13 +30,10 @@ public class Camera1MeteringTransform implements MeteringTransform<Camera.Area> 
     @NonNull
     @Override
     public PointF transformMeteringPoint(@NonNull PointF point) {
-        // First, rescale to the -1000 ... 1000 range.
         PointF scaled = new PointF();
         scaled.x = -1000F + (point.x / previewSize.getWidth()) * 2000F;
         scaled.y = -1000F + (point.y / previewSize.getHeight()) * 2000F;
 
-        // Apply rotation to this point.
-        // https://academo.org/demos/rotation-about-point/
         PointF rotated = new PointF();
         double theta = ((double) displayToSensor) * Math.PI / 180;
         rotated.x = (float) (scaled.x * Math.cos(theta) - scaled.y * Math.sin(theta));

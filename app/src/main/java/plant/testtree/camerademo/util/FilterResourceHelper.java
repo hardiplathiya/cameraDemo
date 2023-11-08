@@ -10,7 +10,7 @@ import java.io.File;
 
 import plant.testtree.camerademo.adapter.FilterType;
 
-/* loaded from: classes.dex */
+
 public class FilterResourceHelper {
     private static final String[] ORIGIN_THUMBS = {"filter/thumbs/origin_thumb_1.jpg", "filter/thumbs/origin_thumb_2.jpg", "filter/thumbs/origin_thumb_3.jpg", "filter/thumbs/origin_thumb_4.jpg", "filter/thumbs/origin_thumb_5.jpg", "filter/thumbs/origin_thumb_6.jpg"};
     private static final String TAG = "FilterResourceHelper";

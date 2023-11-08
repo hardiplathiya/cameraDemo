@@ -11,14 +11,14 @@ import com.drew.metadata.mp4.media.Mp4VideoDirectory;
 import okhttp3.internal.ws.WebSocketProtocol;
 import plant.testtree.camerademo.filter.MultipleTextureFilter;
 
-/* loaded from: classes.dex */
+
 public class InsCalmFilter extends MultipleTextureFilter {
     public InsCalmFilter(Context context) {
         super(context, "filter/fsh/insta/calm.glsl");
         this.textureSize = 3;
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.MultipleTextureFilter, com.cameraediter.iphone11pro.filter.base.SimpleFragmentShaderFilter, com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void init() {
         super.init();
         this.externalBitmapTextures[0].load(this.context, "filter/textures/inst/calm_mask1.jpg");

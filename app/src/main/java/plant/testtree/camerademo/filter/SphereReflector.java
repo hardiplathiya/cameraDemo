@@ -6,7 +6,7 @@ import android.opengl.Matrix;
 
 import plant.testtree.camerademo.util.TextureUtils;
 
-/* loaded from: classes.dex */
+
 public class SphereReflector extends PassThroughFilter {
     private GLPassThroughProgram glSphereProgram;
     private float[] mMVPMatrix;
@@ -27,19 +27,19 @@ public class SphereReflector extends PassThroughFilter {
         initMatrix();
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.PassThroughFilter, com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void init() {
         super.init();
         this.glSphereProgram.create();
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.PassThroughFilter, com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void destroy() {
         super.destroy();
         this.glSphereProgram.onDestroy();
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.PassThroughFilter, com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void onDrawFrame(int i) {
         super.onDrawFrame(i);
         this.glSphereProgram.use();
@@ -53,7 +53,7 @@ public class SphereReflector extends PassThroughFilter {
         this.sphere.draw();
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.PassThroughFilter, com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void onFilterChanged(int i, int i2) {
         super.onFilterChanged(i, i2);
         this.ratio = i / i2;

@@ -8,9 +8,6 @@ import com.otaliastudios.cameraview.filter.BaseFilter;
 import com.otaliastudios.cameraview.filter.OneParameterFilter;
 import com.otaliastudios.opengl.core.Egloo;
 
-/**
- * Adjusts color temperature.
- */
 public class TemperatureFilter extends BaseFilter implements OneParameterFilter {
 
     private final static String FRAGMENT_SHADER = "#extension GL_OES_EGL_image_external : require\n"
@@ -38,14 +35,6 @@ public class TemperatureFilter extends BaseFilter implements OneParameterFilter 
 
     public TemperatureFilter() { }
 
-    /**
-     * Sets the new temperature value:
-     * -1.0: cool colors
-     * 0.0: no change
-     * 1.0: warm colors
-     *
-     * @param value new value
-     */
     @SuppressWarnings("WeakerAccess")
     public void setTemperature(float value) {
         if (value < -1F) value = -1F;
@@ -53,12 +42,7 @@ public class TemperatureFilter extends BaseFilter implements OneParameterFilter 
         this.scale = value;
     }
 
-    /**
-     * Returns the current temperature.
-     *
-     * @see #setTemperature(float)
-     * @return temperature
-     */
+
     @SuppressWarnings("WeakerAccess")
     public float getTemperature() {
         return scale;

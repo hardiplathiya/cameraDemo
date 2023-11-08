@@ -3,7 +3,7 @@ package plant.testtree.camerademo.util;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-/* loaded from: classes.dex */
+
 public class ErrorCause {
     private ArrayList<String> causes;
     private String title;

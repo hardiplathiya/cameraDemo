@@ -10,9 +10,6 @@ import com.otaliastudios.cameraview.filter.BaseFilter;
 import com.otaliastudios.cameraview.filter.TwoParameterFilter;
 import com.otaliastudios.opengl.core.Egloo;
 
-/**
- * Representation of input frames using only two color tones.
- */
 public class DuotoneFilter extends BaseFilter implements TwoParameterFilter {
 
     private final static String FRAGMENT_SHADER = "#extension GL_OES_EGL_image_external : require\n"
@@ -36,59 +33,31 @@ public class DuotoneFilter extends BaseFilter implements TwoParameterFilter {
 
     public DuotoneFilter() { }
 
-    /**
-     * Sets the two duotone ARGB colors.
-     * @param firstColor first
-     * @param secondColor second
-     */
     @SuppressWarnings({"unused"})
     public void setColors(@ColorInt int firstColor, @ColorInt int secondColor) {
         setFirstColor(firstColor);
         setSecondColor(secondColor);
     }
 
-    /**
-     * Sets the first of the duotone ARGB colors.
-     * Defaults to {@link Color#MAGENTA}.
-     *
-     * @param color first color
-     */
     @SuppressWarnings("WeakerAccess")
     public void setFirstColor(@ColorInt int color) {
         // Remove any alpha.
         mFirstColor = Color.rgb(Color.red(color), Color.green(color), Color.blue(color));
     }
 
-    /**
-     * Sets the second of the duotone ARGB colors.
-     * Defaults to {@link Color#YELLOW}.
-     *
-     * @param color second color
-     */
     @SuppressWarnings("WeakerAccess")
     public void setSecondColor(@ColorInt int color) {
         // Remove any alpha.
         mSecondColor = Color.rgb(Color.red(color), Color.green(color), Color.blue(color));
     }
 
-    /**
-     * Returns the first color.
-     *
-     * @see #setFirstColor(int)
-     * @return first
-     */
     @SuppressWarnings({"unused", "WeakerAccess"})
     @ColorInt
     public int getFirstColor() {
         return mFirstColor;
     }
 
-    /**
-     * Returns the second color.
-     *
-     * @see #setSecondColor(int)
-     * @return second
-     */
+
     @SuppressWarnings({"unused", "WeakerAccess"})
     @ColorInt
     public int getSecondColor() {

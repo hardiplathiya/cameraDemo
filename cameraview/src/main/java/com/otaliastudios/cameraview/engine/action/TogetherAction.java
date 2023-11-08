@@ -11,13 +11,8 @@ import androidx.annotation.RequiresApi;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Performs a list of actions together, completing
- * once all of them have completed.
- */
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 class TogetherAction extends BaseAction {
-    // Need to be BaseAction so we can call onStart() instead of start()
     private final List<BaseAction> actions;
     private final List<BaseAction> runningActions;
 
@@ -29,7 +24,6 @@ class TogetherAction extends BaseAction {
                 @Override
                 public void onActionStateChanged(@NonNull Action action, int state) {
                     if (state == STATE_COMPLETED) {
-                        //noinspection SuspiciousMethodCalls
                         runningActions.remove(action);
                     }
                     if (runningActions.isEmpty()) {

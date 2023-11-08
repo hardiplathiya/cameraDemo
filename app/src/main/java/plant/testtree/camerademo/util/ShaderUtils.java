@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-/* loaded from: classes.dex */
+
 public class ShaderUtils {
     private static final String TAG = "ShaderUtils";
 

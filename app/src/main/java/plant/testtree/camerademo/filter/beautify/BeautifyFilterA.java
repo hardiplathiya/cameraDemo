@@ -6,7 +6,7 @@ import android.opengl.GLES20;
 import plant.testtree.camerademo.util.SimpleFragmentShaderFilter;
 import plant.testtree.camerademo.util.TextureUtils;
 
-/* loaded from: classes.dex */
+
 public class BeautifyFilterA extends SimpleFragmentShaderFilter {
     private float texelHeightOffset;
     private float texelWidthOffset;
@@ -17,7 +17,7 @@ public class BeautifyFilterA extends SimpleFragmentShaderFilter {
         this.texelWidthOffset = 2.0f;
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.SimpleFragmentShaderFilter, com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override
     public void onDrawFrame(int i) {
         onPreDrawElements();
         setUniform1f(this.glSimpleProgram.getProgramId(), "texelWidthOffset", this.texelWidthOffset / this.surfaceWidth);

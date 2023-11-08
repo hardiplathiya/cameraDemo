@@ -6,7 +6,7 @@ import android.opengl.GLES20;
 import plant.testtree.camerademo.util.SimpleFragmentShaderFilter;
 import plant.testtree.camerademo.util.TextureUtils;
 
-/* loaded from: classes.dex */
+
 public class InsCrayonFilter extends SimpleFragmentShaderFilter {
     private float mStrength;
 
@@ -15,7 +15,7 @@ public class InsCrayonFilter extends SimpleFragmentShaderFilter {
         this.mStrength = 2.0f;
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.SimpleFragmentShaderFilter, com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void onDrawFrame(int i) {
         onPreDrawElements();
         setUniform1f(this.glSimpleProgram.getProgramId(), "strength", this.mStrength);

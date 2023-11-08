@@ -6,22 +6,8 @@ import com.otaliastudios.cameraview.CameraView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-/**
- * The engine to be used.
- *
- * @see CameraView#setEngine(Engine)
- */
 public enum Engine implements Control {
-
-    /**
-     * Camera1 based engine.
-     */
     CAMERA1(0),
-
-    /**
-     * Camera2 based engine. For API versions older than 21,
-     * the system falls back to {@link #CAMERA1}.
-     */
     CAMERA2(1);
 
     final static Engine DEFAULT = CAMERA1;

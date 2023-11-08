@@ -97,23 +97,16 @@ public class Camera2Engine extends CameraBaseEngine implements
     private TotalCaptureResult mLastRepeatingResult;
     private final Camera2Mapper mMapper = Camera2Mapper.get();
 
-    // Frame processing
-    private ImageReader mFrameProcessingReader; // need this or the reader surface is collected
+    private ImageReader mFrameProcessingReader;
     private Surface mFrameProcessingSurface;
 
-    // Preview
     private Surface mPreviewStreamSurface;
 
-    // Video recording
-    // When takeVideo is called, we restart the session.
     private VideoResult.Stub mFullVideoPendingStub;
 
-    // Picture capturing
     private ImageReader mPictureReader;
-    private final boolean mPictureCaptureStopsPreview = false; // can be configurable at some point
+    private final boolean mPictureCaptureStopsPreview = false;
 
-    // Actions
-    // Use COW to properly synchronize the list. We'll iterate much more than mutate
     private final List<Action> mActions = new CopyOnWriteArrayList<>();
     private MeterAction mMeterAction;
 
@@ -123,8 +116,6 @@ public class Camera2Engine extends CameraBaseEngine implements
                 .getSystemService(Context.CAMERA_SERVICE);
         new LogAction().start(this);
     }
-
-    //region Utilities
 
     @VisibleForTesting
     @NonNull
@@ -185,12 +176,6 @@ public class Camera2Engine extends CameraBaseEngine implements
         return new CameraException(reason);
     }
 
-    /**
-     * When creating a new builder, we want to
-     * - set it to {@link #mRepeatingRequestBuilder}, the current one
-     * - add a tag for the template just in case
-     * - apply all the current parameters
-     */
     @SuppressWarnings("UnusedReturnValue")
     @NonNull
     private CaptureRequest.Builder createRepeatingRequestBuilder(int template)
@@ -202,10 +187,6 @@ public class Camera2Engine extends CameraBaseEngine implements
         return mRepeatingRequestBuilder;
     }
 
-    /**
-     * Sets up the repeating request builder with default surfaces and extra ones
-     * if needed (like a video recording surface).
-     */
     private void addRepeatingRequestBuilderSurfaces(@NonNull Surface... extraSurfaces) {
         mRepeatingRequestBuilder.addTarget(mPreviewStreamSurface);
         if (mFrameProcessingSurface != null) {
@@ -219,9 +200,6 @@ public class Camera2Engine extends CameraBaseEngine implements
         }
     }
 
-    /**
-     * Removes default surfaces from the repeating request builder.
-     */
     private void removeRepeatingRequestBuilderSurfaces() {
         mRepeatingRequestBuilder.removeTarget(mPreviewStreamSurface);
         if (mFrameProcessingSurface != null) {
@@ -229,23 +207,10 @@ public class Camera2Engine extends CameraBaseEngine implements
         }
     }
 
-    /**
-     * Can be changed to select something different than {@link CameraDevice#TEMPLATE_PREVIEW}
-     * for the default repeating request.
-     * @return the default template for preview
-     */
     protected int getRepeatingRequestDefaultTemplate() {
         return CameraDevice.TEMPLATE_PREVIEW;
     }
 
-    /**
-     * Applies the repeating request builder to the preview, assuming we actually have a preview
-     * running. Can be called after changing parameters to the builder.
-     *
-     * To apply a new builder (for example switch between TEMPLATE_PREVIEW and TEMPLATE_RECORD)
-     * it should be set before calling this method, for example by calling
-     * {@link #createRepeatingRequestBuilder(int)}.
-     */
     @EngineThread
     @SuppressWarnings("WeakerAccess")
     protected void applyRepeatingRequestBuilder() {
@@ -261,9 +226,6 @@ public class Camera2Engine extends CameraBaseEngine implements
             } catch (CameraAccessException e) {
                 throw new CameraException(e, errorReason);
             } catch (IllegalStateException e) {
-                // mSession is invalid - has been closed. This is extremely worrying because
-                // it means that the session state and getPreviewState() are not synced.
-                // This probably signals an error in the setup/teardown synchronization.
                 LOG.e("applyRepeatingRequestBuilder: session is invalid!", e,
                         "checkStarted:", checkStarted,
                         "currentThread:", Thread.currentThread().getName(),
@@ -306,10 +268,6 @@ public class Camera2Engine extends CameraBaseEngine implements
         }
     };
 
-    //endregion
-
-    //region Protected APIs
-
     @EngineThread
     @NonNull
     @Override
@@ -321,8 +279,6 @@ public class Camera2Engine extends CameraBaseEngine implements
             if (streamMap == null) {
                 throw new RuntimeException("StreamConfigurationMap is null. Should not happen.");
             }
-            // This works because our previews return either a SurfaceTexture or a SurfaceHolder,
-            // which are accepted class types by the getOutputSizes method.
             android.util.Size[] sizes = streamMap.getOutputSizes(mPreview.getOutputClass());
             List<Size> candidates = new ArrayList<>(sizes.length);
             for (android.util.Size size : sizes) {
@@ -373,8 +329,6 @@ public class Camera2Engine extends CameraBaseEngine implements
         try {
             cameraIds = mManager.getCameraIdList();
         } catch (CameraAccessException e) {
-            // This should never happen, I don't see how it could crash here.
-            // However, let's launch an unrecoverable exception.
             throw createCameraException(e);
         }
         LOG.i("collectCameraInfo", "Facing:", facing,
@@ -392,16 +346,10 @@ public class Camera2Engine extends CameraBaseEngine implements
                     return true;
                 }
             } catch (CameraAccessException ignore) {
-                // This specific camera has been disconnected.
-                // Keep searching in other camerIds.
             }
         }
         return false;
     }
-
-    //endregion
-
-    //region Start
 
     @EngineThread
     @SuppressLint("MissingPermission")
@@ -410,13 +358,11 @@ public class Camera2Engine extends CameraBaseEngine implements
     protected Task<CameraOptions> onStartEngine() {
         final TaskCompletionSource<CameraOptions> task = new TaskCompletionSource<>();
         try {
-            // We have a valid camera for this Facing. Go on.
             mManager.openCamera(mCameraId, new CameraDevice.StateCallback() {
                 @Override
                 public void onOpened(@NonNull CameraDevice camera) {
                     mCamera = camera;
 
-                    // Set parameters that might have been set before the camera was opened.
                     try {
                         LOG.i("onStartEngine:", "Opened camera device.");
                         mCameraCharacteristics = mManager.getCameraCharacteristics(mCameraId);
@@ -439,9 +385,6 @@ public class Camera2Engine extends CameraBaseEngine implements
 
                 @Override
                 public void onDisconnected(@NonNull CameraDevice camera) {
-                    // Not sure if this is called INSTEAD of onOpened() or can be called after
-                    // as well. Cover both cases with an unrecoverable exception so that the
-                    // engine is properly destroyed.
                     CameraException exception
                             = new CameraException(CameraException.REASON_DISCONNECTED);
                     if (!task.getTask().isComplete()) {
@@ -457,8 +400,6 @@ public class Camera2Engine extends CameraBaseEngine implements
                     if (!task.getTask().isComplete()) {
                         task.trySetException(createCameraException(error));
                     } else {
-                        // This happened while the engine is running. Throw unrecoverable exception
-                        // so that engine is properly destroyed.
                         LOG.e("CameraDevice.StateCallback reported an error:", error);
                         throw new CameraException(CameraException.REASON_DISCONNECTED);
                     }
@@ -477,28 +418,15 @@ public class Camera2Engine extends CameraBaseEngine implements
         LOG.i("onStartBind:", "Started");
         final TaskCompletionSource<Void> task = new TaskCompletionSource<>();
 
-        // Compute sizes.
-        // TODO preview stream should never be bigger than 1920x1080 as per
-        //  CameraDevice.createCaptureSession. This should probably be applied
-        //  before all the other external selectors, to treat it as a hard limit.
-        //  OR: pass an int into these functions to be able to take smaller dims
-        //  when session configuration fails
-        //  OR: both.
         mCaptureSize = computeCaptureSize();
         mPreviewStreamSize = computePreviewStreamSize();
 
-        // Deal with surfaces.
-        // In Camera2, instead of applying the size to the camera params object,
-        // we must resize our own surfaces and configure them before opening the session.
         List<Surface> outputSurfaces = new ArrayList<>();
 
-        // 1. PREVIEW
-        // Create a preview surface with the correct size.
         final Class outputClass = mPreview.getOutputClass();
         final Object output = mPreview.getOutput();
         if (outputClass == SurfaceHolder.class) {
             try {
-                // This must be called from the UI thread...
                 LOG.i("onStartBind:", "Waiting on UI thread...");
                 Tasks.await(Tasks.call(new Callable<Void>() {
                     @Override
@@ -537,7 +465,6 @@ public class Camera2Engine extends CameraBaseEngine implements
         }
 
         // 3. PICTURE RECORDING
-        // Format is supported, or it would have thrown in Camera2Options constructor.
         if (getMode() == Mode.PICTURE) {
             int format;
             switch (mPictureFormat) {
@@ -555,14 +482,6 @@ public class Camera2Engine extends CameraBaseEngine implements
         // 4. FRAME PROCESSING
         if (hasFrameProcessors()) {
             mFrameProcessingSize = computeFrameProcessingSize();
-            // Hard to write down why, but in Camera2 we need a number of Frames that's one less
-            // than the number of Images. If we let all Images be part of Frames, thus letting all
-            // Images be used by processor at any given moment, the Camera2 output breaks.
-            // In fact, if there are no Images available, the sensor BLOCKS until it finds one,
-            // which is a big issue because processor times become a bottleneck for the preview.
-            // This is a design flaw in the ImageReader / sensor implementation, as they should
-            // simply DROP frames written to the surface if there are no Images available.
-            // Since this is not how things work, we ensure that one Image is always available here.
             mFrameProcessingReader = ImageReader.newInstance(
                     mFrameProcessingSize.getWidth(),
                     mFrameProcessingSize.getHeight(),
@@ -579,7 +498,6 @@ public class Camera2Engine extends CameraBaseEngine implements
         }
 
         try {
-            // null handler means using the current looper which is totally ok.
             mCamera.createCaptureSession(outputSurfaces, new CameraCaptureSession.StateCallback() {
                 @Override
                 public void onConfigured(@NonNull CameraCaptureSession session) {
@@ -636,10 +554,7 @@ public class Camera2Engine extends CameraBaseEngine implements
                 CameraException.REASON_FAILED_TO_START_PREVIEW);
         LOG.i("onStartPreview:", "Started preview.");
 
-        // Start delayed video if needed.
         if (mFullVideoPendingStub != null) {
-            // Do not call takeVideo/onTakeVideo. It will reset some stub parameters that
-            // the recorder sets. Also we are posting so that doTakeVideo sees a started preview.
             final VideoResult.Stub stub = mFullVideoPendingStub;
             mFullVideoPendingStub = null;
             getOrchestrator().scheduleStateful("do take video", CameraState.PREVIEW,
@@ -666,18 +581,12 @@ public class Camera2Engine extends CameraBaseEngine implements
         return task.getTask();
     }
 
-    //endregion
-
-    //region Stop
-
     @EngineThread
     @NonNull
     @Override
     protected Task<Void> onStopPreview() {
         LOG.i("onStopPreview:", "Started.");
         if (mVideoRecorder != null) {
-            // This should synchronously call onVideoResult that will reset the repeating builder
-            // to the PREVIEW template. This is very important.
             mVideoRecorder.stop(true);
             mVideoRecorder = null;
         }
@@ -685,24 +594,15 @@ public class Camera2Engine extends CameraBaseEngine implements
         if (hasFrameProcessors()) {
             getFrameManager().release();
         }
-        // Removing the part below for now. It hangs on emulators and can take a lot of time
-        // in real devices, for benefits that I'm not 100% sure about.
         if (false) {
             try {
-                // Preferring abortCaptures() over stopRepeating(): it makes sure that all
-                // in-flight operations are discarded as fast as possible, which is what we want.
-                // NOTE: this call is asynchronous. Should find a good way to wait for the outcome.
                 LOG.i("onStopPreview:", "calling abortCaptures().");
                 mSession.abortCaptures();
                 LOG.i("onStopPreview:", "called abortCaptures().");
             } catch (CameraAccessException e) {
-                // This tells us that we should stop everything. It's better to throw an
-                // unrecoverable exception rather than just swallow, so everything gets stopped.
                 LOG.w("onStopPreview:", "abortCaptures failed!", e);
                 throw createCameraException(e);
             } catch (IllegalStateException e) {
-                // This tells us that the session was already closed.
-                // Not sure if this can happen, but we can swallow it.
             }
         }
         removeRepeatingRequestBuilderSurfaces();
@@ -722,8 +622,6 @@ public class Camera2Engine extends CameraBaseEngine implements
         mCaptureSize = null;
         mFrameProcessingSize = null;
         if (mFrameProcessingReader != null) {
-            // WARNING: This call synchronously releases all Images and their underlying
-            // properties. This can cause issues if the Image is being used.
             mFrameProcessingReader.close();
             mFrameProcessingReader = null;
         }
@@ -743,18 +641,6 @@ public class Camera2Engine extends CameraBaseEngine implements
     protected Task<Void> onStopEngine() {
         try {
             LOG.i("onStopEngine:", "Clean up.", "Releasing camera.");
-            // Just like Camera1Engine, this call can hang (at least on emulators) and if
-            // we don't find a way around the lock, it leaves the camera in a bad state.
-            //
-            // 12:33:28.152  2888  5470 I CameraEngine: onStopEngine: Clean up. Releasing camera.[0m
-            // 12:33:29.476  1384  1555 E audio_hw_generic: pcm_write failed cannot write stream data: I/O error[0m
-            // 12:33:33.206  1512  3616 E Camera3-Device: Camera 0: waitUntilDrainedLocked: Error waiting for HAL to drain: Connection timed out (-110)[0m
-            // 12:33:33.242  1512  3616 E CameraDeviceClient: detachDevice: waitUntilDrained failed with code 0xffffff92[0m
-            // 12:33:33.243  1512  3616 E Camera3-Device: Camera 0: disconnect: Shutting down in an error state[0m
-            //
-            // I believe there is a thread deadlock due to this call internally waiting to
-            // dispatch some callback to us (pending captures, ...), but the callback thread
-            // is blocked here. We try to workaround this in CameraEngine.destroy().
             mCamera.close();
             LOG.i("onStopEngine:", "Clean up.", "Released camera.");
         } catch (Exception e) {
@@ -762,9 +648,6 @@ public class Camera2Engine extends CameraBaseEngine implements
         }
         mCamera = null;
 
-        // After engine is stopping, the repeating request builder will be null,
-        // so the ActionHolder.getBuilder() contract would be broken. Same for characteristics.
-        // This can cause crashes if some ongoing Action queries the holder. So we abort them.
         LOG.i("onStopEngine:", "Aborting actions.");
         for (Action action : mActions) {
             action.abort(this);
@@ -777,10 +660,6 @@ public class Camera2Engine extends CameraBaseEngine implements
         LOG.w("onStopEngine:", "Returning.");
         return Tasks.forResult(null);
     }
-
-    //endregion
-
-    //region Pictures
 
     @EngineThread
     @Override
@@ -806,8 +685,6 @@ public class Camera2Engine extends CameraBaseEngine implements
                 throw new RuntimeException("takePictureSnapshot with Camera2 is only " +
                         "supported with Preview.GL_SURFACE");
             }
-            // stub.size is not the real size: it will be cropped to the given ratio
-            // stub.rotation will be set to 0 - we rotate the texture instead.
             stub.size = getUncroppedSnapshotSize(Reference.OUTPUT);
             stub.rotation = getAngles().offset(Reference.VIEW, Reference.OUTPUT, Axis.ABSOLUTE);
             mPictureRecorder = new Snapshot2PictureRecorder(stub, this,
@@ -839,11 +716,6 @@ public class Camera2Engine extends CameraBaseEngine implements
             stub.size = getPictureSize(Reference.OUTPUT);
             try {
                 if (mPictureCaptureStopsPreview) {
-                    // These two are present in official samples and are probably meant to
-                    // speed things up? But from my tests, they actually make everything slower.
-                    // So this is disabled by default with a boolean flag. Maybe in the future
-                    // we can make this configurable as some people might want to stop the preview
-                    // while picture is being taken even if it increases the latency.
                     mSession.stopRepeating();
                     mSession.abortCaptures();
                 }
@@ -867,8 +739,6 @@ public class Camera2Engine extends CameraBaseEngine implements
             applyRepeatingRequestBuilder();
         }
 
-        // Some picture recorders might lock metering, and we usually run a metering sequence
-        // before running the recorders. So, run an unlock/reset sequence if needed.
         boolean unlock = (fullPicture && getPictureMetering())
                 || (!fullPicture && getPictureSnapshotMetering());
         if (unlock) {
@@ -883,10 +753,6 @@ public class Camera2Engine extends CameraBaseEngine implements
         }
     }
 
-    //endregion
-
-    //region Videos
-
     @EngineThread
     @Override
     protected void onTakeVideo(@NonNull VideoResult.Stub stub) {
@@ -895,8 +761,6 @@ public class Camera2Engine extends CameraBaseEngine implements
                 Axis.RELATIVE_TO_SENSOR);
         stub.size = getAngles().flip(Reference.SENSOR, Reference.OUTPUT) ?
                 mCaptureSize.flip() : mCaptureSize;
-        // We must restart the session at each time.
-        // Save the pending data and restart the session.
         LOG.w("onTakeVideo", "calling restartBind.");
         mFullVideoPendingStub = stub;
         restartBind();
@@ -944,18 +808,9 @@ public class Camera2Engine extends CameraBaseEngine implements
         mVideoRecorder.start(stub);
     }
 
-    /**
-     * When video ends we must stop the recorder and remove the recorder surface from
-     * camera outputs. This is done in onVideoResult. However, on some devices, order matters.
-     * If we stop the recorder and AFTER send camera frames to it, the camera will try to fill
-     * the recorder "abandoned" Surface and on some devices with a poor internal implementation
-     * (HW_LEVEL_LEGACY) this crashes. So if the conditions are met, we restore here. Issue #549.
-     */
     @Override
     public void onVideoRecordingEnd() {
         super.onVideoRecordingEnd();
-        // SnapshotRecorder will invoke this on its own thread which is risky, but if it was a
-        // snapshot, this function does nothing so it's safe.
         boolean needsIssue549Workaround = (mVideoRecorder instanceof Full2VideoRecorder) &&
                 (readCharacteristic(CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL, -1)
                         == CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_LEGACY);
@@ -971,9 +826,6 @@ public class Camera2Engine extends CameraBaseEngine implements
     @Override
     public void onVideoResult(@Nullable VideoResult.Stub result, @Nullable Exception exception) {
         super.onVideoResult(result, exception);
-        // SnapshotRecorder will invoke this on its own thread, so let's post in our own thread
-        // and check camera state before trying to restore the preview. Engine might have been
-        // torn down in the engine thread while this was still being called.
         getOrchestrator().scheduleStateful("restore preview template", CameraState.BIND,
                 new Runnable() {
             @Override
@@ -983,14 +835,6 @@ public class Camera2Engine extends CameraBaseEngine implements
         });
     }
 
-    /**
-     * Video recorders might change the camera template to {@link CameraDevice#TEMPLATE_RECORD}.
-     * After the video is taken, we should restore the template preview, which also means that
-     * we'll remove any extra surface target that was added by the video recorder.
-     *
-     * This method avoids doing this twice by checking the request tag, as set by
-     * the {@link #createRepeatingRequestBuilder(int)} method.
-     */
     @EngineThread
     private void maybeRestorePreviewTemplateAfterVideo() {
         int template = (int) mRepeatingRequestBuilder.build().getTag();
@@ -1004,10 +848,6 @@ public class Camera2Engine extends CameraBaseEngine implements
             }
         }
     }
-
-    //endregion
-
-    //region Parameters
 
     private void applyAllParameters(@NonNull CaptureRequest.Builder builder,
                                     @Nullable CaptureRequest.Builder oldBuilder) {
@@ -1023,9 +863,6 @@ public class Camera2Engine extends CameraBaseEngine implements
         applyPreviewFrameRate(builder, 0F);
 
         if (oldBuilder != null) {
-            // We might be in a metering operation, or the old builder might have some special
-            // metering parameters. Copy these special keys over to the new builder.
-            // These are the keys changed by metering.Parameters, or by us in applyFocusForMetering.
             builder.set(CaptureRequest.CONTROL_AF_REGIONS,
                     oldBuilder.get(CaptureRequest.CONTROL_AF_REGIONS));
             builder.set(CaptureRequest.CONTROL_AE_REGIONS,
@@ -1034,7 +871,6 @@ public class Camera2Engine extends CameraBaseEngine implements
                     oldBuilder.get(CaptureRequest.CONTROL_AWB_REGIONS));
             builder.set(CaptureRequest.CONTROL_AF_MODE,
                     oldBuilder.get(CaptureRequest.CONTROL_AF_MODE));
-            // Do NOT copy exposure or focus triggers!
         }
     }
 
@@ -1065,19 +901,11 @@ public class Camera2Engine extends CameraBaseEngine implements
         if (modes.contains(CaptureRequest.CONTROL_AF_MODE_OFF)) {
             builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_OFF);
             builder.set(CaptureRequest.LENS_FOCUS_DISTANCE, 0F);
-            //noinspection UnnecessaryReturnStatement
             return;
         }
     }
 
-    /**
-     * All focus modes support the AF trigger, except OFF and EDOF.
-     * However, unlike the preview, we'd prefer AUTO to any CONTINUOUS value.
-     * An AUTO value means that focus is locked unless we run the focus trigger,
-     * which is what metering does.
-     *
-     * @param builder builder
-     */
+
     @SuppressWarnings("WeakerAccess")
     protected void applyFocusForMetering(@NonNull CaptureRequest.Builder builder) {
         int[] modesArray = readCharacteristic(CameraCharacteristics.CONTROL_AF_AVAILABLE_MODES,
@@ -1115,9 +943,6 @@ public class Camera2Engine extends CameraBaseEngine implements
                 boolean shouldApply = applyFlash(mRepeatingRequestBuilder, old);
                 boolean needsWorkaround = getState() == CameraState.PREVIEW;
                 if (needsWorkaround) {
-                    // Runtime changes to the flash value are not correctly handled by the
-                    // driver. See https://stackoverflow.com/q/53003383/4288782 for example.
-                    // For this reason, we go back to OFF, capture once, then go to the new one.
                     mFlash = Flash.OFF;
                     applyFlash(mRepeatingRequestBuilder, old);
                     try {
@@ -1137,23 +962,7 @@ public class Camera2Engine extends CameraBaseEngine implements
         });
     }
 
-    /**
-     * This sets the CONTROL_AE_MODE to either:
-     * - {@link CaptureRequest#CONTROL_AE_MODE_ON}
-     * - {@link CaptureRequest#CONTROL_AE_MODE_ON_AUTO_FLASH}
-     * - {@link CaptureRequest#CONTROL_AE_MODE_ON_ALWAYS_FLASH}
-     *
-     * The API offers a high level control through {@link CaptureRequest#CONTROL_AE_MODE},
-     * which is what the mapper looks at. It will trigger (if specified) flash only for
-     * still captures which is exactly what we want.
-     *
-     * However, we set CONTROL_AE_MODE to ON/OFF (depending
-     * on which is available) with both {@link Flash#OFF} and {@link Flash#TORCH}.
-     *
-     * When CONTROL_AE_MODE is ON or OFF, the low level control, called
-     * {@link CaptureRequest#FLASH_MODE}, becomes effective, and that's where we can actually
-     * distinguish between a turned off flash and a torch flash.
-     */
+
     @SuppressWarnings("WeakerAccess")
     protected boolean applyFlash(@NonNull CaptureRequest.Builder builder,
                                  @NonNull Flash oldFlash) {
@@ -1263,7 +1072,6 @@ public class Camera2Engine extends CameraBaseEngine implements
     public void setZoom(final float zoom, final @Nullable PointF[] points, final boolean notify) {
         final float old = mZoomValue;
         mZoomValue = zoom;
-        // Zoom requests can be high frequency (e.g. linked to touch events), let's trim the oldest.
         getOrchestrator().trim("zoom", ALLOWED_ZOOM_OPS);
         mZoomTask = getOrchestrator().scheduleStateful(
                 "zoom",
@@ -1286,8 +1094,6 @@ public class Camera2Engine extends CameraBaseEngine implements
         if (mCameraOptions.isZoomSupported()) {
             float maxZoom = readCharacteristic(
                     CameraCharacteristics.SCALER_AVAILABLE_MAX_DIGITAL_ZOOM, 1F);
-            // converting 0.0f-1.0f zoom scale to the actual camera digital zoom scale
-            // (which will be for example, 1.0-10.0)
             float calculatedZoom = (mZoomValue * (maxZoom - 1.0f)) + 1.0f;
             Rect newRect = getZoomRect(calculatedZoom, maxZoom);
             builder.set(CaptureRequest.SCALER_CROP_REGION, newRect);
@@ -1306,8 +1112,6 @@ public class Camera2Engine extends CameraBaseEngine implements
         int difW = activeRect.width() - minW;
         int difH = activeRect.height() - minH;
 
-        // When zoom is 1, we want to return new Rect(0, 0, width, height).
-        // When zoom is maxZoom, we want to return a centered rect with minW and minH
         int cropW = (int) (difW * (zoomLevel - 1) / (maxDigitalZoom - 1) / 2F);
         int cropH = (int) (difH * (zoomLevel - 1) / (maxDigitalZoom - 1) / 2F);
         return new Rect(cropW, cropH, activeRect.width() - cropW,
@@ -1321,7 +1125,6 @@ public class Camera2Engine extends CameraBaseEngine implements
                                       final boolean notify) {
         final float old = mExposureCorrectionValue;
         mExposureCorrectionValue = EVvalue;
-        // EV requests can be high frequency (e.g. linked to touch events), let's trim the oldest.
         getOrchestrator().trim("exposure correction", ALLOWED_EV_OPS);
         mExposureCorrectionTask = getOrchestrator().scheduleStateful(
                 "exposure correction",
@@ -1387,7 +1190,6 @@ public class Camera2Engine extends CameraBaseEngine implements
                 new Range[]{});
         sortFrameRateRanges(fpsRanges);
         if (mPreviewFrameRate == 0F) {
-            // 0F is a special value. Fallback to a reasonable default.
             for (Range<Integer> fpsRange : filterFrameRateRanges(fpsRanges)) {
                 if (fpsRange.contains(30) || fpsRange.contains(24)) {
                     builder.set(CaptureRequest.CONTROL_AE_TARGET_FPS_RANGE, fpsRange);
@@ -1395,7 +1197,6 @@ public class Camera2Engine extends CameraBaseEngine implements
                 }
             }
         } else {
-            // If out of boundaries, adjust it.
             mPreviewFrameRate = Math.min(mPreviewFrameRate,
                     mCameraOptions.getPreviewFrameRateMaxValue());
             mPreviewFrameRate = Math.max(mPreviewFrameRate,
@@ -1455,10 +1256,6 @@ public class Camera2Engine extends CameraBaseEngine implements
         }
     }
 
-    //endregion
-
-    //region Frame Processing
-
     @NonNull
     @Override
     protected FrameManager instantiateFrameManager(int poolSize) {
@@ -1476,8 +1273,6 @@ public class Camera2Engine extends CameraBaseEngine implements
         if (image == null) {
             LOG.w("onImageAvailable:", "failed to acquire Image!");
         } else if (getState() == CameraState.PREVIEW && !isChangingState()) {
-            // After preview, the frame manager is correctly set up
-            //noinspection unchecked
             Frame frame = getFrameManager().getFrame(image,
                     System.currentTimeMillis());
             if (frame != null) {
@@ -1494,19 +1289,14 @@ public class Camera2Engine extends CameraBaseEngine implements
 
     @Override
     public void setHasFrameProcessors(final boolean hasFrameProcessors) {
-        // Frame processing is set up partially when binding and partially when starting
-        // the preview. If the value is changed between the two, the preview step can crash.
         getOrchestrator().schedule("has frame processors (" + hasFrameProcessors + ")",
                 true, new Runnable() {
             @Override
             public void run() {
                 if (getState().isAtLeast(CameraState.BIND) && isChangingState()) {
-                    // Extremely rare case in which this was called in between startBind and
-                    // startPreview. This can cause issues. Try later.
                     setHasFrameProcessors(hasFrameProcessors);
                     return;
                 }
-                // Apply and restart.
                 mHasFrameProcessors = hasFrameProcessors;
                 if (getState().isAtLeast(CameraState.BIND)) {
                     restartBind();
@@ -1517,17 +1307,12 @@ public class Camera2Engine extends CameraBaseEngine implements
 
     @Override
     public void setFrameProcessingFormat(final int format) {
-        // This is called during initialization. Set our default first.
         if (mFrameProcessingFormat == 0) mFrameProcessingFormat = FRAME_PROCESSING_FORMAT;
-        // Frame processing format is used both when binding and when starting the preview.
-        // If the value is changed between the two, the preview step can crash.
         getOrchestrator().schedule("frame processing format (" + format + ")",
                 true, new Runnable() {
             @Override
             public void run() {
                 if (getState().isAtLeast(CameraState.BIND) && isChangingState()) {
-                    // Extremely rare case in which this was called in between startBind and
-                    // startPreview. This can cause issues. Try later.
                     setFrameProcessingFormat(format);
                     return;
                 }
@@ -1539,27 +1324,17 @@ public class Camera2Engine extends CameraBaseEngine implements
         });
     }
 
-    //endregion
-
-    //region 3A Metering
-
     @Override
     public void startAutoFocus(@Nullable final Gesture gesture,
                                @NonNull final MeteringRegions regions,
                                @NonNull final PointF legacyPoint) {
-        // This will only work when we have a preview, since it launches the preview
-        // in the end. Even without this it would need the bind state at least,
-        // since we need the preview size.
         getOrchestrator().scheduleStateful("autofocus (" + gesture + ")",
                 CameraState.PREVIEW,
                 new Runnable() {
             @Override
             public void run() {
-                // The camera options API still has the auto focus API but it really
-                // refers to "3A metering to a specific point". Since we have a point, check.
                 if (!mCameraOptions.isAutoFocusSupported()) return;
 
-                // Create the meter and start.
                 getCallback().dispatchOnFocusStart(gesture, legacyPoint);
                 final MeterAction action = createMeterAction(regions);
                 Action wrapper = Actions.timeout(METER_TIMEOUT, action);
@@ -1589,14 +1364,7 @@ public class Camera2Engine extends CameraBaseEngine implements
 
     @NonNull
     private MeterAction createMeterAction(@Nullable MeteringRegions regions) {
-        // Before creating any new meter action, abort the old one.
         if (mMeterAction != null) mMeterAction.abort(this);
-        // The meter will check the current configuration to see if AF/AE/AWB should run.
-        // - AE should be on CONTROL_AE_MODE_ON*    (this depends on setFlash())
-        // - AWB should be on CONTROL_AWB_MODE_AUTO (this depends on setWhiteBalance())
-        // - AF should be on CONTROL_AF_MODE_AUTO or others
-        // The last one is under our control because the library has no focus API.
-        // So let's set a good af mode here. This operation is reverted during onMeteringReset().
         applyFocusForMetering(mRepeatingRequestBuilder);
         mMeterAction = new MeterAction(Camera2Engine.this, regions, regions == null);
         return mMeterAction;
@@ -1623,10 +1391,6 @@ public class Camera2Engine extends CameraBaseEngine implements
                 new MeterResetAction()
         ).start(Camera2Engine.this);
     }
-
-    //endregion
-
-    //region Actions
 
     @Override
     public void addAction(final @NonNull Action action) {
@@ -1661,20 +1425,14 @@ public class Camera2Engine extends CameraBaseEngine implements
     @EngineThread
     @Override
     public void applyBuilder(@NonNull Action source) {
-        // NOTE: Should never be called on a non-engine thread!
-        // Non-engine threads are not protected by the uncaught exception handler
-        // and can make the process crash.
         applyRepeatingRequestBuilder();
     }
 
     @Override
     public void applyBuilder(@NonNull Action source, @NonNull CaptureRequest.Builder builder)
             throws CameraAccessException {
-        // Risky - would be better to ensure that thread is the engine one.
         if (getState() == CameraState.PREVIEW && !isChangingState()) {
             mSession.capture(builder.build(), mRepeatingRequestCallback, null);
         }
     }
-
-    //endregion
 }

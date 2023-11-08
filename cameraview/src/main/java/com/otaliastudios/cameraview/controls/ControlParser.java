@@ -8,9 +8,6 @@ import com.otaliastudios.cameraview.R;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-/**
- * Parses controls from XML attributes.
- */
 public class ControlParser {
 
     private int preview;
@@ -53,7 +50,6 @@ public class ControlParser {
 
     @NonNull
     public Facing getFacing() {
-        //noinspection ConstantConditions
         return Facing.fromValue(facing);
     }
 

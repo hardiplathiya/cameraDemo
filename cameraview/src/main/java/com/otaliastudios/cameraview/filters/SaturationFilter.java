@@ -8,9 +8,6 @@ import com.otaliastudios.cameraview.filter.BaseFilter;
 import com.otaliastudios.cameraview.filter.OneParameterFilter;
 import com.otaliastudios.opengl.core.Egloo;
 
-/**
- * Adjusts color saturation.
- */
 public class SaturationFilter extends BaseFilter implements OneParameterFilter {
 
     private final static String FRAGMENT_SHADER = "#extension GL_OES_EGL_image_external : require\n"
@@ -47,14 +44,6 @@ public class SaturationFilter extends BaseFilter implements OneParameterFilter {
 
     public SaturationFilter() { }
 
-    /**
-     * Sets the saturation correction value:
-     * -1.0: fully desaturated, grayscale.
-     * 0.0: no change.
-     * +1.0: fully saturated.
-     *
-     * @param value new value
-     */
     @SuppressWarnings("WeakerAccess")
     public void setSaturation(float value) {
         if (value < -1F) value = -1F;
@@ -62,12 +51,6 @@ public class SaturationFilter extends BaseFilter implements OneParameterFilter {
         scale = value;
     }
 
-    /**
-     * Returns the current saturation.
-     *
-     * @see #setSaturation(float)
-     * @return saturation
-     */
     @SuppressWarnings("WeakerAccess")
     public float getSaturation() {
         return scale;

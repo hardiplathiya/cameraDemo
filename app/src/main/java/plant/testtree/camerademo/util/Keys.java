@@ -1,6 +1,6 @@
 package plant.testtree.camerademo.util;
 
-/* loaded from: classes.dex */
+
 public final class Keys {
     public static final String ALBUM_SORTING_MODE = "album_sorting_mode";
     public static final String ALBUM_SORTING_ORDER = "album_sorting_order";

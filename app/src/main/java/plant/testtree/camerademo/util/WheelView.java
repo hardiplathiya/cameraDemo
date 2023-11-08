@@ -26,7 +26,7 @@ import java.util.List;
 import plant.testtree.camerademo.R;
 import plant.testtree.camerademo.activity.CameraActivity;
 
-/* loaded from: classes.dex */
+
 public class WheelView extends View implements GestureDetector.OnGestureListener {
     public static final float DEFAULT_INTERVAL_FACTOR = 1.2f;
     public static final float DEFAULT_MARK_RATIO = 0.7f;
@@ -65,30 +65,30 @@ public class WheelView extends View implements GestureDetector.OnGestureListener
     private float mTopSpace;
     public int mViewScopeSize;
 
-    /* loaded from: classes.dex */
+   
     public interface OnWheelItemSelectedListener {
         void onWheelItemChanged(WheelView wheelView, int i);
 
         void onWheelItemSelected(WheelView wheelView, int i);
     }
 
-    @Override // android.view.GestureDetector.OnGestureListener
+    @Override 
     public void onLongPress(MotionEvent motionEvent) {
     }
 
-    @Override // android.view.GestureDetector.OnGestureListener
+    @Override 
     public void onShowPress(MotionEvent motionEvent) {
     }
 
-    /* loaded from: classes.dex */
+   
     public static class SavedState extends BaseSavedState {
         public static final Creator<SavedState> CREATOR = new Creator<SavedState>() { // from class: com.cameraediter.iphone11pro.WheelView.SavedState.1
-            @Override // android.os.Parcelable.Creator
+            @Override 
             public SavedState createFromParcel(Parcel parcel) {
                 return new SavedState(parcel);
             }
 
-            @Override // android.os.Parcelable.Creator
+            @Override 
             public SavedState[] newArray(int i) {
                 return new SavedState[i];
             }
@@ -108,7 +108,7 @@ public class WheelView extends View implements GestureDetector.OnGestureListener
             this.max = parcel.readInt();
         }
 
-        @Override // android.view.View.BaseSavedState, android.view.AbsSavedState, android.os.Parcelable
+        @Override 
         public void writeToParcel(Parcel parcel, int i) {
             super.writeToParcel(parcel, i);
             parcel.writeInt(this.index);
@@ -238,7 +238,7 @@ public class WheelView extends View implements GestureDetector.OnGestureListener
         }
     }
 
-    @Override // android.view.View
+    @Override 
     public void onMeasure(int i, int i2) {
         setMeasuredDimension(measureWidth(i), measureHeight(i2));
     }
@@ -269,7 +269,7 @@ public class WheelView extends View implements GestureDetector.OnGestureListener
         ViewCompat.postInvalidateOnAnimation(this);
     }
 
-    @Override // android.view.View
+    @Override 
     public void onSizeChanged(int i, int i2, int i3, int i4) {
         super.onSizeChanged(i, i2, i3, i4);
         if (i == i3 && i2 == i4) {
@@ -281,7 +281,7 @@ public class WheelView extends View implements GestureDetector.OnGestureListener
         this.mViewScopeSize = (int) Math.ceil(this.mMaxOverScrollDistance / this.mIntervalDis);
     }
 
-    @Override // android.view.View
+    @Override 
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         this.mMarkPaint.setColor(this.mHighlightColor);
@@ -344,7 +344,7 @@ public class WheelView extends View implements GestureDetector.OnGestureListener
         }
     }
 
-    @Override // android.view.View
+    @Override 
     public boolean onTouchEvent(MotionEvent motionEvent) {
         List<String> list = this.mItems;
         if (list == null || list.size() == 0 || !isEnabled()) {
@@ -358,7 +358,7 @@ public class WheelView extends View implements GestureDetector.OnGestureListener
         return onTouchEvent || super.onTouchEvent(motionEvent);
     }
 
-    @Override // android.view.View
+    @Override
     public void computeScroll() {
         super.computeScroll();
         if (this.mScroller.computeScrollOffset()) {
@@ -421,14 +421,12 @@ public class WheelView extends View implements GestureDetector.OnGestureListener
     public void selectIndex(int i) {
         this.mCenterIndex = i;
         this.changed = true;
-        post(new Runnable() { // from class: com.cameraediter.iphone11pro.WheelView.1
-            @Override // java.lang.Runnable
-            public void run() {
-                WheelView wheelView = WheelView.this;
-                wheelView.scrollTo((int) ((wheelView.mCenterIndex * WheelView.this.mIntervalDis) - WheelView.this.mMaxOverScrollDistance), 0);
-                WheelView.this.invalidate();
-                WheelView.this.refreshCenter();
-            }
+
+        post(() -> {
+            WheelView wheelView = WheelView.this;
+            wheelView.scrollTo((int) ((wheelView.mCenterIndex * WheelView.this.mIntervalDis) - WheelView.this.mMaxOverScrollDistance), 0);
+            WheelView.this.invalidate();
+            WheelView.this.refreshCenter();
         });
     }
 
@@ -508,7 +506,7 @@ public class WheelView extends View implements GestureDetector.OnGestureListener
         this.mOnWheelItemSelectedListener = onWheelItemSelectedListener;
     }
 
-    @Override // android.view.GestureDetector.OnGestureListener
+    @Override 
     public boolean onDown(MotionEvent motionEvent) {
         this.changed = false;
         if (!this.mScroller.isFinished()) {
@@ -521,7 +519,7 @@ public class WheelView extends View implements GestureDetector.OnGestureListener
         return true;
     }
 
-    @Override // android.view.GestureDetector.OnGestureListener
+    @Override 
     public boolean onSingleTapUp(MotionEvent motionEvent) {
         playSoundEffect(SoundEffectConstants.CLICK);
         refreshCenter((int) ((getScrollX() + motionEvent.getX()) - this.mMaxOverScrollDistance));
@@ -533,83 +531,8 @@ public class WheelView extends View implements GestureDetector.OnGestureListener
         return this.changed;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:32:0x0057, code lost:
-        if (r5 > ((r4.mContentRectF.width() - (((r4.mMarkCount - r4.mMaxSelectableIndex) - 1) * r4.mIntervalDis)) - r4.mMaxOverScrollDistance)) goto L9;
-     */
-    @Override // android.view.GestureDetector.OnGestureListener
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
+    @Override
     public boolean onScroll(MotionEvent r5, MotionEvent r6, float r7, float r8) {
-        /*
-            r4 = this;
-            boolean r5 = r4.changed
-            r6 = 1
-            if (r5 != 0) goto L62
-            int r5 = r4.getScrollX()
-            float r5 = (float) r5
-            int r8 = r4.mMinSelectableIndex
-            float r8 = (float) r8
-            float r0 = r4.mIntervalDis
-            float r8 = r8 * r0
-            float r0 = r4.mMaxOverScrollDistance
-            r1 = 1073741824(0x40000000, float:2.0)
-            float r1 = r1 * r0
-            float r1 = r8 - r1
-            r2 = 0
-            int r1 = (r5 > r1 ? 1 : (r5 == r1 ? 0 : -1))
-            if (r1 >= 0) goto L20
-        L1e:
-            r7 = 0
-            goto L5a
-        L20:
-            float r8 = r8 - r0
-            r0 = 1082130432(0x40800000, float:4.0)
-            int r8 = (r5 > r8 ? 1 : (r5 == r8 ? 0 : -1))
-            if (r8 >= 0) goto L29
-        L27:
-            float r7 = r7 / r0
-            goto L5a
-        L29:
-            android.graphics.RectF r8 = r4.mContentRectF
-            float r8 = r8.width()
-            int r1 = r4.mMarkCount
-            int r3 = r4.mMaxSelectableIndex
-            int r1 = r1 - r3
-            int r1 = r1 - r6
-            float r1 = (float) r1
-            float r3 = r4.mIntervalDis
-            float r1 = r1 * r3
-            float r8 = r8 - r1
-            int r8 = (r5 > r8 ? 1 : (r5 == r8 ? 0 : -1))
-            if (r8 <= 0) goto L40
-            goto L1e
-        L40:
-            android.graphics.RectF r8 = r4.mContentRectF
-            float r8 = r8.width()
-            int r1 = r4.mMarkCount
-            int r2 = r4.mMaxSelectableIndex
-            int r1 = r1 - r2
-            int r1 = r1 - r6
-            float r1 = (float) r1
-            float r2 = r4.mIntervalDis
-            float r1 = r1 * r2
-            float r8 = r8 - r1
-            float r1 = r4.mMaxOverScrollDistance
-            float r8 = r8 - r1
-            int r5 = (r5 > r8 ? 1 : (r5 == r8 ? 0 : -1))
-            if (r5 <= 0) goto L5a
-            goto L27
-        L5a:
-            int r5 = (int) r7
-            r7 = 0
-            r4.scrollBy(r5, r7)
-            r4.refreshCenter()
-        L62:
-            return r6
-        */
-  //      throw new UnsupportedOperationException("Method not decompiled: com.cameraediter.iphone11pro.WheelView.onScroll(android.view.MotionEvent, android.view.MotionEvent, float, float):boolean");
         return false;
     }
 
@@ -617,7 +540,7 @@ public class WheelView extends View implements GestureDetector.OnGestureListener
         this.changed = z;
     }
 
-    @Override // android.view.GestureDetector.OnGestureListener
+    @Override 
     public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent2, float f, float f2) {
         if (this.changed) {
             return true;
@@ -630,7 +553,7 @@ public class WheelView extends View implements GestureDetector.OnGestureListener
         return true;
     }
 
-    @Override // android.view.View
+    @Override 
     public Parcelable onSaveInstanceState() {
         SavedState savedState = new SavedState(super.onSaveInstanceState());
         savedState.index = getSelectedPosition();
@@ -639,7 +562,7 @@ public class WheelView extends View implements GestureDetector.OnGestureListener
         return savedState;
     }
 
-    @Override // android.view.View
+    @Override 
     public void onRestoreInstanceState(Parcelable parcelable) {
         SavedState savedState = (SavedState) parcelable;
         super.onRestoreInstanceState(savedState.getSuperState());

@@ -8,9 +8,6 @@ import com.otaliastudios.cameraview.filter.BaseFilter;
 import com.otaliastudios.cameraview.filter.OneParameterFilter;
 import com.otaliastudios.opengl.core.Egloo;
 
-/**
- * Adjusts the contrast.
- */
 public class ContrastFilter extends BaseFilter implements OneParameterFilter {
 
     private final static String FRAGMENT_SHADER = "#extension GL_OES_EGL_image_external : require\n"
@@ -31,13 +28,6 @@ public class ContrastFilter extends BaseFilter implements OneParameterFilter {
 
     public ContrastFilter() { }
 
-    /**
-     * Sets the current contrast adjustment.
-     * 1.0: no adjustment
-     * 2.0: increased contrast
-     *
-     * @param contrast contrast
-     */
     @SuppressWarnings("WeakerAccess")
     public void setContrast(float contrast) {
         if (contrast < 1.0f) contrast = 1.0f;
@@ -45,12 +35,6 @@ public class ContrastFilter extends BaseFilter implements OneParameterFilter {
         this.contrast = contrast;
     }
 
-    /**
-     * Returns the current contrast.
-     *
-     * @see #setContrast(float)
-     * @return contrast
-     */
     @SuppressWarnings({"unused", "WeakerAccess"})
     public float getContrast() {
         return contrast;

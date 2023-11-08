@@ -2,7 +2,7 @@ package plant.testtree.camerademo.filter.shadertoy;
 
 import android.content.Context;
 
-/* loaded from: classes.dex */
+
 public class FastBlurFilter extends ShaderToyAbsFilter {
     private boolean scale;
 
@@ -10,7 +10,7 @@ public class FastBlurFilter extends ShaderToyAbsFilter {
         super(context, "filter/fsh/shadertoy/fast_blur.glsl");
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void onFilterChanged(int i, int i2) {
         if (!this.scale) {
             super.onFilterChanged(i, i2);

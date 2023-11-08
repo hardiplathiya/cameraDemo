@@ -1,6 +1,6 @@
 package plant.testtree.camerademo.util;
 
-/* loaded from: classes.dex */
+
 public class ProgressException extends Exception {
     private ErrorCause error;
 
@@ -16,17 +16,17 @@ public class ProgressException extends Exception {
         return this.error;
     }
 
-    @Override // java.lang.Throwable
+    @Override 
     public String toString() {
         return this.error.toString();
     }
 
-    @Override // java.lang.Throwable
+    @Override 
     public String getMessage() {
         return toString();
     }
 
-    @Override // java.lang.Throwable
+    @Override 
     public String getLocalizedMessage() {
         return toString();
     }

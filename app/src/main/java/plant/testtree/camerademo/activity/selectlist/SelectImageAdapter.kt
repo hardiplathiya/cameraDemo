@@ -1,73 +1,69 @@
-package plant.testtree.camerademo.activity.selectlist;
+package plant.testtree.camerademo.activity.selectlist
 
-import android.content.Context;
-import android.content.Intent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import androidx.recyclerview.widget.RecyclerView;
-import com.bumptech.glide.Glide;
-import java.io.File;
-import java.util.ArrayList;
+import android.content.Context
+import android.content.Intent
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.RelativeLayout
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import plant.testtree.camerademo.R
+import plant.testtree.camerademo.activity.gallary.GalleryappActivity
+import plant.testtree.camerademo.activity.selectlist.SelectImageAdapter.MyViewHolder
+import plant.testtree.camerademo.model.Image
+import java.io.File
 
-import plant.testtree.camerademo.R;
-import plant.testtree.camerademo.activity.gallary.GalleryappActivity;
-import plant.testtree.camerademo.model.Image;
+class SelectImageAdapter(var moviesList: ArrayList<Image>, var context: Context) :
+    RecyclerView.Adapter<MyViewHolder>() {
+    fun addData(imgList: ArrayList<Image>) {
+        moviesList = ArrayList()
+        moviesList.addAll(imgList)
+        notifyDataSetChanged()
+    }
 
-public class SelectImageAdapter extends RecyclerView.Adapter<SelectImageAdapter.MyViewHolder> {
-    Context context;
-    public ArrayList<Image> moviesList;
+    inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        var cv_item: RelativeLayout
+        var iv_img: ImageView
+        var rl_check: RelativeLayout
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
-        public RelativeLayout cv_item;
-        public ImageView iv_img;
-        public RelativeLayout rl_check;
-
-        public MyViewHolder(View view) {
-            super(view);
-            this.iv_img = (ImageView) view.findViewById(R.id.iv_img);
-            this.rl_check = (RelativeLayout) view.findViewById(R.id.rl_check);
-            this.cv_item = (RelativeLayout) view.findViewById(R.id.cv_item);
+        init {
+            iv_img = view.findViewById<View>(R.id.iv_img) as ImageView
+            rl_check = view.findViewById<View>(R.id.rl_check) as RelativeLayout
+            cv_item = view.findViewById<View>(R.id.cv_item) as RelativeLayout
         }
     }
 
-    public SelectImageAdapter(ArrayList<Image> arrayList, Context context) {
-        this.moviesList = arrayList;
-        this.context = context;
+    override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): MyViewHolder {
+        return MyViewHolder(
+            LayoutInflater.from(viewGroup.context)
+                .inflate(R.layout.select_list_item, viewGroup, false)
+        )
     }
 
-    @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        return new MyViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.select_list_item, viewGroup, false));
-    }
-
-    @Override
-    public void onBindViewHolder(MyViewHolder myViewHolder, final int i) {
-        Glide.with(this.context).load(this.moviesList.get(i).path).into(myViewHolder.iv_img);
-        if (this.moviesList.get(i).isCheck) {
-            myViewHolder.cv_item.setPadding(10, 10, 10, 10);
-            myViewHolder.rl_check.setVisibility(View.VISIBLE);
-            this.moviesList.get(i).isCheck = true;
+    override fun onBindViewHolder(myViewHolder: MyViewHolder, i: Int) {
+        Glide.with(context).load(moviesList[i].path).into(myViewHolder.iv_img)
+        if (moviesList[i].isCheck) {
+            myViewHolder.cv_item.setPadding(10, 10, 10, 10)
+            myViewHolder.rl_check.visibility = View.VISIBLE
+            moviesList[i].isCheck = true
         } else {
-            myViewHolder.rl_check.setVisibility(View.GONE);
-            myViewHolder.cv_item.setPadding(0, 0, 0, 0);
-            this.moviesList.get(i).isCheck = false;
+            myViewHolder.rl_check.visibility = View.GONE
+            myViewHolder.cv_item.setPadding(0, 0, 0, 0)
+            moviesList[i].isCheck = false
         }
-
-        myViewHolder.itemView.setOnClickListener(view -> {
-            File file = new File(SelectImageAdapter.this.moviesList.get(i).path);
-            Intent intent = new Intent(SelectImageAdapter.this.context, GalleryappActivity.class);
-            intent.putExtra("path", file.getParentFile().getName());
-            intent.putExtra("dir", file.getParentFile().toString());
-            intent.putExtra("name", file.getName());
-            SelectImageAdapter.this.context.startActivity(intent);
-        });
+        myViewHolder.itemView.setOnClickListener {
+            val file = File(moviesList[i].path)
+            val intent = Intent(context, GalleryappActivity::class.java)
+            intent.putExtra("path", file.parentFile!!.name)
+            intent.putExtra("dir", file.parentFile?.toString())
+            intent.putExtra("name", file.name)
+            context.startActivity(intent)
+        }
     }
 
-    @Override
-    public int getItemCount() {
-        return this.moviesList.size();
+    override fun getItemCount(): Int {
+        return moviesList.size
     }
 }

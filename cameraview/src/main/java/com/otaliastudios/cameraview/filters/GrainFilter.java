@@ -10,9 +10,6 @@ import com.otaliastudios.opengl.core.Egloo;
 
 import java.util.Random;
 
-/**
- * Applies film grain effect to the frames.
- */
 public class GrainFilter extends BaseFilter implements OneParameterFilter {
 
     private final static Random RANDOM = new Random();
@@ -77,13 +74,6 @@ public class GrainFilter extends BaseFilter implements OneParameterFilter {
         this.height = height;
     }
 
-    /**
-     * Sets the current distortion strength.
-     * 0.0: no distortion.
-     * 1.0: maximum distortion.
-     *
-     * @param strength strength
-     */
     @SuppressWarnings("WeakerAccess")
     public void setStrength(float strength) {
         if (strength < 0.0f) strength = 0.0f;
@@ -91,12 +81,6 @@ public class GrainFilter extends BaseFilter implements OneParameterFilter {
         this.strength = strength;
     }
 
-    /**
-     * Returns the current strength.
-     *
-     * @see #setStrength(float)
-     * @return strength
-     */
     @SuppressWarnings({"unused", "WeakerAccess"})
     public float getStrength() {
         return strength;

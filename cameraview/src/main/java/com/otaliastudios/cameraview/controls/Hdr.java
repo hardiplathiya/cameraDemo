@@ -6,21 +6,9 @@ import com.otaliastudios.cameraview.CameraView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-/**
- * Hdr values indicate whether to use high dynamic range techniques when capturing pictures.
- *
- * @see CameraView#setHdr(Hdr)
- */
 public enum Hdr implements Control {
 
-    /**
-     * No HDR.
-     */
     OFF(0),
-
-    /**
-     * Using HDR.
-     */
     ON(1);
 
     final static Hdr DEFAULT = OFF;

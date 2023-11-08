@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-/* loaded from: classes.dex */
+
 public class MetaDataItem {
     private static final int ORIENTATION_NORMAL = 1;
     private static final int ORIENTATION_ROTATE_180 = 3;

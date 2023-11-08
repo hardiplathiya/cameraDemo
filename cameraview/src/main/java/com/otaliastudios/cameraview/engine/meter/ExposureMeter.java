@@ -99,8 +99,6 @@ public class ExposureMeter extends BaseMeter {
     @Override
     protected void onCompleted(@NonNull ActionHolder holder) {
         super.onCompleted(holder);
-        // Remove (but not apply) the risky parameter so it is not included in new requests.
-        // Documentation about this key says that this should be allowed.
         holder.getBuilder(this).set(CaptureRequest.CONTROL_AE_PRECAPTURE_TRIGGER, null);
     }
 
@@ -121,9 +119,6 @@ public class ExposureMeter extends BaseMeter {
                 }
                 case CaptureResult.CONTROL_AE_STATE_CONVERGED:
                 case CaptureResult.CONTROL_AE_STATE_FLASH_REQUIRED: {
-                    // PRECAPTURE is a transient state. Being here might mean that precapture run
-                    // and was successful, OR that the trigger was not even received yet. To
-                    // distinguish, check the trigger state.
                     if (aeTriggerState != null && aeTriggerState
                             == CaptureResult.CONTROL_AE_PRECAPTURE_TRIGGER_START) {
                         setSuccessful(true);
@@ -132,7 +127,6 @@ public class ExposureMeter extends BaseMeter {
                     break;
                 }
                 case CaptureResult.CONTROL_AE_STATE_LOCKED: {
-                    // There's nothing we can do, AE was locked, triggers are ignored.
                     setSuccessful(false);
                     setState(STATE_COMPLETED);
                     break;
@@ -154,7 +148,6 @@ public class ExposureMeter extends BaseMeter {
                     break;
                 }
                 case CaptureResult.CONTROL_AE_STATE_LOCKED: {
-                    // There's nothing we can do, AE was locked, triggers are ignored.
                     setSuccessful(false);
                     setState(STATE_COMPLETED);
                     break;

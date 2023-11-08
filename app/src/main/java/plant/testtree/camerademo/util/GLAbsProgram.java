@@ -3,7 +3,7 @@ package plant.testtree.camerademo.util;
 import android.content.Context;
 import android.opengl.GLES20;
 
-/* loaded from: classes.dex */
+
 public abstract class GLAbsProgram {
     private String mFragmentShader;
     private int mProgramId;

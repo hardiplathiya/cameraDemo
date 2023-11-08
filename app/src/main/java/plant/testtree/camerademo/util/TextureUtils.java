@@ -6,7 +6,7 @@ import android.opengl.GLES20;
 import android.util.Log;
 import java.nio.ByteBuffer;
 
-/* loaded from: classes.dex */
+
 public class TextureUtils {
     private static final String TAG = "TextureUtils";
 

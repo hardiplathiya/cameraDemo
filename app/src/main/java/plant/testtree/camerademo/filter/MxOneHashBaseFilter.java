@@ -9,7 +9,7 @@ import plant.testtree.camerademo.util.ShaderUtils;
 import plant.testtree.camerademo.util.SimpleFragmentShaderFilter;
 import plant.testtree.camerademo.util.TextureUtils;
 
-/* loaded from: classes.dex */
+
 class MxOneHashBaseFilter extends SimpleFragmentShaderFilter {
     private static final int HISTOGRAM_SIZE = 256;
     static int[] rgbMap;
@@ -22,7 +22,7 @@ class MxOneHashBaseFilter extends SimpleFragmentShaderFilter {
         this.mHistogram = new int[256];
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.SimpleFragmentShaderFilter, com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void init() {
         super.init();
         for (int i = 0; i < 256; i++) {
@@ -35,7 +35,7 @@ class MxOneHashBaseFilter extends SimpleFragmentShaderFilter {
         ShaderUtils.checkGlError("glGetUniformLocation sTexture2");
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.SimpleFragmentShaderFilter, com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void onDrawFrame(int i) {
         onPreDrawElements();
         TextureUtils.bindTexture2D(i, 33984, this.glSimpleProgram.getTextureSamplerHandle(), 0);

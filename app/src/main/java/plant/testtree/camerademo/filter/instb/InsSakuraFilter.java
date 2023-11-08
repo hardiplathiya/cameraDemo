@@ -10,20 +10,20 @@ import okhttp3.internal.ws.WebSocketProtocol;
 import plant.testtree.camerademo.filter.MultipleTextureFilter;
 import plant.testtree.camerademo.util.TextureUtils;
 
-/* loaded from: classes.dex */
+
 public class InsSakuraFilter extends MultipleTextureFilter {
     public InsSakuraFilter(Context context) {
         super(context, "filter/fsh/instb/sakura.glsl");
         this.textureSize = 1;
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.MultipleTextureFilter, com.cameraediter.iphone11pro.filter.base.SimpleFragmentShaderFilter, com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void init() {
         super.init();
         this.externalBitmapTextures[0].setImageTextureId(prepareRawTexture1());
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.MultipleTextureFilter, com.cameraediter.iphone11pro.filter.base.SimpleFragmentShaderFilter, com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void onPreDrawElements() {
         super.onPreDrawElements();
         setUniform1f(this.glSimpleProgram.getProgramId(), "texelWidthOffset", 1.0f / this.surfaceWidth);

@@ -14,14 +14,9 @@ import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-/* loaded from: classes.dex */
+
 public class FileUtils {
     private static final String TAG = "FileUtils";
-
-    /* loaded from: classes.dex */
-    public interface FileSavedCallback {
-        void onFileSaved(String str);
-    }
 
     public static void copyFileFromAssets(Context context, String str, String str2, String str3) {
         File file = new File(str, str2);
@@ -81,13 +76,6 @@ public class FileUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public static File makeTempFile(String str, String str2, String str3) {
-        String format = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-        File file = new File(str);
-        file.mkdirs();
-        return new File(file, str2 + format + str3);
     }
 
     public static void upZipFile(Context context, String str, String str2) {

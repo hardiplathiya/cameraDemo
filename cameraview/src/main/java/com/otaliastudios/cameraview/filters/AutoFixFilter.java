@@ -8,9 +8,6 @@ import com.otaliastudios.cameraview.filter.BaseFilter;
 import com.otaliastudios.cameraview.filter.OneParameterFilter;
 import com.otaliastudios.opengl.core.Egloo;
 
-/**
- * Attempts to auto-fix the frames based on histogram equalization.
- */
 public class AutoFixFilter extends BaseFilter implements OneParameterFilter {
 
     private final static String FRAGMENT_SHADER = "#extension GL_OES_EGL_image_external : require\n"
@@ -65,24 +62,11 @@ public class AutoFixFilter extends BaseFilter implements OneParameterFilter {
 
     public AutoFixFilter() { }
 
-    /**
-     * A parameter between 0 and 1. Zero means no adjustment, while 1 indicates
-     * the maximum amount of adjustment.
-     *
-     * @param scale scale
-     */
     public void setScale(float scale) {
         if (scale < 0.0f) scale = 0.0f;
         if (scale > 1.0f) scale = 1.0f;
         this.scale = scale;
     }
-
-    /**
-     * Returns the current scale.
-     *
-     * @see #setScale(float)
-     * @return current scale
-     */
     public float getScale() {
         return scale;
     }

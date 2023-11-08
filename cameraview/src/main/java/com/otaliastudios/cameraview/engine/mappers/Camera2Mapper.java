@@ -25,9 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * A Mapper maps camera engine constants to CameraView constants.
- */
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 public class Camera2Mapper {
 
@@ -87,8 +84,6 @@ public class Camera2Mapper {
                 break;
             }
             case TORCH: {
-                // When AE_MODE is ON or OFF, we can finally use the flash mode
-                // low level control to either turn flash off or open the torch
                 result.add(new Pair<>(
                         CameraCharacteristics.CONTROL_AE_MODE_ON,
                         CameraCharacteristics.FLASH_MODE_TORCH));
@@ -102,17 +97,14 @@ public class Camera2Mapper {
     }
 
     public int mapFacing(@NonNull Facing facing) {
-        //noinspection ConstantConditions
         return FACING.get(facing);
     }
 
     public int mapWhiteBalance(@NonNull WhiteBalance whiteBalance) {
-        //noinspection ConstantConditions
         return WB.get(whiteBalance);
     }
 
     public int mapHdr(@NonNull Hdr hdr) {
-        //noinspection ConstantConditions
         return HDR.get(hdr);
     }
 
@@ -136,7 +128,7 @@ public class Camera2Mapper {
                 break;
             }
             case CameraCharacteristics.CONTROL_AE_MODE_ON_EXTERNAL_FLASH:
-            default: break; // we don't support external flash
+            default: break;
         }
         return result;
     }

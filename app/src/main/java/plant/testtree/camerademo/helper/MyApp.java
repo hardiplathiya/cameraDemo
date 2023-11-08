@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 
 import plant.testtree.camerademo.util.Prefs;
 
-/* loaded from: classes.dex */
+
 public class MyApp extends Application {
     private static Context context;
     private static MyApp ourInstance;
@@ -44,7 +44,7 @@ public class MyApp extends Application {
         this.isFromPuzzle = z;
     }
 
-    @Override // android.app.Application
+    @Override
     public void onCreate() {
         super.onCreate();
         ourInstance = this;

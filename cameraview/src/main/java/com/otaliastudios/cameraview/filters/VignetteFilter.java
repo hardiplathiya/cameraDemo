@@ -9,9 +9,6 @@ import com.otaliastudios.cameraview.filter.TwoParameterFilter;
 import com.otaliastudios.opengl.core.Egloo;
 
 
-/**
- * Applies a vignette effect to input frames.
- */
 public class VignetteFilter extends BaseFilter implements TwoParameterFilter {
 
     private final static String FRAGMENT_SHADER = "#extension GL_OES_EGL_image_external : require\n"
@@ -51,10 +48,6 @@ public class VignetteFilter extends BaseFilter implements TwoParameterFilter {
         mHeight = height;
     }
 
-    /**
-     * Sets the vignette effect scale (0.0 - 1.0).
-     * @param scale new scale
-     */
     @SuppressWarnings("WeakerAccess")
     public void setVignetteScale(float scale) {
         if (scale < 0.0f) scale = 0.0f;
@@ -62,10 +55,6 @@ public class VignetteFilter extends BaseFilter implements TwoParameterFilter {
         mScale = scale;
     }
 
-    /**
-     * Sets the vignette effect shade (0.0 - 1.0).
-     * @param shade new shade
-     */
     @SuppressWarnings("WeakerAccess")
     public void setVignetteShade(float shade) {
         if (shade < 0.0f) shade = 0.0f;
@@ -73,23 +62,12 @@ public class VignetteFilter extends BaseFilter implements TwoParameterFilter {
         this.mShade = shade;
     }
 
-    /**
-     * Gets the current vignette scale.
-     *
-     * @see #setVignetteScale(float)
-     * @return scale
-     */
+
     @SuppressWarnings("WeakerAccess")
     public float getVignetteScale() {
         return mScale;
     }
 
-    /**
-     * Gets the current vignette shade.
-     *
-     * @see #setVignetteShade(float)
-     * @return shade
-     */
     @SuppressWarnings("WeakerAccess")
     public float getVignetteShade() {
         return mShade;
@@ -165,9 +143,6 @@ public class VignetteFilter extends BaseFilter implements TwoParameterFilter {
         GLES20.glUniform1f(mShadeLocation, mShade);
         Egloo.checkGlError("glUniform1f");
 
-        // The 'range' is between 1.3 to 0.6. When scale is zero then range is 1.3
-        // which means no vignette at all because the luminousity difference is
-        // less than 1/256 and will cause nothing.
         float range = (1.30f - (float) Math.sqrt(mScale) * 0.7f);
         GLES20.glUniform1f(mRangeLocation, range);
         Egloo.checkGlError("glUniform1f");

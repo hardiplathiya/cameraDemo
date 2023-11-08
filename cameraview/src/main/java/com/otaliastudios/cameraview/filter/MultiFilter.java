@@ -20,27 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * A {@link MultiFilter} is a special {@link Filter} that can group one or more filters together.
- * When this happens, filters are applied in sequence:
- * - the first filter reads from input frames
- * - the second filters reads the output of the first
- * And so on, until the last filter which will read from the previous and write to the real output.
- *
- * New filters can be added at any time through {@link #addFilter(Filter)}, but currently they
- * can not be removed because we can not easily ensure that they would be correctly released.
- *
- * The {@link MultiFilter} does also implement {@link OneParameterFilter} and
- * {@link TwoParameterFilter}, dispatching all the parameter calls to child filters,
- * assuming they support it.
- *
- * There are some important technical caveats when using {@link MultiFilter}:
- * - each child filter requires the allocation of a GL framebuffer. Using a large number of filters
- *   will likely cause memory issues (e.g. https://stackoverflow.com/q/6354208/4288782).
- * - some of the children need to write into {@link GLES20#GL_TEXTURE_2D} instead of
- *   {@link GLES11Ext#GL_TEXTURE_EXTERNAL_OES}! To achieve this, we replace samplerExternalOES
- *   with sampler2D in your fragment shader code. This might cause issues for some shaders.
- */
 @SuppressWarnings("unused")
 public class MultiFilter implements Filter, OneParameterFilter, TwoParameterFilter {
 
@@ -62,18 +41,10 @@ public class MultiFilter implements Filter, OneParameterFilter, TwoParameterFilt
     private float parameter1 = 0F;
     private float parameter2 = 0F;
 
-    /**
-     * Creates a new group with the given filters.
-     * @param filters children
-     */
     public MultiFilter(@NonNull Filter... filters) {
         this(Arrays.asList(filters));
     }
 
-    /**
-     * Creates a new group with the given filters.
-     * @param filters children
-     */
     @SuppressWarnings("WeakerAccess")
     public MultiFilter(@NonNull Collection<Filter> filters) {
         for (Filter filter : filters) {
@@ -81,12 +52,6 @@ public class MultiFilter implements Filter, OneParameterFilter, TwoParameterFilt
         }
     }
 
-    /**
-     * Adds a new filter. It will be used in the next frame.
-     * If the filter is a {@link MultiFilter}, we'll use its children instead.
-     *
-     * @param filter a new filter
-     */
     @SuppressWarnings("WeakerAccess")
     public void addFilter(@NonNull Filter filter) {
         if (filter instanceof MultiFilter) {
@@ -104,18 +69,11 @@ public class MultiFilter implements Filter, OneParameterFilter, TwoParameterFilt
         }
     }
 
-    // We don't offer a removeFilter method since that would cause issues
-    // with cleanup. Cleanup must happen on the GL thread so we'd have to wait
-    // for new rendering call (which might not even happen).
-
     private void maybeCreateProgram(@NonNull Filter filter, boolean isFirst, boolean isLast) {
         State state = states.get(filter);
-        //noinspection ConstantConditions
         if (state.isProgramCreated) return;
         state.isProgramCreated = true;
 
-        // The first shader actually reads from a OES texture, but the others
-        // will read from the 2d framebuffer texture. This is a dirty hack.
         String fragmentShader = isFirst
                 ? filter.getFragmentShader()
                 : filter.getFragmentShader().replace("samplerExternalOES ", "sampler2D ");
@@ -126,7 +84,6 @@ public class MultiFilter implements Filter, OneParameterFilter, TwoParameterFilt
 
     private void maybeDestroyProgram(@NonNull Filter filter) {
         State state = states.get(filter);
-        //noinspection ConstantConditions
         if (!state.isProgramCreated) return;
         state.isProgramCreated = false;
         filter.onDestroy();
@@ -137,11 +94,9 @@ public class MultiFilter implements Filter, OneParameterFilter, TwoParameterFilt
     private void maybeCreateFramebuffer(@NonNull Filter filter, boolean isFirst, boolean isLast) {
         State state = states.get(filter);
         if (isLast) {
-            //noinspection ConstantConditions
             state.sizeChanged = false;
             return;
         }
-        //noinspection ConstantConditions
         if (state.sizeChanged) {
             maybeDestroyFramebuffer(filter);
             state.sizeChanged = false;
@@ -159,7 +114,6 @@ public class MultiFilter implements Filter, OneParameterFilter, TwoParameterFilt
 
     private void maybeDestroyFramebuffer(@NonNull Filter filter) {
         State state = states.get(filter);
-        //noinspection ConstantConditions
         if (!state.isFramebufferCreated) return;
         state.isFramebufferCreated = false;
         state.outputFramebuffer.release();
@@ -168,10 +122,8 @@ public class MultiFilter implements Filter, OneParameterFilter, TwoParameterFilt
         state.outputTexture = null;
     }
 
-    // Any thread...
     private void maybeSetSize(@NonNull Filter filter) {
         State state = states.get(filter);
-        //noinspection ConstantConditions
         if (size != null && !size.equals(state.size)) {
             state.size = size;
             state.sizeChanged = true;
@@ -181,21 +133,17 @@ public class MultiFilter implements Filter, OneParameterFilter, TwoParameterFilt
 
     @Override
     public void onCreate(int programHandle) {
-        // We'll create children during the draw() op, since some of them
-        // might have been added after this onCreate() is called.
     }
 
     @NonNull
     @Override
     public String getVertexShader() {
-        // Whatever, we won't be using this.
         return GlTextureProgram.SIMPLE_VERTEX_SHADER;
     }
 
     @NonNull
     @Override
     public String getFragmentShader() {
-        // Whatever, we won't be using this.
         return GlTextureProgram.SIMPLE_FRAGMENT_SHADER;
     }
 
@@ -232,12 +180,8 @@ public class MultiFilter implements Filter, OneParameterFilter, TwoParameterFilt
                 maybeCreateProgram(filter, isFirst, isLast);
                 maybeCreateFramebuffer(filter, isFirst, isLast);
 
-                //noinspection ConstantConditions
                 GLES20.glUseProgram(state.programHandle);
 
-                // Define the output framebuffer.
-                // Each filter outputs into its own framebuffer object, except the
-                // last filter, which outputs into the default framebuffer.
                 if (!isLast) {
                     state.outputFramebuffer.bind();
                     GLES20.glClearColor(0, 0, 0, 0);
@@ -245,18 +189,12 @@ public class MultiFilter implements Filter, OneParameterFilter, TwoParameterFilt
                     GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
                 }
 
-                // Perform the actual drawing.
-                // The first filter should apply all the transformations. Then,
-                // since they are applied, we should use a no-op matrix.
                 if (isFirst) {
                     filter.draw(timestampUs, transformMatrix);
                 } else {
                     filter.draw(timestampUs, Egloo.IDENTITY_MATRIX);
                 }
 
-                // Set the input for the next cycle:
-                // It is the framebuffer texture from this cycle. If this is the last
-                // filter, reset this value just to cleanup.
                 if (!isLast) {
                     state.outputTexture.bind();
                 } else {

@@ -102,8 +102,6 @@ public class Camera1Options extends CameraOptions {
                 }
             }
         } else {
-            // StackOverflow threads seems to agree that if getSupportedVideoSizes is null,
-            // previews can be used.
             List<Camera.Size> fallback = params.getSupportedPreviewSizes();
             for (Camera.Size size : fallback) {
                 if (size.width <= videoMaxSize.getWidth()

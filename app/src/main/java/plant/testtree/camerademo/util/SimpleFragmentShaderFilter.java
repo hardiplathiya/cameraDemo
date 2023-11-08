@@ -3,7 +3,9 @@ package plant.testtree.camerademo.util;
 import android.content.Context;
 import android.opengl.GLES20;
 
-/* loaded from: classes.dex */
+import plant.testtree.camerademo.filter.AbsFilter;
+
+
 public class SimpleFragmentShaderFilter extends AbsFilter {
     protected GLSimpleProgram glSimpleProgram;
 
@@ -11,12 +13,12 @@ public class SimpleFragmentShaderFilter extends AbsFilter {
         this.glSimpleProgram = new GLSimpleProgram(context, "filter/vsh/base/simple.glsl", str);
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void init() {
         this.glSimpleProgram.create();
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void onPreDrawElements() {
         super.onPreDrawElements();
         this.glSimpleProgram.use();
@@ -24,12 +26,12 @@ public class SimpleFragmentShaderFilter extends AbsFilter {
         this.plane.uploadVerticesBuffer(this.glSimpleProgram.getPositionHandle());
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void destroy() {
         this.glSimpleProgram.onDestroy();
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void onDrawFrame(int i) {
         onPreDrawElements();
         TextureUtils.bindTexture2D(i, 33984, this.glSimpleProgram.getTextureSamplerHandle(), 0);

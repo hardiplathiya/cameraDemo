@@ -11,14 +11,14 @@ import com.drew.metadata.exif.makernotes.NikonType2MakernoteDirectory;
 import com.drew.metadata.mp4.media.Mp4VideoDirectory;
 import okhttp3.internal.ws.WebSocketProtocol;
 
-/* loaded from: classes.dex */
+
 public class InsEmeraldFilter extends MultipleTextureFilter {
     public InsEmeraldFilter(Context context) {
         super(context, "filter/fsh/insta/emerald.glsl");
         this.textureSize = 1;
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.MultipleTextureFilter, com.cameraediter.iphone11pro.filter.base.SimpleFragmentShaderFilter, com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void init() {
         super.init();
         this.externalBitmapTextures[0].setImageTextureId(prepareRawTexture1());

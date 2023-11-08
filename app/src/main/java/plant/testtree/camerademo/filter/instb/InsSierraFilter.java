@@ -5,14 +5,14 @@ import plant.testtree.camerademo.filter.MultipleTextureFilter;
 
 
 
-/* loaded from: classes.dex */
+
 public class InsSierraFilter extends MultipleTextureFilter {
     public InsSierraFilter(Context context) {
         super(context, "filter/fsh/instb/sierra.glsl");
         this.textureSize = 3;
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.MultipleTextureFilter, com.cameraediter.iphone11pro.filter.base.SimpleFragmentShaderFilter, com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void init() {
         super.init();
         this.externalBitmapTextures[0].load(this.context, "filter/textures/inst/sierravignette.png");
@@ -20,7 +20,7 @@ public class InsSierraFilter extends MultipleTextureFilter {
         this.externalBitmapTextures[2].load(this.context, "filter/textures/inst/sierramap.png");
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.MultipleTextureFilter, com.cameraediter.iphone11pro.filter.base.SimpleFragmentShaderFilter, com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void onPreDrawElements() {
         super.onPreDrawElements();
         setUniform1f(this.glSimpleProgram.getProgramId(), "strength", 1.0f);

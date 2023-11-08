@@ -1,1699 +1,1640 @@
-package plant.testtree.camerademo.activity;
+package plant.testtree.camerademo.activity
 
-import static com.otaliastudios.cameraview.CameraView.getFilter;
+import android.content.DialogInterface
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Bitmap.CompressFormat
+import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.location.Location
+import android.media.AudioManager
+import android.media.MediaPlayer
+import android.net.Uri
+import android.os.Build
+import android.os.Bundle
+import android.os.CountDownTimer
+import android.os.Environment
+import android.os.Handler
+import android.os.Looper
+import android.os.SystemClock
+import android.util.Log
+import android.view.KeyEvent
+import android.view.View
+import android.view.animation.AnimationUtils
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.exifinterface.media.ExifInterface
+import androidx.fragment.app.FragmentActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.otaliastudios.cameraview.CameraException
+import com.otaliastudios.cameraview.CameraListener
+import com.otaliastudios.cameraview.CameraOptions
+import com.otaliastudios.cameraview.CameraView
+import com.otaliastudios.cameraview.PictureResult
+import com.otaliastudios.cameraview.VideoResult
+import com.otaliastudios.cameraview.controls.Facing
+import com.otaliastudios.cameraview.controls.Flash
+import com.otaliastudios.cameraview.controls.Grid
+import com.otaliastudios.cameraview.controls.Hdr
+import com.otaliastudios.cameraview.controls.Mode
+import com.otaliastudios.cameraview.controls.Preview
+import com.otaliastudios.cameraview.controls.WhiteBalance
+import com.otaliastudios.cameraview.filter.Filters
+import com.otaliastudios.cameraview.filters.BrightnessFilter
+import com.warkiz.widget.IndicatorSeekBar
+import com.warkiz.widget.OnSeekChangeListener
+import com.warkiz.widget.SeekParams
+import plant.testtree.camerademo.R
+import plant.testtree.camerademo.activity.gallary.GalleryappActivity
+import plant.testtree.camerademo.adapter.FilterAdapter
+import plant.testtree.camerademo.databinding.ActivityCameraBinding
+import plant.testtree.camerademo.model.ListModel
+import plant.testtree.camerademo.util.Const
+import plant.testtree.camerademo.util.GPSTracker
+import plant.testtree.camerademo.util.WheelView
+import plant.testtree.camerademo.util.WheelView.OnWheelItemSelectedListener
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Arrays
+import java.util.Date
+import java.util.concurrent.TimeUnit
 
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.location.Location;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.SystemClock;
-import android.util.Log;
-import android.view.KeyEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.exifinterface.media.ExifInterface;
-import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import com.bumptech.glide.Glide;
-import com.otaliastudios.cameraview.CameraException;
-import com.otaliastudios.cameraview.CameraListener;
-import com.otaliastudios.cameraview.CameraOptions;
-import com.otaliastudios.cameraview.CameraView;
-import com.otaliastudios.cameraview.PictureResult;
-import com.otaliastudios.cameraview.SwpieCallBack;
-import com.otaliastudios.cameraview.VideoResult;
-import com.otaliastudios.cameraview.controls.Facing;
-import com.otaliastudios.cameraview.controls.Flash;
-import com.otaliastudios.cameraview.controls.Grid;
-import com.otaliastudios.cameraview.controls.Hdr;
-import com.otaliastudios.cameraview.controls.Mode;
-import com.otaliastudios.cameraview.controls.Preview;
-import com.otaliastudios.cameraview.controls.WhiteBalance;
-import com.otaliastudios.cameraview.filter.Filters;
-import com.otaliastudios.cameraview.filter.OneParameterFilter;
-import com.warkiz.widget.IndicatorSeekBar;
-import com.warkiz.widget.OnSeekChangeListener;
-import com.warkiz.widget.SeekParams;
-import de.hdodenhof.circleimageview.CircleImageView;
-import plant.testtree.camerademo.R;
-import plant.testtree.camerademo.activity.gallary.GalleryappActivity;
-import plant.testtree.camerademo.adapter.FilterAdapter;
-import plant.testtree.camerademo.databinding.ActivityCameraBinding;
-import plant.testtree.camerademo.filter.BrightnessFilter;
-import plant.testtree.camerademo.model.ListModel;
-import plant.testtree.camerademo.util.Const;
-import plant.testtree.camerademo.util.GPSTracker;
-import plant.testtree.camerademo.util.WheelView;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.Timer;
-import java.util.concurrent.TimeUnit;
-public class CameraActivity extends AppCompatActivity implements WheelView.OnWheelItemSelectedListener {
-    public String[] FilePathStrings;
-    Timer T;
-    AlertDialog alertDialog;
-    AudioManager audioManager;
-    IndicatorSeekBar brightness_seekbar;
-    public CameraView camera;
-    private ImageView camera_switcher;
-    int count;
-    public int counter;
-    public Date date;
-    File file;
-    CircleImageView image_thumb;
-    double latitude;
-    public File[] listFile;
-    LinearLayout llFunction;
-    LinearLayout llGrid;
-    LinearLayout llSce;
-    LinearLayout llTimer;
-    LinearLayout llTimerClick;
-    LinearLayout llWhiteBalance;
-    double longitude;
-    public WheelView mWheelview;
-    TextView menu_3;
-    TextView menu_4;
-    ImageView menu_action;
-    ImageView menu_auto;
-    ImageView menu_aw;
-    ImageView menu_brightness;
-    ImageView menu_cloudy;
-    ImageView menu_daylight;
-    ImageView menu_filter;
-    ImageView menu_fluorescent;
-    ImageView menu_hdr;
-    ImageView menu_image;
-    ImageView menu_incandescent;
-    ImageView menu_location;
-    ImageView menu_night;
-    TextView menu_off;
-    TextView menu_phi;
-    ImageView menu_sce;
-    ImageView menu_scenone;
-    ImageView menu_setting;
-    ImageView menu_time;
-    TextView menu_timer3s;
-    TextView menu_timer5s;
-    TextView menu_timer9s;
-    TextView menu_timerclose;
-    ImageView menu_volume;
-    public MediaPlayer mp;
-    RelativeLayout rlAw;
-    RelativeLayout rlBright;
-    RelativeLayout rlFlash;
-    RelativeLayout rlHdr;
-    RelativeLayout rlImage;
-    RelativeLayout rlLocation;
-    RelativeLayout rlSce;
-    RelativeLayout rlSetting;
-    RelativeLayout rlSwitcher;
-    RelativeLayout rlTime;
-    RelativeLayout rlVolume;
-    RecyclerView rvFilterList;
-    LinearLayout setting_feature;
-    ImageView shutter_button;
-    TextView timerCounter;
-    TextView timerText;
-    int adLoad = 0;
-    ArrayList<ListModel> arrayPhotoVideo = new ArrayList<>();
-    int clickCount = 0;
-    public Handler customHandler = new Handler();
-    int fladhMode = 0;
-    int flashPos = 0;
-    int i = 0;
-    boolean isFilterAd = false;
-    boolean isHdr = false;
-    boolean isLocation = true;
-    boolean isOff = false;
-    boolean isRecordvdo = false;
-    boolean isSound = true;
-    public final Filters[] mAllFilters = Filters.values();
-    public int mCurrentFilter = 0;
-    public int sce = 0;
-    public long startTime = 0;
-    long timeInMilliseconds = 0;
-    long timeSwapBuff = 0;
-    int timer = 0;
-    private Runnable updateTimerThread = new Runnable() {
-        @Override // java.lang.Runnable
-        public void run() {
-            CameraActivity.this.timeInMilliseconds = SystemClock.uptimeMillis() - CameraActivity.this.startTime;
-            CameraActivity cameraActivity = CameraActivity.this;
-            cameraActivity.updatedTime = cameraActivity.timeSwapBuff + CameraActivity.this.timeInMilliseconds;
-            int i = (int) (CameraActivity.this.updatedTime / 1000);
-            int i2 = i / 60;
-            int i3 = i2 / 60;
-            TextView textView = CameraActivity.this.timerText;
-            textView.setText("0" + i2 + ":" + String.format("%02d", Integer.valueOf(i % 60)));
-            CameraActivity.this.customHandler.postDelayed(this, 0L);
-        }
-    };
-    long updatedTime = 0;
-
-    @Override
-    public void onWheelItemChanged(WheelView wheelView, int i) {
+class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
+    var FilePathStrings: Array<String?> = arrayOf()
+    var audioManager: AudioManager? = null
+    var camera: CameraView? = null
+    var count = 0
+    var counter = 0
+    var date: Date? = null
+    var file: File? = null
+    var latitude = 0.0
+    var listFile: Array<File> = arrayOf()
+    var longitude = 0.0
+    var mp: MediaPlayer? = null
+    var adLoad = 0
+    var arrayPhotoVideo = ArrayList<ListModel>()
+    var clickCount = 0
+    var customHandler = Handler(Looper.getMainLooper())
+    var fladhMode = 0
+    var flashPos = 0
+    var i = 0
+    var isLocation = true
+    var isOff = false
+    var isRecordvdo = false
+    var isSound = true
+    val mAllFilters = Filters.values()
+    var mCurrentFilter = 0
+    var sce = 0
+    var startTime: Long = 0
+    var timeInMilliseconds: Long = 0
+    var timeSwapBuff: Long = 0
+    var timer = 0
+    var updatedTime: Long = 0
+    override fun onWheelItemChanged(wheelView: WheelView, i: Int) {}
+    lateinit var binding: ActivityCameraBinding
+    public override fun onCreate(bundle: Bundle?) {
+        super.onCreate(bundle)
+        requestWindowFeature(1)
+        window.setFlags(1024, 1024)
+        binding = ActivityCameraBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        initView()
+        checkPermission()
+        cameraLoad()
+        getcurrentlocationinfo()
+        setupWeelView()
+        clickListner()
+        setFilterAdaprter()
+        Handler(Looper.getMainLooper()).postDelayed({ getcurrentlocationinfo() }, 10000L)
+        date = Date()
     }
 
-    public static String getMimeType(Bitmap.CompressFormat compressFormat) {
-        int i = AnonymousClass44.$SwitchMap$android$graphics$Bitmap$CompressFormat[compressFormat.ordinal()];
-        if (i != 1) {
-            if (i != 2) {
+    private fun setFilterAdaprter() {
+        val linearLayoutManager = LinearLayoutManager(this)
+        linearLayoutManager.orientation = RecyclerView.HORIZONTAL
+        binding.rvFilterList.layoutManager = linearLayoutManager
+        val filterAdapter = FilterAdapter(this, mAllFilters)
+        binding.rvFilterList.adapter = filterAdapter
+        filterAdapter.setOnFilterChangeListener { i: Int ->
+            if (camera!!.preview == Preview.GL_SURFACE) {
+                val cameraActivity = this@CameraActivity
+                cameraActivity.mCurrentFilter = i
+                val filters = cameraActivity.mAllFilters[mCurrentFilter]
+                binding.tvToast.text = filters.toString() + ""
+                binding.tvToast.visibility = View.VISIBLE
+                val handler = Handler(Looper.getMainLooper())
+                handler.postDelayed({
+                    binding.tvToast.startAnimation(
+                        AnimationUtils.loadAnimation(
+                            this@CameraActivity,
+                            R.anim.toast
+                        )
+                    )
+                }, 300L)
+                handler.postDelayed({ binding.tvToast.visibility = View.GONE }, 1300L)
+                camera!!.setFilter(filters.newInstance())
             }
-            return "png";
         }
-        return "jpeg";
     }
 
-    ActivityCameraBinding binding;
-    @Override
-    public void onCreate(Bundle bundle) {
-        super.onCreate(bundle);
-        requestWindowFeature(1);
-        getWindow().setFlags(1024, 1024);
-        binding =  ActivityCameraBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
-        this.mp = MediaPlayer.create(this, (int) R.raw.camera);
-        this.audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
-        AudioManager audioManager = this.audioManager;
-        audioManager.setStreamVolume(3, audioManager.getStreamVolume(3), 0);
-
-        checkPermission();
-        try {
-            this.camera = (CameraView) findViewById(R.id.camera);
-            this.camera.open();
-        } catch (Exception e) {
-            e.printStackTrace();
+    private fun clickListner() {
+        binding.futuremain.cameraSwitcher.setOnClickListener { toggleCamera() }
+        binding.futuremain.menuFlash.setOnClickListener { toggleFlash() }
+        binding.futuremain.menuHdr.setOnClickListener {
+            if (camera!!.hdr == Hdr.OFF) {
+                titleShow("HDR ON")
+                camera!!.hdr = Hdr.ON
+                binding.futuremain.menuHdr.setImageResource(R.drawable.ic_launcher_background)
+            } else if (camera!!.hdr == Hdr.ON) {
+                titleShow("HDR OFF")
+                camera!!.hdr = Hdr.OFF
+                binding.futuremain.menuHdr.setImageResource(R.drawable.hdr_off)
+            }
         }
-        this.menu_hdr = (ImageView) findViewById(R.id.menu_hdr);
-        this.menu_time = (ImageView) findViewById(R.id.menu_time);
-        this.menu_filter = (ImageView) findViewById(R.id.menu_filter);
-        this.shutter_button = (ImageView) findViewById(R.id.shutter_button);
-        this.image_thumb = (CircleImageView) findViewById(R.id.image_thumb);
-        this.timerCounter = (TextView) findViewById(R.id.timerCounter);
-        this.llFunction = (LinearLayout) findViewById(R.id.llFunction);
-        this.llTimer = (LinearLayout) findViewById(R.id.llTimer);
-        this.timerText = (TextView) findViewById(R.id.timerText);
-        this.setting_feature = (LinearLayout) findViewById(R.id.setting_feature);
-        this.llWhiteBalance = (LinearLayout) findViewById(R.id.llWhiteBalance);
-        this.llSce = (LinearLayout) findViewById(R.id.llSce);
-        this.menu_setting = (ImageView) findViewById(R.id.menu_setting);
-        this.menu_aw = (ImageView) findViewById(R.id.menu_aw);
-        this.menu_incandescent = (ImageView) findViewById(R.id.menu_incandescent);
-        this.menu_fluorescent = (ImageView) findViewById(R.id.menu_fluorescent);
-        this.menu_auto = (ImageView) findViewById(R.id.menu_auto);
-        this.menu_daylight = (ImageView) findViewById(R.id.menu_daylight);
-        this.menu_cloudy = (ImageView) findViewById(R.id.menu_cloudy);
-        this.menu_location = (ImageView) findViewById(R.id.menu_location);
-        this.menu_sce = (ImageView) findViewById(R.id.menu_sce);
-        this.menu_action = (ImageView) findViewById(R.id.menu_action);
-        this.menu_night = (ImageView) findViewById(R.id.menu_night);
-        this.menu_scenone = (ImageView) findViewById(R.id.menu_scenone);
-        this.menu_volume = (ImageView) findViewById(R.id.menu_volume);
-        this.menu_timerclose = (TextView) findViewById(R.id.menu_timerclose);
-        this.menu_timer3s = (TextView) findViewById(R.id.menu_timer3s);
-        this.menu_timer5s = (TextView) findViewById(R.id.menu_timer5s);
-        this.menu_timer9s = (TextView) findViewById(R.id.menu_timer9s);
-        this.menu_brightness = (ImageView) findViewById(R.id.menu_brightness);
-        this.menu_image = (ImageView) findViewById(R.id.menu_image);
-        this.menu_off = (TextView) findViewById(R.id.menu_off);
-        this.menu_3 = (TextView) findViewById(R.id.menu_3);
-        this.menu_4 = (TextView) findViewById(R.id.menu_4);
-        this.menu_phi = (TextView) findViewById(R.id.menu_phi);
-        this.llTimerClick = (LinearLayout) findViewById(R.id.llTimerClick);
-        this.llGrid = (LinearLayout) findViewById(R.id.llGrid);
-        this.rlFlash = (RelativeLayout) findViewById(R.id.rlFlash);
-        this.rlSetting = (RelativeLayout) findViewById(R.id.rlSetting);
-        this.rlHdr = (RelativeLayout) findViewById(R.id.rlHdr);
-        this.rlSwitcher = (RelativeLayout) findViewById(R.id.rlSwitcher);
-        this.rlTime = (RelativeLayout) findViewById(R.id.rlTime);
-        this.rlLocation = (RelativeLayout) findViewById(R.id.rlLocation);
-        this.rlImage = (RelativeLayout) findViewById(R.id.rlImage);
-        this.rlAw = (RelativeLayout) findViewById(R.id.rlAw);
-        this.rlVolume = (RelativeLayout) findViewById(R.id.rlVolume);
-        this.rlBright = (RelativeLayout) findViewById(R.id.rlBright);
-        this.rlSce = (RelativeLayout) findViewById(R.id.rlSce);
-        if (!Environment.getExternalStorageState().equals("mounted")) {
-            Toast.makeText(this, "Error! No SDCARD Found!", Toast.LENGTH_LONG).show();
+        binding.shutterButton.setOnClickListener {
+            adLoad++
+            if (adLoad >= 2) {
+                adLoad = 0
+            }
+            if (binding.futuremain.settingFeature.visibility == View.VISIBLE) {
+                binding.futuremain.menuSetting.performClick()
+            }
+            if (binding.futuremain.llTimerClick.visibility == View.VISIBLE) {
+                binding.futuremain.menuTime.performClick()
+            }
+            binding.rvFilterList.visibility = View.GONE
+            clickCount++
+            if (camera!!.mode == Mode.VIDEO) {
+                binding.shutterButton.isEnabled = false
+                Handler(Looper.getMainLooper()).postDelayed({ binding.shutterButton.isEnabled = true }, 2000L)
+                captureVideo()
+                return@setOnClickListener
+            }
+            binding.shutterButton.isEnabled = false
+            capturePhoto()
+        }
+        binding.imageThumb.setOnClickListener {
+            if (binding.futuremain.settingFeature.visibility == View.VISIBLE) {
+                binding.futuremain.menuSetting.performClick()
+            }
+            if (binding.futuremain.llTimerClick.visibility == View.VISIBLE) {
+                binding.futuremain.menuTime.performClick()
+            }
+            binding.rvFilterList.visibility = View.GONE
+            file = File(
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                    .toString() + File.separator + "iCamera"
+            )
+            if (!file!!.exists()) {
+                file!!.mkdirs()
+            }
+            if (file!!.isDirectory) {
+                arrayPhotoVideo.clear()
+                listFile = file!!.listFiles()!!
+                Arrays.sort<File>(
+                    listFile,
+                    java.util.Comparator<File> { file, file2 ->
+                        return@Comparator java.lang.Long.valueOf(file.lastModified())
+                            .compareTo(java.lang.Long.valueOf(file2.lastModified()))
+                    })
+                FilePathStrings = arrayOfNulls(listFile.size)
+                for (str: String? in FilePathStrings) {
+                    arrayPhotoVideo.add(ListModel(str))
+                }
+            }
+            try {
+                if (listFile.size == 0) {
+                    Toast.makeText(this@CameraActivity, "No Media Found", Toast.LENGTH_SHORT).show()
+                } else {
+                    startActivity(Intent(this@CameraActivity, GalleryappActivity::class.java))
+                }
+            } catch (e4: Exception) {
+                e4.printStackTrace()
+            }
+        }
+        binding.futuremain.menuTime.setOnClickListener {
+            if (binding.futuremain.settingFeature.visibility == View.VISIBLE) {
+                binding.futuremain.menuSetting.performClick()
+            }
+            if (binding.futuremain.llTimerClick.visibility == View.VISIBLE) {
+                binding.futuremain.llTimerClick.visibility = View.GONE
+                binding.futuremain.menuTime.setImageResource(R.drawable.timer)
+                binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"))
+                return@setOnClickListener
+            }
+            binding.futuremain.llTimerClick.visibility = View.VISIBLE
+            binding.futuremain.menuTime.setImageResource(R.drawable.timer_on)
+            binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#66000000"))
+        }
+        binding.menuFilter.setOnClickListener {
+            TimeUnit.MILLISECONDS.toSeconds(Date().time - date!!.time)
+            if (binding.rvFilterList.visibility == View.VISIBLE) {
+                binding.rvFilterList.visibility = View.GONE
+            } else {
+                date = Date()
+                binding.rvFilterList.visibility = View.VISIBLE
+            }
+        }
+        binding.futuremain.menuSetting.setOnClickListener {
+            if (binding.futuremain.settingFeature.visibility == View.VISIBLE) {
+                binding.futuremain.settingFeature.visibility = View.GONE
+                binding.futuremain.llWhiteBalance.visibility = View.GONE
+                binding.futuremain.menuAw.setImageResource(R.drawable.aw)
+                binding.futuremain.llSce.visibility = View.GONE
+                binding.futuremain.menuSce.setImageResource(R.drawable.sce_white_off)
+                binding.futuremain.llBrightness.visibility = View.GONE
+                binding.futuremain.menuBrightness.setImageResource(R.drawable.brigh)
+                binding.futuremain.llGrid.visibility = View.GONE
+                binding.futuremain.menuImage.setImageResource(R.drawable.grid)
+                binding.futuremain.menuSetting.setImageResource(R.drawable.setting_white)
+                binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"))
+                return@setOnClickListener
+            }
+            binding.futuremain.llTimerClick.visibility = View.GONE
+            binding.futuremain.menuTime.setImageResource(R.drawable.timer)
+            binding.futuremain.settingFeature.visibility = View.VISIBLE
+            binding.futuremain.menuSetting.setImageResource(R.drawable.setting)
+            binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#66000000"))
+        }
+        binding.futuremain.menuLocation.setOnClickListener {
+            if (isLocation) {
+                val cameraActivity = this@CameraActivity
+                cameraActivity.isLocation = false
+                binding.futuremain.menuLocation.setImageResource(R.drawable.location_off)
+                return@setOnClickListener
+            }
+            val cameraActivity2 = this@CameraActivity
+            cameraActivity2.isLocation = true
+            binding.futuremain.menuLocation.setImageResource(R.drawable.location)
+        }
+        binding.futuremain.menuAw.setOnClickListener {
+            if (binding.futuremain.llWhiteBalance.visibility == View.VISIBLE) {
+                binding.futuremain.llWhiteBalance.visibility = View.GONE
+                binding.futuremain.menuAw.setImageResource(R.drawable.aw)
+                return@setOnClickListener
+            }
+            binding.futuremain.llWhiteBalance.visibility = View.VISIBLE
+            binding.futuremain.menuAw.setImageResource(R.drawable.aw_on)
+            binding.futuremain.llSce.visibility = View.GONE
+            binding.futuremain.menuSce.setImageResource(R.drawable.sce_white_off)
+            binding.futuremain.llGrid.visibility = View.GONE
+            binding.futuremain.menuImage.setImageResource(R.drawable.grid)
+            binding.futuremain.llBrightness.visibility = View.GONE
+            binding.futuremain.menuBrightness.setImageResource(R.drawable.brigh)
+        }
+        binding.futuremain.menuSce.setOnClickListener {
+            if (binding.futuremain.llSce.visibility == View.VISIBLE) {
+                binding.futuremain.llSce.visibility = View.GONE
+                binding.futuremain.menuSce.setImageResource(R.drawable.sce_white_off)
+                return@setOnClickListener
+            }
+            binding.futuremain.llSce.visibility = View.VISIBLE
+            binding.futuremain.menuSce.setImageResource(R.drawable.sce_white_on)
+            binding.futuremain.llWhiteBalance.visibility = View.GONE
+            binding.futuremain.menuAw.setImageResource(R.drawable.aw)
+            binding.futuremain.llGrid.visibility = View.GONE
+            binding.futuremain.menuImage.setImageResource(R.drawable.grid)
+            binding.futuremain.llBrightness.visibility = View.GONE
+            binding.futuremain.menuBrightness.setImageResource(R.drawable.brigh)
+        }
+        binding.futuremain.menuIncandescent.setOnClickListener {
+            if (camera!!.whiteBalance != WhiteBalance.INCANDESCENT) {
+                titleShow("WHITE BALANCE\nINCANDESCENT")
+                binding.futuremain.menuIncandescent.setImageResource(R.drawable.light_on)
+                binding.futuremain.menuFluorescent.setImageResource(R.drawable.fluore)
+                binding.futuremain.menuAuto.setImageResource(R.drawable.auto)
+                binding.futuremain.menuDaylight.setImageResource(R.drawable.daylight)
+                binding.futuremain.menuCloudy.setImageResource(R.drawable.cloudy)
+                camera!!.whiteBalance = WhiteBalance.INCANDESCENT
+            }
+        }
+        binding.futuremain.menuFluorescent.setOnClickListener {
+            if (camera!!.whiteBalance != WhiteBalance.FLUORESCENT) {
+                titleShow("WHITE BALANCE\nFLUORESCENT")
+                binding.futuremain.menuIncandescent.setImageResource(R.drawable.light)
+                binding.futuremain.menuFluorescent.setImageResource(R.drawable.fluore_on)
+                binding.futuremain.menuAuto.setImageResource(R.drawable.auto)
+                binding.futuremain.menuDaylight.setImageResource(R.drawable.daylight)
+                binding.futuremain.menuCloudy.setImageResource(R.drawable.cloudy)
+                camera!!.whiteBalance = WhiteBalance.FLUORESCENT
+            }
+        }
+        binding.futuremain.menuAuto.setOnClickListener {
+            if (camera!!.whiteBalance != WhiteBalance.AUTO) {
+                titleShow("WHITE BALANCE\nAUTO")
+                binding.futuremain.menuIncandescent.setImageResource(R.drawable.light)
+                binding.futuremain.menuFluorescent.setImageResource(R.drawable.fluore)
+                binding.futuremain.menuAuto.setImageResource(R.drawable.auto_on)
+                binding.futuremain.menuDaylight.setImageResource(R.drawable.daylight)
+                binding.futuremain.menuCloudy.setImageResource(R.drawable.cloudy)
+                camera!!.whiteBalance = WhiteBalance.AUTO
+            }
+        }
+        binding.futuremain.menuDaylight.setOnClickListener {
+            if (camera!!.whiteBalance != WhiteBalance.DAYLIGHT) {
+                titleShow("WHITE BALANCE\nDAYLIGHT")
+                binding.futuremain.menuIncandescent.setImageResource(R.drawable.light)
+                binding.futuremain.menuFluorescent.setImageResource(R.drawable.fluore)
+                binding.futuremain.menuAuto.setImageResource(R.drawable.auto)
+                binding.futuremain.menuDaylight.setImageResource(R.drawable.daylight_on)
+                binding.futuremain.menuCloudy.setImageResource(R.drawable.cloudy)
+                camera!!.whiteBalance = WhiteBalance.DAYLIGHT
+            }
+        }
+        binding.futuremain.menuCloudy.setOnClickListener {
+            if (camera!!.whiteBalance != WhiteBalance.CLOUDY) {
+                titleShow("WHITE BALANCE\nCLOUDY")
+                binding.futuremain.menuIncandescent.setImageResource(R.drawable.light)
+                binding.futuremain.menuFluorescent.setImageResource(R.drawable.fluore)
+                binding.futuremain.menuAuto.setImageResource(R.drawable.auto)
+                binding.futuremain.menuDaylight.setImageResource(R.drawable.daylight)
+                binding.futuremain.menuCloudy.setImageResource(R.drawable.cloudy_on)
+                camera!!.whiteBalance = WhiteBalance.CLOUDY
+            }
+        }
+        binding.futuremain.menuAction.setOnClickListener {
+            if (sce != 1) {
+                titleShow("SCENE MODE\nACTION")
+                val cameraActivity = this@CameraActivity
+                cameraActivity.sce = 1
+                cameraActivity.camera!!.setFilter(cameraActivity.mAllFilters[0].newInstance())
+                binding.futuremain.menuScenone.setImageResource(R.drawable.sce_off)
+                binding.futuremain.menuNight.setImageResource(R.drawable.night)
+                binding.futuremain.menuAction.setImageResource(R.drawable.action_on)
+            }
+        }
+        binding.futuremain.menuNight.setOnClickListener {
+            if (sce != 2) {
+                titleShow("SCENE MODE\nNIGHT")
+                val cameraActivity = this@CameraActivity
+                cameraActivity.sce = 2
+                cameraActivity.camera!!.setFilter(cameraActivity.mAllFilters[21].newInstance())
+                binding.futuremain.menuScenone.setImageResource(R.drawable.sce_off)
+                binding.futuremain.menuNight.setImageResource(R.drawable.night_on)
+                binding.futuremain.menuAction.setImageResource(R.drawable.action)
+            }
+        }
+        binding.futuremain.menuScenone.setOnClickListener {
+            if (sce != 0) {
+                titleShow("SCENE MODE\nNONE")
+                val cameraActivity = this@CameraActivity
+                cameraActivity.sce = 0
+                cameraActivity.camera!!.setFilter(cameraActivity.mAllFilters[0].newInstance())
+                binding.futuremain.menuScenone.setImageResource(R.drawable.sce_on)
+                binding.futuremain.menuNight.setImageResource(R.drawable.night)
+                binding.futuremain.menuAction.setImageResource(R.drawable.action)
+            }
+        }
+        binding.futuremain.menuVolume.setOnClickListener {
+            if (isSound) {
+                val cameraActivity = this@CameraActivity
+                cameraActivity.isSound = false
+                binding.futuremain.menuVolume.setImageResource(R.drawable.volume_mute)
+                return@setOnClickListener
+            }
+            binding.futuremain.menuVolume.setImageResource(R.drawable.volume)
+            isSound = true
+        }
+        binding.futuremain.menuTimerclose.setOnClickListener {
+            if (timer != 0) {
+                val cameraActivity = this@CameraActivity
+                cameraActivity.timer = 0
+                binding.futuremain.menuTimerclose.setTextColor(
+                    ContextCompat.getColor(
+                        this@CameraActivity,
+                        R.color.color_back
+                    )
+                )
+                binding.futuremain.menuTimer3s.setTextColor(
+                    ContextCompat.getColor(
+                        this@CameraActivity,
+                        R.color.color_white
+                    )
+                )
+                binding.futuremain.menuTimer5s.setTextColor(
+                    ContextCompat.getColor(
+                        this@CameraActivity,
+                        R.color.color_white
+                    )
+                )
+                binding.futuremain.menuTimer9s.setTextColor(
+                    ContextCompat.getColor(
+                        this@CameraActivity,
+                        R.color.color_white
+                    )
+                )
+            }
+        }
+        binding.futuremain.menuTimer3s.setOnClickListener {
+            if (timer != 3) {
+                val cameraActivity = this@CameraActivity
+                cameraActivity.timer = 3
+                binding.futuremain.menuTimerclose.setTextColor(
+                    ContextCompat.getColor(
+                        this@CameraActivity,
+                        R.color.color_white
+                    )
+                )
+                binding.futuremain.menuTimer3s.setTextColor(
+                    ContextCompat.getColor(
+                        this@CameraActivity,
+                        R.color.color_back
+                    )
+                )
+                binding.futuremain.menuTimer5s.setTextColor(
+                    ContextCompat.getColor(
+                        this@CameraActivity,
+                        R.color.color_white
+                    )
+                )
+                binding.futuremain.menuTimer9s.setTextColor(
+                    ContextCompat.getColor(
+                        this@CameraActivity,
+                        R.color.color_white
+                    )
+                )
+            }
+        }
+        binding.futuremain.menuTimer5s.setOnClickListener {
+            if (timer != 5) {
+                val cameraActivity = this@CameraActivity
+                cameraActivity.timer = 5
+                binding.futuremain.menuTimerclose.setTextColor(
+                    ContextCompat.getColor(
+                        this@CameraActivity,
+                        R.color.color_white
+                    )
+                )
+                binding.futuremain.menuTimer3s.setTextColor(
+                    ContextCompat.getColor(
+                        this@CameraActivity,
+                        R.color.color_white
+                    )
+                )
+                binding.futuremain.menuTimer5s.setTextColor(
+                    ContextCompat.getColor(
+                        this@CameraActivity,
+                        R.color.color_back
+                    )
+                )
+                binding.futuremain.menuTimer9s.setTextColor(
+                    ContextCompat.getColor(
+                        this@CameraActivity,
+                        R.color.color_white
+                    )
+                )
+            }
+        }
+        binding.futuremain.menuTimer9s.setOnClickListener {
+            if (timer != 9) {
+                val cameraActivity = this@CameraActivity
+                cameraActivity.timer = 9
+                binding.futuremain.menuTimerclose.setTextColor(
+                    ContextCompat.getColor(
+                        this@CameraActivity,
+                        R.color.color_white
+                    )
+                )
+                binding.futuremain.menuTimer3s.setTextColor(
+                    ContextCompat.getColor(
+                        this@CameraActivity,
+                        R.color.color_white
+                    )
+                )
+                binding.futuremain.menuTimer5s.setTextColor(
+                    ContextCompat.getColor(
+                        this@CameraActivity,
+                        R.color.color_white
+                    )
+                )
+                binding.futuremain.menuTimer9s.setTextColor(
+                    ContextCompat.getColor(
+                        this@CameraActivity,
+                        R.color.color_back
+                    )
+                )
+            }
+        }
+        binding.futuremain.menuOff.setOnClickListener {
+            if (camera!!.grid != Grid.OFF) {
+                camera!!.grid = Grid.OFF
+                binding.futuremain.menuOff.setTextColor(
+                    ContextCompat.getColor(
+                        this@CameraActivity,
+                        R.color.color_back
+                    )
+                )
+                binding.futuremain.menu3.setTextColor(
+                    ContextCompat.getColor(
+                        this@CameraActivity,
+                        R.color.color_white
+                    )
+                )
+                binding.futuremain.menu4.setTextColor(
+                    ContextCompat.getColor(
+                        this@CameraActivity,
+                        R.color.color_white
+                    )
+                )
+                binding.futuremain.menuPhi.setTextColor(
+                    ContextCompat.getColor(
+                        this@CameraActivity,
+                        R.color.color_white
+                    )
+                )
+            }
+        }
+        binding.futuremain.menu3.setOnClickListener {
+            if (camera!!.grid != Grid.DRAW_3X3) {
+                camera!!.grid = Grid.DRAW_3X3
+                binding.futuremain.menuOff.setTextColor(
+                    ContextCompat.getColor(
+                        this@CameraActivity,
+                        R.color.color_white
+                    )
+                )
+                binding.futuremain.menu3.setTextColor(
+                    ContextCompat.getColor(
+                        this@CameraActivity,
+                        R.color.color_back
+                    )
+                )
+                binding.futuremain.menu4.setTextColor(
+                    ContextCompat.getColor(
+                        this@CameraActivity,
+                        R.color.color_white
+                    )
+                )
+                binding.futuremain.menuPhi.setTextColor(
+                    ContextCompat.getColor(
+                        this@CameraActivity,
+                        R.color.color_white
+                    )
+                )
+            }
+        }
+        binding.futuremain.menu4.setOnClickListener {
+            if (camera!!.grid != Grid.DRAW_4X4) {
+                camera!!.grid = Grid.DRAW_4X4
+                binding.futuremain.menuOff.setTextColor(
+                    ContextCompat.getColor(
+                        this@CameraActivity,
+                        R.color.color_white
+                    )
+                )
+                binding.futuremain.menu3.setTextColor(
+                    ContextCompat.getColor(
+                        this@CameraActivity,
+                        R.color.color_white
+                    )
+                )
+                binding.futuremain.menu4.setTextColor(
+                    ContextCompat.getColor(
+                        this@CameraActivity,
+                        R.color.color_back
+                    )
+                )
+                binding.futuremain.menuPhi.setTextColor(
+                    ContextCompat.getColor(
+                        this@CameraActivity,
+                        R.color.color_white
+                    )
+                )
+            }
+        }
+        binding.futuremain.menuPhi.setOnClickListener {
+            if (camera!!.grid != Grid.DRAW_PHI) {
+                camera!!.grid = Grid.DRAW_PHI
+                binding.futuremain.menuOff.setTextColor(
+                    ContextCompat.getColor(
+                        this@CameraActivity,
+                        R.color.color_white
+                    )
+                )
+                binding.futuremain.menu3.setTextColor(
+                    ContextCompat.getColor(
+                        this@CameraActivity,
+                        R.color.color_white
+                    )
+                )
+                binding.futuremain.menu4.setTextColor(
+                    ContextCompat.getColor(
+                        this@CameraActivity,
+                        R.color.color_white
+                    )
+                )
+                binding.futuremain.menuPhi.setTextColor(
+                    ContextCompat.getColor(
+                        this@CameraActivity,
+                        R.color.color_back
+                    )
+                )
+            }
+        }
+        binding.futuremain.brightnessSeekbar.setOnSeekChangeListener(object :
+            OnSeekChangeListener {
+            override fun onSeeking(seekParams: SeekParams) {}
+            override fun onStartTrackingTouch(indicatorSeekBar: IndicatorSeekBar) {}
+            override fun onStopTrackingTouch(indicatorSeekBar: IndicatorSeekBar) {
+                camera!!.setFilter(mAllFilters[3].newInstance())
+                if (indicatorSeekBar.progress == -2) {
+                    titleShow("EXPOSURE\n-2")
+                    val brightnessFilter = BrightnessFilter()
+                    BrightnessFilter.setBrightness(0.5f)
+                } else if (indicatorSeekBar.progress == -1) {
+                    val brightnessFilter = BrightnessFilter()
+                    BrightnessFilter.setBrightness(1.0f)
+                    titleShow("EXPOSURE\n-1")
+                } else if (indicatorSeekBar.progress == 0) {
+                    camera!!.setFilter(mAllFilters[3].newInstance())
+                    titleShow("EXPOSURE\n0")
+                } else if (indicatorSeekBar.progress == 1) {
+                    val brightnessFilter = BrightnessFilter()
+                    BrightnessFilter.setBrightness(1.5f)
+                    titleShow("EXPOSURE\n1")
+                } else if (indicatorSeekBar.progress == 2) {
+                    val brightnessFilter = BrightnessFilter()
+                    BrightnessFilter.setBrightness(2f)
+                    titleShow("EXPOSURE\n2")
+                }
+            }
+        })
+        binding.futuremain.menuBrightness.setOnClickListener {
+            if (binding.futuremain.llBrightness.visibility == View.VISIBLE) {
+                binding.futuremain.llBrightness.visibility = View.GONE
+                binding.futuremain.menuBrightness.setImageResource(R.drawable.brigh)
+                return@setOnClickListener
+            }
+            binding.futuremain.llBrightness.visibility = View.VISIBLE
+            binding.futuremain.menuBrightness.setImageResource(R.drawable.brigh_on)
+            binding.futuremain.llSce.visibility = View.GONE
+            binding.futuremain.menuSce.setImageResource(R.drawable.sce_white_off)
+            binding.futuremain.llWhiteBalance.visibility = View.GONE
+            binding.futuremain.menuAw.setImageResource(R.drawable.aw)
+            binding.futuremain.llGrid.visibility = View.GONE
+            binding.futuremain.menuImage.setImageResource(R.drawable.grid)
+        }
+        binding.futuremain.menuImage.setOnClickListener {
+            if (binding.futuremain.llGrid.visibility == View.VISIBLE) {
+                binding.futuremain.llGrid.visibility = View.GONE
+                binding.futuremain.menuImage.setImageResource(R.drawable.grid)
+                return@setOnClickListener
+            }
+            binding.futuremain.llGrid.visibility = View.VISIBLE
+            binding.futuremain.menuImage.setImageResource(R.drawable.grid_on)
+            binding.futuremain.llSce.visibility = View.GONE
+            binding.futuremain.menuSce.setImageResource(R.drawable.sce_white_off)
+            binding.futuremain.llWhiteBalance.visibility = View.GONE
+            binding.futuremain.menuAw.setImageResource(R.drawable.aw)
+            binding.futuremain.llBrightness.visibility = View.GONE
+            binding.futuremain.menuBrightness.setImageResource(R.drawable.brigh)
+        }
+    }
+
+    private fun setupWeelView() {
+        binding.wheelview.items =
+            Arrays.asList(*resources.getStringArray(R.array.select_Item))
+        binding.wheelview.setOnWheelItemSelectedListener(this)
+        binding.wheelview.visibility = View.VISIBLE
+        binding.wheelview.selectIndex(1)
+        binding.shutterButton.setImageResource(R.drawable.btn_photo_shutter)
+    }
+
+    private val updateTimerThread: Runnable = object : Runnable {
+        override fun run() {
+            timeInMilliseconds = SystemClock.uptimeMillis() - startTime
+            updatedTime = timeSwapBuff + timeInMilliseconds
+            val i = (updatedTime / 1000).toInt()
+            val i2 = i / 60
+            binding.timerText.text =
+                "0" + i2 + ":" + String.format("%02d", Integer.valueOf(i % 60))
+            customHandler.postDelayed(this, 0L)
+        }
+    }
+
+    private fun cameraLoad() {
+        try {
+            camera = findViewById<View>(R.id.camera) as CameraView
+            camera!!.open()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        if (Environment.getExternalStorageState() != "mounted") {
+            Toast.makeText(this, "Error! No SDCARD Found!", Toast.LENGTH_LONG).show()
         } else {
-             this.file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + File.separator + "iCamera");
-            this.file.mkdirs();
+            file =
+                File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path + File.separator + "iCamera")
+            file!!.mkdirs()
         }
         try {
-            if (this.file.isDirectory()) {
-                this.listFile = this.file.listFiles();
+            if (file!!.isDirectory) {
+                listFile = file!!.listFiles()!!
                 try {
-                    Arrays.sort(listFile, new Comparator<File>() { // from class: com.cameraediter.iphone11pro.CameraActivity.2
-                        @Override // java.util.Comparator
-                        public int compare(File file, File file2) {
-                            return Long.valueOf(file.lastModified()).compareTo(Long.valueOf(file2.lastModified()));
-                        }
-                    });
-                } catch (Exception e2) {
-                    e2.printStackTrace();
+                    Arrays.sort(listFile) { file: File, file2: File ->
+                        java.lang.Long.valueOf(file.lastModified())
+                            .compareTo(java.lang.Long.valueOf(file2.lastModified()))
+                    }
+                } catch (e2: Exception) {
+                    e2.printStackTrace()
                 }
-                this.FilePathStrings = new String[this.listFile.length];
-                if (this.listFile.length != 0) {
-                    Glide.with((FragmentActivity) this).load(this.listFile[this.listFile.length - 1].getAbsolutePath()).into(this.image_thumb);
-                    this.i += this.listFile.length;
+                FilePathStrings = arrayOfNulls(listFile.size)
+                if (listFile.isNotEmpty()) {
+                    Glide.with((this as FragmentActivity))
+                        .load(listFile[listFile.size - 1].absolutePath).into(
+                        binding.imageThumb
+                    )
+                    i += listFile.size
                 } else {
-                    this.image_thumb.setImageResource(R.drawable.ic_launcher_background);
+                    binding.imageThumb.setImageResource(R.drawable.ic_launcher_background)
                 }
-                this.i = 0;
-                while (this.i < this.FilePathStrings.length) {
-                    this.arrayPhotoVideo.add(new ListModel(this.FilePathStrings[this.i]));
-                    this.i++;
+                i = 0
+                while (i < FilePathStrings.size) {
+                    arrayPhotoVideo.add(ListModel(FilePathStrings[i]))
+                    i++
                 }
             }
-        } catch (Exception e3) {
-            e3.printStackTrace();
+        } catch (e3: Exception) {
+            e3.printStackTrace()
         }
-        getcurrentlocationinfo();
-        this.mWheelview = (WheelView) findViewById(R.id.wheelview);
-        this.mWheelview.setItems(Arrays.asList(getResources().getStringArray(R.array.select_Item)));
-        this.mWheelview.setOnWheelItemSelectedListener(this);
-        this.mWheelview.setVisibility(View.VISIBLE);
-        this.mWheelview.selectIndex(1);
-        this.shutter_button.setImageResource(R.drawable.btn_photo_shutter);
-        this.camera_switcher = (ImageView) findViewById(R.id.camera_switcher);
-        this.camera_switcher.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.3
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                CameraActivity.this.toggleCamera();
-            }
-        });
-        binding.futuremain.menuFlash.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.4
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                CameraActivity.this.toggleFlash();
-            }
-        });
-        this.menu_hdr.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.5
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                if (CameraActivity.this.camera.getHdr() == Hdr.OFF) {
-                    CameraActivity.this.titleShow("HDR ON");
-                    CameraActivity.this.camera.setHdr(Hdr.ON);
-                    CameraActivity.this.menu_hdr.setImageResource(R.drawable.ic_launcher_background);
-                } else if (CameraActivity.this.camera.getHdr() == Hdr.ON) {
-                    CameraActivity.this.titleShow("HDR OFF");
-                    CameraActivity.this.camera.setHdr(Hdr.OFF);
-                    CameraActivity.this.menu_hdr.setImageResource(R.drawable.hdr_off);
-                }
-            }
-        });
-        this.shutter_button.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.6
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                CameraActivity.this.adLoad++;
-                if (CameraActivity.this.adLoad >= 2) {
-                    CameraActivity.this.adLoad = 0;
-                }
-                if (CameraActivity.this.setting_feature.getVisibility() == View.VISIBLE) {
-                    CameraActivity.this.menu_setting.performClick();
-                }
-                if (CameraActivity.this.llTimerClick.getVisibility() == View.VISIBLE) {
-                    CameraActivity.this.menu_time.performClick();
-                }
-                CameraActivity.this.rvFilterList.setVisibility(View.GONE);
-                CameraActivity.this.clickCount++;
-                if (CameraActivity.this.camera.getMode() == Mode.VIDEO) {
-                    CameraActivity.this.shutter_button.setEnabled(false);
-                    new Handler().postDelayed(new Runnable() { // from class: com.cameraediter.iphone11pro.CameraActivity.6.1
-                        @Override // java.lang.Runnable
-                        public void run() {
-                            CameraActivity.this.shutter_button.setEnabled(true);
-                        }
-                    }, 2000L);
-                    CameraActivity.this.captureVideo();
-                    return;
-                }
-                CameraActivity.this.shutter_button.setEnabled(false);
-                CameraActivity.this.capturePhoto();
-            }
-        });
-        this.image_thumb.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.7
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                if (CameraActivity.this.setting_feature.getVisibility() == View.VISIBLE) {
-                    CameraActivity.this.menu_setting.performClick();
-                }
-                if (CameraActivity.this.llTimerClick.getVisibility() == View.VISIBLE) {
-                    CameraActivity.this.menu_time.performClick();
-                }
-                CameraActivity.this.rvFilterList.setVisibility(View.GONE);
-                CameraActivity.this.file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + File.separator + "iCamera");
-                if (!CameraActivity.this.file.exists()) {
-                    CameraActivity.this.file.mkdirs();
-                }
-                if (CameraActivity.this.file.isDirectory()) {
-                    CameraActivity.this.arrayPhotoVideo.clear();
-                    CameraActivity cameraActivity = CameraActivity.this;
-                    cameraActivity.listFile = cameraActivity.file.listFiles();
-                    Arrays.sort(CameraActivity.this.listFile, new Comparator<File>() { // from class: com.cameraediter.iphone11pro.CameraActivity.7.1
-                        @Override // java.util.Comparator
-                        public int compare(File file, File file2) {
-                            return Long.valueOf(file.lastModified()).compareTo(Long.valueOf(file2.lastModified()));
-                        }
-                    });
-                    CameraActivity cameraActivity2 = CameraActivity.this;
-                    cameraActivity2.FilePathStrings = new String[cameraActivity2.listFile.length];
-                    for (String str : CameraActivity.this.FilePathStrings) {
-                        CameraActivity.this.arrayPhotoVideo.add(new ListModel(str));
-                    }
-                }
-                try {
-                    if (CameraActivity.this.listFile.length == 0) {
-                        Toast.makeText(CameraActivity.this, "No Media Found", Toast.LENGTH_SHORT).show();
-                    } else {
-                        CameraActivity.this.startActivity(new Intent(CameraActivity.this, GalleryappActivity.class));
-                    }
-                } catch (Exception e4) {
-                    e4.printStackTrace();
-                }
-            }
-        });
-        this.menu_time.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.8
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                if (CameraActivity.this.setting_feature.getVisibility() == View.VISIBLE) {
-                    CameraActivity.this.menu_setting.performClick();
-                }
-                if (CameraActivity.this.llTimerClick.getVisibility() == View.VISIBLE) {
-                    CameraActivity.this.llTimerClick.setVisibility(View.GONE);
-                    CameraActivity.this.menu_time.setImageResource(R.drawable.timer);
-                    binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"));
-                    return;
-                }
-                CameraActivity.this.llTimerClick.setVisibility(View.VISIBLE);
-                CameraActivity.this.menu_time.setImageResource(R.drawable.timer_on);
-                binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#66000000"));
-            }
-        });
-        this.menu_filter.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.9
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                TimeUnit.MILLISECONDS.toSeconds(new Date().getTime() - CameraActivity.this.date.getTime());
-                if (CameraActivity.this.rvFilterList.getVisibility() == View.VISIBLE) {
-                    CameraActivity.this.rvFilterList.setVisibility(View.GONE);
-                } else {
-                    CameraActivity.this.date = new Date();
-                    CameraActivity.this.rvFilterList.setVisibility(View.VISIBLE);
-                }
-            }
-        });
-        this.menu_setting.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.10
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                if (CameraActivity.this.setting_feature.getVisibility() == View.VISIBLE) {
-                    CameraActivity.this.setting_feature.setVisibility(View.GONE);
-                    CameraActivity.this.llWhiteBalance.setVisibility(View.GONE);
-                    CameraActivity.this.menu_aw.setImageResource(R.drawable.aw);
-                    CameraActivity.this.llSce.setVisibility(View.GONE);
-                    CameraActivity.this.menu_sce.setImageResource(R.drawable.sce_white_off);
-                    binding.futuremain.llBrightness.setVisibility(View.GONE);
-                    CameraActivity.this.menu_brightness.setImageResource(R.drawable.brigh);
-                    CameraActivity.this.llGrid.setVisibility(View.GONE);
-                    CameraActivity.this.menu_image.setImageResource(R.drawable.grid);
-                    CameraActivity.this.menu_setting.setImageResource(R.drawable.setting_white);
-                    binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"));
-                    return;
-                }
-                CameraActivity.this.llTimerClick.setVisibility(View.GONE);
-                CameraActivity.this.menu_time.setImageResource(R.drawable.timer);
-                CameraActivity.this.setting_feature.setVisibility(View.VISIBLE);
-                CameraActivity.this.menu_setting.setImageResource(R.drawable.setting);
-                binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#66000000"));
-            }
-        });
-        this.menu_location.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.11
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                if (CameraActivity.this.isLocation) {
-                    CameraActivity cameraActivity = CameraActivity.this;
-                    cameraActivity.isLocation = false;
-                    cameraActivity.menu_location.setImageResource(R.drawable.location_off);
-                    return;
-                }
-                CameraActivity cameraActivity2 = CameraActivity.this;
-                cameraActivity2.isLocation = true;
-                cameraActivity2.menu_location.setImageResource(R.drawable.location);
-            }
-        });
-        this.menu_aw.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.12
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                if (CameraActivity.this.llWhiteBalance.getVisibility() == View.VISIBLE) {
-                    CameraActivity.this.llWhiteBalance.setVisibility(View.GONE);
-                    CameraActivity.this.menu_aw.setImageResource(R.drawable.aw);
-                    return;
-                }
-                CameraActivity.this.llWhiteBalance.setVisibility(View.VISIBLE);
-                CameraActivity.this.menu_aw.setImageResource(R.drawable.aw_on);
-                CameraActivity.this.llSce.setVisibility(View.GONE);
-                CameraActivity.this.menu_sce.setImageResource(R.drawable.sce_white_off);
-                CameraActivity.this.llGrid.setVisibility(View.GONE);
-                CameraActivity.this.menu_image.setImageResource(R.drawable.grid);
-                binding.futuremain.llBrightness.setVisibility(View.GONE);
-                CameraActivity.this.menu_brightness.setImageResource(R.drawable.brigh);
-            }
-        });
-        this.menu_sce.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.13
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                if (CameraActivity.this.llSce.getVisibility() == View.VISIBLE) {
-                    CameraActivity.this.llSce.setVisibility(View.GONE);
-                    CameraActivity.this.menu_sce.setImageResource(R.drawable.sce_white_off);
-                    return;
-                }
-                CameraActivity.this.llSce.setVisibility(View.VISIBLE);
-                CameraActivity.this.menu_sce.setImageResource(R.drawable.sce_white_on);
-                CameraActivity.this.llWhiteBalance.setVisibility(View.GONE);
-                CameraActivity.this.menu_aw.setImageResource(R.drawable.aw);
-                CameraActivity.this.llGrid.setVisibility(View.GONE);
-                CameraActivity.this.menu_image.setImageResource(R.drawable.grid);
-                binding.futuremain.llBrightness.setVisibility(View.GONE);
-                CameraActivity.this.menu_brightness.setImageResource(R.drawable.brigh);
-            }
-        });
-        this.menu_incandescent.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.14
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                if (CameraActivity.this.camera.getWhiteBalance() != WhiteBalance.INCANDESCENT) {
-                    CameraActivity.this.titleShow("WHITE BALANCE\nINCANDESCENT");
-                    CameraActivity.this.menu_incandescent.setImageResource(R.drawable.light_on);
-                    CameraActivity.this.menu_fluorescent.setImageResource(R.drawable.fluore);
-                    CameraActivity.this.menu_auto.setImageResource(R.drawable.auto);
-                    CameraActivity.this.menu_daylight.setImageResource(R.drawable.daylight);
-                    CameraActivity.this.menu_cloudy.setImageResource(R.drawable.cloudy);
-                    CameraActivity.this.camera.setWhiteBalance(WhiteBalance.INCANDESCENT);
-                }
-            }
-        });
-        this.menu_fluorescent.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.15
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                if (CameraActivity.this.camera.getWhiteBalance() != WhiteBalance.FLUORESCENT) {
-                    CameraActivity.this.titleShow("WHITE BALANCE\nFLUORESCENT");
-                    CameraActivity.this.menu_incandescent.setImageResource(R.drawable.light);
-                    CameraActivity.this.menu_fluorescent.setImageResource(R.drawable.fluore_on);
-                    CameraActivity.this.menu_auto.setImageResource(R.drawable.auto);
-                    CameraActivity.this.menu_daylight.setImageResource(R.drawable.daylight);
-                    CameraActivity.this.menu_cloudy.setImageResource(R.drawable.cloudy);
-                    CameraActivity.this.camera.setWhiteBalance(WhiteBalance.FLUORESCENT);
-                }
-            }
-        });
-        this.menu_auto.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.16
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                if (CameraActivity.this.camera.getWhiteBalance() != WhiteBalance.AUTO) {
-                    CameraActivity.this.titleShow("WHITE BALANCE\nAUTO");
-                    CameraActivity.this.menu_incandescent.setImageResource(R.drawable.light);
-                    CameraActivity.this.menu_fluorescent.setImageResource(R.drawable.fluore);
-                    CameraActivity.this.menu_auto.setImageResource(R.drawable.auto_on);
-                    CameraActivity.this.menu_daylight.setImageResource(R.drawable.daylight);
-                    CameraActivity.this.menu_cloudy.setImageResource(R.drawable.cloudy);
-                    CameraActivity.this.camera.setWhiteBalance(WhiteBalance.AUTO);
-                }
-            }
-        });
-        this.menu_daylight.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.17
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                if (CameraActivity.this.camera.getWhiteBalance() != WhiteBalance.DAYLIGHT) {
-                    CameraActivity.this.titleShow("WHITE BALANCE\nDAYLIGHT");
-                    CameraActivity.this.menu_incandescent.setImageResource(R.drawable.light);
-                    CameraActivity.this.menu_fluorescent.setImageResource(R.drawable.fluore);
-                    CameraActivity.this.menu_auto.setImageResource(R.drawable.auto);
-                    CameraActivity.this.menu_daylight.setImageResource(R.drawable.daylight_on);
-                    CameraActivity.this.menu_cloudy.setImageResource(R.drawable.cloudy);
-                    CameraActivity.this.camera.setWhiteBalance(WhiteBalance.DAYLIGHT);
-                }
-            }
-        });
-        this.menu_cloudy.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.18
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                if (CameraActivity.this.camera.getWhiteBalance() != WhiteBalance.CLOUDY) {
-                    CameraActivity.this.titleShow("WHITE BALANCE\nCLOUDY");
-                    CameraActivity.this.menu_incandescent.setImageResource(R.drawable.light);
-                    CameraActivity.this.menu_fluorescent.setImageResource(R.drawable.fluore);
-                    CameraActivity.this.menu_auto.setImageResource(R.drawable.auto);
-                    CameraActivity.this.menu_daylight.setImageResource(R.drawable.daylight);
-                    CameraActivity.this.menu_cloudy.setImageResource(R.drawable.cloudy_on);
-                    CameraActivity.this.camera.setWhiteBalance(WhiteBalance.CLOUDY);
-                }
-            }
-        });
-        this.menu_action.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.19
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                if (CameraActivity.this.sce != 1) {
-                    CameraActivity.this.titleShow("SCENE MODE\nACTION");
-                    CameraActivity cameraActivity = CameraActivity.this;
-                    cameraActivity.sce = 1;
-                    cameraActivity.camera.setFilter(cameraActivity.mAllFilters[0].newInstance());
-                    CameraActivity.this.menu_scenone.setImageResource(R.drawable.sce_off);
-                    CameraActivity.this.menu_night.setImageResource(R.drawable.night);
-                    CameraActivity.this.menu_action.setImageResource(R.drawable.action_on);
-                }
-            }
-        });
-        this.menu_night.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.20
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                if (CameraActivity.this.sce != 2) {
-                    CameraActivity.this.titleShow("SCENE MODE\nNIGHT");
-                    CameraActivity cameraActivity = CameraActivity.this;
-                    cameraActivity.sce = 2;
-                    cameraActivity.camera.setFilter(cameraActivity.mAllFilters[21].newInstance());
-                    CameraActivity.this.menu_scenone.setImageResource(R.drawable.sce_off);
-                    CameraActivity.this.menu_night.setImageResource(R.drawable.night_on);
-                    CameraActivity.this.menu_action.setImageResource(R.drawable.action);
-                }
-            }
-        });
-        this.menu_scenone.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.21
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                if (CameraActivity.this.sce != 0) {
-                    CameraActivity.this.titleShow("SCENE MODE\nNONE");
-                    CameraActivity cameraActivity = CameraActivity.this;
-                    cameraActivity.sce = 0;
-                    cameraActivity.camera.setFilter(cameraActivity.mAllFilters[0].newInstance());
-                    CameraActivity.this.menu_scenone.setImageResource(R.drawable.sce_on);
-                    CameraActivity.this.menu_night.setImageResource(R.drawable.night);
-                    CameraActivity.this.menu_action.setImageResource(R.drawable.action);
-                }
-            }
-        });
-        this.menu_volume.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.22
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                if (CameraActivity.this.isSound) {
-                    CameraActivity cameraActivity = CameraActivity.this;
-                    cameraActivity.isSound = false;
-                    cameraActivity.menu_volume.setImageResource(R.drawable.volume_mute);
-                    return;
-                }
-                CameraActivity.this.menu_volume.setImageResource(R.drawable.volume);
-                CameraActivity.this.isSound = true;
-            }
-        });
-        this.menu_timerclose.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.23
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                if (CameraActivity.this.timer != 0) {
-                    CameraActivity cameraActivity = CameraActivity.this;
-                    cameraActivity.timer = 0;
-                    cameraActivity.menu_timerclose.setTextColor(ContextCompat.getColor(CameraActivity.this, R.color.color_back));
-                    CameraActivity.this.menu_timer3s.setTextColor(ContextCompat.getColor(CameraActivity.this, R.color.color_white));
-                    CameraActivity.this.menu_timer5s.setTextColor(ContextCompat.getColor(CameraActivity.this, R.color.color_white));
-                    CameraActivity.this.menu_timer9s.setTextColor(ContextCompat.getColor(CameraActivity.this, R.color.color_white));
-                }
-            }
-        });
-        this.menu_timer3s.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.24
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                if (CameraActivity.this.timer != 3) {
-                    CameraActivity cameraActivity = CameraActivity.this;
-                    cameraActivity.timer = 3;
-                    cameraActivity.menu_timerclose.setTextColor(ContextCompat.getColor(CameraActivity.this, R.color.color_white));
-                    CameraActivity.this.menu_timer3s.setTextColor(ContextCompat.getColor(CameraActivity.this, R.color.color_back));
-                    CameraActivity.this.menu_timer5s.setTextColor(ContextCompat.getColor(CameraActivity.this, R.color.color_white));
-                    CameraActivity.this.menu_timer9s.setTextColor(ContextCompat.getColor(CameraActivity.this, R.color.color_white));
-                }
-            }
-        });
-        this.menu_timer5s.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.25
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                if (CameraActivity.this.timer != 5) {
-                    CameraActivity cameraActivity = CameraActivity.this;
-                    cameraActivity.timer = 5;
-                    cameraActivity.menu_timerclose.setTextColor(ContextCompat.getColor(CameraActivity.this, R.color.color_white));
-                    CameraActivity.this.menu_timer3s.setTextColor(ContextCompat.getColor(CameraActivity.this, R.color.color_white));
-                    CameraActivity.this.menu_timer5s.setTextColor(ContextCompat.getColor(CameraActivity.this, R.color.color_back));
-                    CameraActivity.this.menu_timer9s.setTextColor(ContextCompat.getColor(CameraActivity.this, R.color.color_white));
-                }
-            }
-        });
-        this.menu_timer9s.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.26
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                if (CameraActivity.this.timer != 9) {
-                    CameraActivity cameraActivity = CameraActivity.this;
-                    cameraActivity.timer = 9;
-                    cameraActivity.menu_timerclose.setTextColor(ContextCompat.getColor(CameraActivity.this, R.color.color_white));
-                    CameraActivity.this.menu_timer3s.setTextColor(ContextCompat.getColor(CameraActivity.this, R.color.color_white));
-                    CameraActivity.this.menu_timer5s.setTextColor(ContextCompat.getColor(CameraActivity.this, R.color.color_white));
-                    CameraActivity.this.menu_timer9s.setTextColor(ContextCompat.getColor(CameraActivity.this, R.color.color_back));
-                }
-            }
-        });
-        this.menu_off.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.27
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                if (CameraActivity.this.camera.getGrid() != Grid.OFF) {
-                    CameraActivity.this.camera.setGrid(Grid.OFF);
-                    CameraActivity.this.menu_off.setTextColor(ContextCompat.getColor(CameraActivity.this, R.color.color_back));
-                    CameraActivity.this.menu_3.setTextColor(ContextCompat.getColor(CameraActivity.this, R.color.color_white));
-                    CameraActivity.this.menu_4.setTextColor(ContextCompat.getColor(CameraActivity.this, R.color.color_white));
-                    CameraActivity.this.menu_phi.setTextColor(ContextCompat.getColor(CameraActivity.this, R.color.color_white));
-                }
-            }
-        });
-        this.menu_3.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.28
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                if (CameraActivity.this.camera.getGrid() != Grid.DRAW_3X3) {
-                    CameraActivity.this.camera.setGrid(Grid.DRAW_3X3);
-                    CameraActivity.this.menu_off.setTextColor(ContextCompat.getColor(CameraActivity.this, R.color.color_white));
-                    CameraActivity.this.menu_3.setTextColor(ContextCompat.getColor(CameraActivity.this, R.color.color_back));
-                    CameraActivity.this.menu_4.setTextColor(ContextCompat.getColor(CameraActivity.this, R.color.color_white));
-                    CameraActivity.this.menu_phi.setTextColor(ContextCompat.getColor(CameraActivity.this, R.color.color_white));
-                }
-            }
-        });
-        this.menu_4.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.29
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                if (CameraActivity.this.camera.getGrid() != Grid.DRAW_4X4) {
-                    CameraActivity.this.camera.setGrid(Grid.DRAW_4X4);
-                    CameraActivity.this.menu_off.setTextColor(ContextCompat.getColor(CameraActivity.this, R.color.color_white));
-                    CameraActivity.this.menu_3.setTextColor(ContextCompat.getColor(CameraActivity.this, R.color.color_white));
-                    CameraActivity.this.menu_4.setTextColor(ContextCompat.getColor(CameraActivity.this, R.color.color_back));
-                    CameraActivity.this.menu_phi.setTextColor(ContextCompat.getColor(CameraActivity.this, R.color.color_white));
-                }
-            }
-        });
-        this.menu_phi.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.30
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                if (CameraActivity.this.camera.getGrid() != Grid.DRAW_PHI) {
-                    CameraActivity.this.camera.setGrid(Grid.DRAW_PHI);
-                    CameraActivity.this.menu_off.setTextColor(ContextCompat.getColor(CameraActivity.this, R.color.color_white));
-                    CameraActivity.this.menu_3.setTextColor(ContextCompat.getColor(CameraActivity.this, R.color.color_white));
-                    CameraActivity.this.menu_4.setTextColor(ContextCompat.getColor(CameraActivity.this, R.color.color_white));
-                    CameraActivity.this.menu_phi.setTextColor(ContextCompat.getColor(CameraActivity.this, R.color.color_back));
-                }
-            }
-        });
-        this.brightness_seekbar = (IndicatorSeekBar) findViewById(R.id.brightness_seekbar);
-        this.brightness_seekbar.setOnSeekChangeListener(new OnSeekChangeListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.31
-            @Override // com.warkiz.widget.OnSeekChangeListener
-            public void onSeeking(SeekParams seekParams) {
-            }
-
-            @Override // com.warkiz.widget.OnSeekChangeListener
-            public void onStartTrackingTouch(IndicatorSeekBar indicatorSeekBar) {
-            }
-
-            @Override // com.warkiz.widget.OnSeekChangeListener
-            public void onStopTrackingTouch(IndicatorSeekBar indicatorSeekBar) {
-                camera.setFilter(CameraActivity.this.mAllFilters[3].newInstance());
-                if (indicatorSeekBar.getProgress() == -2) {
-                    CameraActivity.this.titleShow("EXPOSURE\n-2");
-                    com.otaliastudios.cameraview.filters.BrightnessFilter brightnessFilter = new com.otaliastudios.cameraview.filters.BrightnessFilter();
-                    brightnessFilter.setBrightness(0.5F);
-               //     CameraActivity.this.camera.setFilter(CameraActivity.this.mAllFilters[3].newInstance());
-                } else if (indicatorSeekBar.getProgress() == -1) {
-                    com.otaliastudios.cameraview.filters.BrightnessFilter brightnessFilter = new com.otaliastudios.cameraview.filters.BrightnessFilter();
-                    brightnessFilter.setBrightness(1.0F);
-                    CameraActivity.this.titleShow("EXPOSURE\n-1");
-               //     CameraActivity.this.camera.setFilter(CameraActivity.this.mAllFilters[2].newInstance());
-                } else if (indicatorSeekBar.getProgress() == 0) {
-                    camera.setFilter(CameraActivity.this.mAllFilters[3].newInstance());
-                    CameraActivity.this.titleShow("EXPOSURE\n0");
-               //     CameraActivity.this.camera.setFilter(CameraActivity.this.mAllFilters[0].newInstance());
-                } else if (indicatorSeekBar.getProgress() == 1) {
-                    com.otaliastudios.cameraview.filters.BrightnessFilter brightnessFilter = new com.otaliastudios.cameraview.filters.BrightnessFilter();
-                    brightnessFilter.setBrightness(1.5F);
-                    CameraActivity.this.titleShow("EXPOSURE\n1");
-                //    CameraActivity.this.camera.setFilter(CameraActivity.this.mAllFilters[1].newInstance());
-                } else if (indicatorSeekBar.getProgress() == 2) {
-                    com.otaliastudios.cameraview.filters.BrightnessFilter brightnessFilter = new com.otaliastudios.cameraview.filters.BrightnessFilter();
-                    brightnessFilter.setBrightness(2F);
-                    CameraActivity.this.titleShow("EXPOSURE\n2");
-                   // CameraActivity.this.camera.setFilter(CameraActivity.this.mAllFilters[2].newInstance());
-                }
-            }
-        });
-        this.menu_brightness.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.32
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                if (binding.futuremain.llBrightness.getVisibility() == View.VISIBLE) {
-                    binding.futuremain.llBrightness.setVisibility(View.GONE);
-                    CameraActivity.this.menu_brightness.setImageResource(R.drawable.brigh);
-                    return;
-                }
-                binding.futuremain.llBrightness.setVisibility(View.VISIBLE);
-                CameraActivity.this.menu_brightness.setImageResource(R.drawable.brigh_on);
-                CameraActivity.this.llSce.setVisibility(View.GONE);
-                CameraActivity.this.menu_sce.setImageResource(R.drawable.sce_white_off);
-                CameraActivity.this.llWhiteBalance.setVisibility(View.GONE);
-                CameraActivity.this.menu_aw.setImageResource(R.drawable.aw);
-                CameraActivity.this.llGrid.setVisibility(View.GONE);
-                CameraActivity.this.menu_image.setImageResource(R.drawable.grid);
-            }
-        });
-        this.menu_image.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.33
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                if (CameraActivity.this.llGrid.getVisibility() == View.VISIBLE) {
-                    CameraActivity.this.llGrid.setVisibility(View.GONE);
-                    CameraActivity.this.menu_image.setImageResource(R.drawable.grid);
-                    return;
-                }
-                CameraActivity.this.llGrid.setVisibility(View.VISIBLE);
-                CameraActivity.this.menu_image.setImageResource(R.drawable.grid_on);
-                CameraActivity.this.llSce.setVisibility(View.GONE);
-                CameraActivity.this.menu_sce.setImageResource(R.drawable.sce_white_off);
-                CameraActivity.this.llWhiteBalance.setVisibility(View.GONE);
-                CameraActivity.this.menu_aw.setImageResource(R.drawable.aw);
-                binding.futuremain.llBrightness.setVisibility(View.GONE);
-                CameraActivity.this.menu_brightness.setImageResource(R.drawable.brigh);
-            }
-        });
-        this.rvFilterList = (RecyclerView) findViewById(R.id.rvFilterList);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        linearLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
-        this.rvFilterList.setLayoutManager(linearLayoutManager);
-        FilterAdapter filterAdapter = new FilterAdapter(this, this.mAllFilters);
-        this.rvFilterList.setAdapter(filterAdapter);
-        filterAdapter.setOnFilterChangeListener(new FilterAdapter.OnFilterChangeListener() {
-            @Override
-            public void onFilterChanged(int i) {
-                if (CameraActivity.this.camera.getPreview() == Preview.GL_SURFACE) {
-                    CameraActivity cameraActivity = CameraActivity.this;
-                    cameraActivity.mCurrentFilter = i;
-                    Filters filters = cameraActivity.mAllFilters[CameraActivity.this.mCurrentFilter];
-                    binding.tvToast.setText(filters.toString() + "");
-                    binding.tvToast.setVisibility(View.VISIBLE);
-                    Handler handler = new Handler();
-                    // java.lang.Runnable
-                    handler.postDelayed(() -> binding.tvToast.startAnimation(AnimationUtils.loadAnimation(CameraActivity.this, R.anim.toast)), 300L);
-                    handler.postDelayed(() -> binding.tvToast.setVisibility(View.GONE), 1300L);
-                    CameraActivity.this.camera.setFilter(filters.newInstance());
-                }
-            }
-        });
-
-//        this.camera.setCall(new SwpieCallBack() { // from class: com.cameraediter.iphone11pro.CameraActivity.35
-//            @Override // com.otaliastudios.cameraview.SwpieCallBack
-//            public void onSwipeValue(int i) {
-//                if (i != 0) {
-//                    if (i == 1) {
-//                        CameraActivity.this.shutter_button.setEnabled(true);
-//                        if (CameraActivity.this.mWheelview.getSelectedPosition() == 2) {
-//                            if (CameraActivity.this.camera.getFacing().equals(Facing.FRONT)) {
-//                                CameraActivity.this.frontPhoto();
-//                            } else {
-//                                CameraActivity.this.backPhoto();
-//                            }
-//                            CameraActivity.this.mWheelview.selectIndex(1);
-//                            CameraActivity cameraActivity = CameraActivity.this;
-//                            cameraActivity.startTime = 0L;
-//                            cameraActivity.timeInMilliseconds = 0L;
-//                            cameraActivity.timeSwapBuff = 0L;
-//                            cameraActivity.updatedTime = 0L;
-//                            cameraActivity.camera.setMode(Mode.PICTURE);
-//                            CameraActivity.this.llTimer.setVisibility(View.GONE);
-//                            ViewGroup.LayoutParams layoutParams = CameraActivity.this.camera.getLayoutParams();
-//                            layoutParams.width = -1;
-//                            layoutParams.height = -1;
-//                            CameraActivity cameraActivity2 = CameraActivity.this;
-//                            cameraActivity2.set(cameraActivity2.camera, -1);
-//                            CameraActivity.this.camera.setLayoutParams(layoutParams);
-//                            CameraActivity.this.shutter_button.setImageResource(R.drawable.btn_photo_shutter);
-//                            return;
-//                        } else if (CameraActivity.this.mWheelview.getSelectedPosition() == 1) {
-//                            if (CameraActivity.this.camera.getFacing().equals(Facing.FRONT)) {
-//                                CameraActivity.this.frontVideo();
-//                            } else {
-//                                CameraActivity.this.backVideo();
-//                            }
-//                            CameraActivity.this.mWheelview.selectIndex(0);
-//                            CameraActivity.this.camera.setMode(Mode.VIDEO);
-//                            CameraActivity.this.llTimer.setVisibility(View.VISIBLE);
-//                            CameraActivity.this.rvFilterList.setVisibility(View.GONE);
-//                            CameraActivity.this.camera.setFilter(CameraActivity.this.mAllFilters[0].newInstance());
-//                            ViewGroup.LayoutParams layoutParams2 = CameraActivity.this.camera.getLayoutParams();
-//                            layoutParams2.width = -1;
-//                            layoutParams2.height = -1;
-//                            CameraActivity.this.camera.setLayoutParams(layoutParams2);
-//                            CameraActivity cameraActivity3 = CameraActivity.this;
-//                            cameraActivity3.set(cameraActivity3.camera, -1);
-//                            CameraActivity.this.shutter_button.setImageResource(R.drawable.btn_new_shutter);
-//                            return;
-//                        } else {
-//                            return;
-//                        }
-//                    }
-//                    return;
-//                }
-//                CameraActivity.this.shutter_button.setEnabled(true);
-//                if (CameraActivity.this.mWheelview.getSelectedPosition() == 0) {
-//                    if (CameraActivity.this.camera.getFacing().equals(Facing.FRONT)) {
-//                        CameraActivity.this.frontPhoto();
-//                    } else {
-//                        CameraActivity.this.backPhoto();
-//                    }
-//                    CameraActivity.this.mWheelview.selectIndex(1);
-//                    CameraActivity cameraActivity4 = CameraActivity.this;
-//                    cameraActivity4.startTime = 0L;
-//                    cameraActivity4.timeInMilliseconds = 0L;
-//                    cameraActivity4.timeSwapBuff = 0L;
-//                    cameraActivity4.updatedTime = 0L;
-//                    cameraActivity4.camera.setMode(Mode.PICTURE);
-//                    CameraActivity.this.llTimer.setVisibility(View.GONE);
-//                    ViewGroup.LayoutParams layoutParams3 = CameraActivity.this.camera.getLayoutParams();
-//                    layoutParams3.width = -1;
-//                    layoutParams3.height = -1;
-//                    CameraActivity cameraActivity5 = CameraActivity.this;
-//                    cameraActivity5.set(cameraActivity5.camera, -1);
-//                    CameraActivity.this.camera.setLayoutParams(layoutParams3);
-//                    CameraActivity.this.shutter_button.setImageResource(R.drawable.btn_photo_shutter);
-//                } else if (CameraActivity.this.mWheelview.getSelectedPosition() == 1) {
-//                    if (CameraActivity.this.camera.getFacing().equals(Facing.FRONT)) {
-//                        CameraActivity.this.frontPhoto();
-//                    } else {
-//                        CameraActivity.this.backPhoto();
-//                    }
-//                    CameraActivity.this.mWheelview.selectIndex(2);
-//                    CameraActivity cameraActivity6 = CameraActivity.this;
-//                    cameraActivity6.startTime = 0L;
-//                    cameraActivity6.timeInMilliseconds = 0L;
-//                    cameraActivity6.timeSwapBuff = 0L;
-//                    cameraActivity6.updatedTime = 0L;
-//                    cameraActivity6.camera.setMode(Mode.PICTURE);
-//                    CameraActivity.this.llTimer.setVisibility(View.GONE);
-//                    ViewGroup.LayoutParams layoutParams4 = CameraActivity.this.camera.getLayoutParams();
-//                    int measuredWidth = CameraActivity.this.camera.getMeasuredWidth();
-//                    layoutParams4.width = -1;
-//                    layoutParams4.height = measuredWidth;
-//                    CameraActivity.this.camera.setLayoutParams(layoutParams4);
-//                    CameraActivity cameraActivity7 = CameraActivity.this;
-//                    cameraActivity7.set(cameraActivity7.camera, Integer.valueOf(measuredWidth));
-//                    CameraActivity.this.shutter_button.setImageResource(R.drawable.btn_photo_shutter);
-//                }
-//            }
-//
-//            public void onTapValue(int i) {
-//                if (CameraActivity.this.setting_feature.getVisibility() == View.VISIBLE) {
-//                    CameraActivity.this.menu_setting.performClick();
-//                }
-//                if (CameraActivity.this.llTimerClick.getVisibility() == View.VISIBLE) {
-//                    CameraActivity.this.menu_time.performClick();
-//                }
-//                CameraActivity.this.rvFilterList.setVisibility(View.GONE);
-//            }
-//        });
-        new Handler().postDelayed(new Runnable() {
-            @Override // java.lang.Runnable
-            public void run() {
-                CameraActivity.this.getcurrentlocationinfo();
-            }
-        }, 10000L);
-        this.date = new Date();
     }
 
-    public void capturePhoto() {
-        System.currentTimeMillis();
-        this.camera.addCameraListener(new Listener());
-        int i = this.timer;
+    private fun initView() {
+        mp = MediaPlayer.create(this, R.raw.camera)
+        audioManager = applicationContext.getSystemService(AUDIO_SERVICE) as AudioManager
+        audioManager!!.setStreamVolume(3, audioManager!!.getStreamVolume(3), 0)
+    }
+
+    fun capturePhoto() {
+        System.currentTimeMillis()
+        camera!!.addCameraListener(Listener())
+        val i = timer
         if (i != 0) {
-            this.count = (i * 1000) + 1000;
-            this.counter = i;
-            new CountDownTimer(this.count, 1000L) {
-                @Override // android.os.CountDownTimer
-                public void onTick(long j) {
-                    CameraActivity.this.timerCounter.startAnimation(AnimationUtils.loadAnimation(CameraActivity.this.getApplicationContext(), R.anim.fadeout));
-                    CameraActivity.this.timerCounter.setText(String.valueOf(CameraActivity.this.counter));
-                    CameraActivity cameraActivity = CameraActivity.this;
-                    cameraActivity.counter--;
+            count = i * 1000 + 1000
+            counter = i
+            object : CountDownTimer(count.toLong(), 1000L) {
+                override fun onTick(j: Long) {
+                    binding.timerCounter.startAnimation(
+                        AnimationUtils.loadAnimation(
+                            applicationContext, R.anim.fadeout
+                        )
+                    )
+                    binding.timerCounter.text = counter.toString()
+                    val cameraActivity = this@CameraActivity
+                    cameraActivity.counter--
                 }
 
-                @Override
-                public void onFinish() {
-                    CameraActivity.this.timerCounter.setText("");
-                    if (CameraActivity.this.camera.getFlash() == Flash.ON) {
-                        CameraActivity cameraActivity = CameraActivity.this;
-                        cameraActivity.flashPos = 2;
-                        cameraActivity.camera.setFlash(Flash.TORCH);
-                        new Handler().postDelayed(new Runnable() {
-                            @Override // java.lang.Runnable
-                            public void run() {
-                                if (CameraActivity.this.isSound) {
-                                    CameraActivity.this.mp.start();
-                                }
-                                CameraActivity.this.camera.takePictureSnapshot();
+                override fun onFinish() {
+                    binding.timerCounter.text = ""
+                    if (camera!!.flash == Flash.ON) {
+                        val cameraActivity = this@CameraActivity
+                        cameraActivity.flashPos = 2
+                        cameraActivity.camera!!.flash = Flash.TORCH
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            if (isSound) {
+                                mp!!.start()
                             }
-                        }, 500L);
-                    } else if (CameraActivity.this.camera.getFlash() == Flash.AUTO) {
-                        CameraActivity cameraActivity2 = CameraActivity.this;
-                        cameraActivity2.flashPos = 1;
-                        cameraActivity2.camera.setFlash(Flash.TORCH);
-                        new Handler().postDelayed(new Runnable() {
-                            @Override // java.lang.Runnable
-                            public void run() {
-                                if (CameraActivity.this.isSound) {
-                                    CameraActivity.this.mp.start();
-                                }
-                                CameraActivity.this.camera.takePictureSnapshot();
+                            camera!!.takePictureSnapshot()
+                        }, 500L)
+                    } else if (camera!!.flash == Flash.AUTO) {
+                        val cameraActivity2 = this@CameraActivity
+                        cameraActivity2.flashPos = 1
+                        cameraActivity2.camera!!.flash = Flash.TORCH
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            if (isSound) {
+                                mp!!.start()
                             }
-                        }, 500L);
+                            camera!!.takePictureSnapshot()
+                        }, 500L)
                     } else {
-                        CameraActivity cameraActivity3 = CameraActivity.this;
-                        cameraActivity3.flashPos = 0;
+                        val cameraActivity3 = this@CameraActivity
+                        cameraActivity3.flashPos = 0
                         if (cameraActivity3.isSound) {
-                            CameraActivity.this.mp.start();
+                            mp!!.start()
                         }
-                        CameraActivity.this.camera.takePictureSnapshot();
+                        camera!!.takePictureSnapshot()
                     }
                 }
-            }.start();
-        } else if (this.camera.getFlash() == Flash.ON) {
-            this.flashPos = 2;
-            this.camera.setFlash(Flash.TORCH);
-            new Handler().postDelayed(new Runnable() {
-                @Override // java.lang.Runnable
-                public void run() {
-                    if (CameraActivity.this.isSound) {
-                        CameraActivity.this.mp.start();
-                    }
-                    CameraActivity.this.camera.takePictureSnapshot();
+            }.start()
+        } else if (camera!!.flash == Flash.ON) {
+            flashPos = 2
+            camera!!.flash = Flash.TORCH
+            Handler(Looper.getMainLooper()).postDelayed({
+                if (isSound) {
+                    mp!!.start()
                 }
-            }, 500L);
-        } else if (this.camera.getFlash() == Flash.AUTO) {
-            this.flashPos = 1;
-            this.camera.setFlash(Flash.TORCH);
-            new Handler().postDelayed(new Runnable() {
-                @Override // java.lang.Runnable
-                public void run() {
-                    if (CameraActivity.this.isSound) {
-                        CameraActivity.this.mp.start();
-                    }
-                    CameraActivity.this.camera.takePictureSnapshot();
+                camera!!.takePictureSnapshot()
+            }, 500L)
+        } else if (camera!!.flash == Flash.AUTO) {
+            flashPos = 1
+            camera!!.flash = Flash.TORCH
+            Handler(Looper.getMainLooper()).postDelayed({
+                if (isSound) {
+                    mp!!.start()
                 }
-            }, 500L);
+                camera!!.takePictureSnapshot()
+            }, 500L)
         } else {
-            this.flashPos = 0;
-            if (this.isSound) {
-                this.mp.start();
+            flashPos = 0
+            if (isSound) {
+                mp!!.start()
             }
-            this.camera.takePictureSnapshot();
+            camera!!.takePictureSnapshot()
         }
     }
 
-    public void getImage(Bitmap bitmap) {
-        Date date = new Date(System.currentTimeMillis());
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
-        String format = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        simpleDateFormat.format(date);
-        final File file = new File(Const.PATH + "/IMG" + this.i + "" + format + "." + getMimeType(Bitmap.CompressFormat.JPEG));
+    fun getImage(bitmap: Bitmap) {
+        val date = Date(System.currentTimeMillis())
+        val simpleDateFormat = SimpleDateFormat("yyyyMMdd_HHmmss")
+        val format = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        simpleDateFormat.format(date)
+        val file =
+            File(Const.PATH + "/IMG" + i + "" + format + "." + getMimeType(CompressFormat.JPEG))
         if (file.exists()) {
-            file.delete();
+            file.delete()
         }
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
-            fileOutputStream.flush();
-            fileOutputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+            val fileOutputStream = FileOutputStream(file)
+            bitmap.compress(CompressFormat.JPEG, 100, fileOutputStream)
+            fileOutputStream.flush()
+            fileOutputStream.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Glide.with((FragmentActivity) CameraActivity.this).load(file.getAbsolutePath()).into(CameraActivity.this.image_thumb);
-                CameraActivity.this.image_thumb.setImageURI(Uri.fromFile(file));
-                CameraActivity.this.image_thumb.startAnimation(AnimationUtils.loadAnimation(CameraActivity.this.getApplicationContext(), R.anim.fade_out));
-            }
-        });
+        runOnUiThread {
+            Glide.with((this@CameraActivity as FragmentActivity)).load(file.absolutePath).into(
+                binding.imageThumb
+            )
+            binding.imageThumb.setImageURI(Uri.fromFile(file))
+            binding.imageThumb.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_out))
+        }
         try {
-            if (this.isLocation) {
-                getLocation(file);
+            if (isLocation) {
+                getLocation(file)
             }
-        } catch (Exception e2) {
-            e2.printStackTrace();
+        } catch (e2: Exception) {
+            e2.printStackTrace()
         }
-        this.arrayPhotoVideo.add(new ListModel(file.getAbsolutePath()));
-        galleryAddPic(file.getAbsolutePath());
-        int i = this.flashPos;
+        arrayPhotoVideo.add(ListModel(file.absolutePath))
+        galleryAddPic(file.absolutePath)
+        val i = flashPos
         if (i == 2) {
-            this.camera.setFlash(Flash.ON);
+            camera!!.flash = Flash.ON
         } else if (i == 1) {
-            this.camera.setFlash(Flash.AUTO);
+            camera!!.flash = Flash.AUTO
         }
     }
 
-    public void captureVideo() {
-        if (this.isRecordvdo) {
-            this.isRecordvdo = false;
-            this.timeSwapBuff += this.timeInMilliseconds;
-            this.customHandler.removeCallbacks(this.updateTimerThread);
-            this.timerText.setText("00:00");
-            this.shutter_button.setImageResource(R.drawable.btn_new_shutter);
-            this.camera.stopVideo();
-            this.startTime = 0L;
-            this.timeInMilliseconds = 0L;
-            this.timeSwapBuff = 0L;
-            this.updatedTime = 0L;
-            if (this.camera.getFlash() == Flash.TORCH) {
-                this.camera.setFlash(Flash.OFF);
-                this.isOff = true;
-                return;
+    fun captureVideo() {
+        if (isRecordvdo) {
+            isRecordvdo = false
+            timeSwapBuff += timeInMilliseconds
+            customHandler.removeCallbacks(updateTimerThread)
+            binding.timerText.text = "00:00"
+            binding.shutterButton.setImageResource(R.drawable.btn_new_shutter)
+            camera!!.stopVideo()
+            startTime = 0L
+            timeInMilliseconds = 0L
+            timeSwapBuff = 0L
+            updatedTime = 0L
+            if (camera!!.flash == Flash.TORCH) {
+                camera!!.flash = Flash.OFF
+                isOff = true
+                return
             }
-            return;
+            return
         }
-        if (this.camera.getFlash() == Flash.ON) {
-            this.camera.setFlash(Flash.TORCH);
+        if (camera!!.flash == Flash.ON) {
+            camera!!.flash = Flash.TORCH
         }
-        this.isRecordvdo = true;
-        this.startTime = SystemClock.uptimeMillis();
-        this.customHandler.postDelayed(this.updateTimerThread, 0L);
-        this.camera.addCameraListener(new Listener());
-        this.camera.takeVideo(new File(getFilesDir(), "video.mp4"));
-        this.shutter_button.setImageResource(R.drawable.btn_new_shutter_stop_video);
+        isRecordvdo = true
+        startTime = SystemClock.uptimeMillis()
+        customHandler.postDelayed(updateTimerThread, 0L)
+        camera!!.addCameraListener(Listener())
+        camera!!.takeVideo(File(filesDir, "video.mp4"))
+        binding.shutterButton.setImageResource(R.drawable.btn_new_shutter_stop_video)
     }
 
-    public void set(CameraView cameraView, Integer num) {
-        cameraView.getLayoutParams().height = num.intValue();
-        cameraView.setLayoutParams(cameraView.getLayoutParams());
+    operator fun set(cameraView: CameraView?, num: Int?) {
+        cameraView!!.layoutParams.height = num!!
+        cameraView.layoutParams = cameraView.layoutParams
     }
 
-    @Override
-    public void onWheelItemSelected(WheelView wheelView, int i) {
+    override fun onWheelItemSelected(wheelView: WheelView, i: Int) {
         if (i == 0) {
-            if (this.camera.getFacing().equals(Facing.FRONT)) {
-                frontVideo();
+            if (camera!!.facing == Facing.FRONT) {
+                frontVideo()
             } else {
-                backVideo();
+                backVideo()
             }
-            this.camera.setMode(Mode.VIDEO);
-            this.llTimer.setVisibility(View.VISIBLE);
-            this.rvFilterList.setVisibility(View.GONE);
-            this.camera.setFilter(this.mAllFilters[0].newInstance());
-            ViewGroup.LayoutParams layoutParams = this.camera.getLayoutParams();
-            layoutParams.width = -1;
-            layoutParams.height = -1;
-            this.camera.setLayoutParams(layoutParams);
-            set(this.camera, -1);
-            this.shutter_button.setImageResource(R.drawable.btn_new_shutter);
+            camera!!.mode = Mode.VIDEO
+            binding.llTimer.visibility = View.VISIBLE
+            binding.rvFilterList.visibility = View.GONE
+            camera!!.setFilter(mAllFilters[0].newInstance())
+            val layoutParams = camera!!.layoutParams
+            layoutParams.width = -1
+            layoutParams.height = -1
+            camera!!.layoutParams = layoutParams
+            set(camera, -1)
+            binding.shutterButton.setImageResource(R.drawable.btn_new_shutter)
         } else if (i == 1) {
-            if (this.camera.getFacing().equals(Facing.FRONT)) {
-                frontPhoto();
+            if (camera!!.facing == Facing.FRONT) {
+                frontPhoto()
             } else {
-                backPhoto();
+                backPhoto()
             }
-            this.startTime = 0L;
-            this.timeInMilliseconds = 0L;
-            this.timeSwapBuff = 0L;
-            this.updatedTime = 0L;
-            this.camera.setMode(Mode.PICTURE);
-            this.llTimer.setVisibility(View.GONE);
-            ViewGroup.LayoutParams layoutParams2 = this.camera.getLayoutParams();
-            layoutParams2.width = -1;
-            layoutParams2.height = -1;
-            set(this.camera, -1);
-            this.camera.setLayoutParams(layoutParams2);
-            this.shutter_button.setImageResource(R.drawable.btn_photo_shutter);
+            startTime = 0L
+            timeInMilliseconds = 0L
+            timeSwapBuff = 0L
+            updatedTime = 0L
+            camera!!.mode = Mode.PICTURE
+            binding.llTimer.visibility = View.GONE
+            val layoutParams2 = camera!!.layoutParams
+            layoutParams2.width = -1
+            layoutParams2.height = -1
+            set(camera, -1)
+            camera!!.layoutParams = layoutParams2
+            binding.shutterButton.setImageResource(R.drawable.btn_photo_shutter)
         } else if (i == 2) {
-            if (this.camera.getFacing().equals(Facing.FRONT)) {
-                frontPhoto();
+            if (camera!!.facing == Facing.FRONT) {
+                frontPhoto()
             } else {
-                backPhoto();
+                backPhoto()
             }
-            this.startTime = 0L;
-            this.timeInMilliseconds = 0L;
-            this.timeSwapBuff = 0L;
-            this.updatedTime = 0L;
-            this.camera.setMode(Mode.PICTURE);
-            this.llTimer.setVisibility(View.GONE);
-            ViewGroup.LayoutParams layoutParams3 = this.camera.getLayoutParams();
-            int measuredWidth = this.camera.getMeasuredWidth();
-            layoutParams3.width = -1;
-            layoutParams3.height = measuredWidth;
-            this.camera.setLayoutParams(layoutParams3);
-            set(this.camera, Integer.valueOf(measuredWidth));
-            this.shutter_button.setImageResource(R.drawable.btn_photo_shutter);
+            startTime = 0L
+            timeInMilliseconds = 0L
+            timeSwapBuff = 0L
+            updatedTime = 0L
+            camera!!.mode = Mode.PICTURE
+            binding.llTimer.visibility = View.GONE
+            val layoutParams3 = camera!!.layoutParams
+            val measuredWidth = camera!!.measuredWidth
+            layoutParams3.width = -1
+            layoutParams3.height = measuredWidth
+            camera!!.layoutParams = layoutParams3
+            set(camera, Integer.valueOf(measuredWidth))
+            binding.shutterButton.setImageResource(R.drawable.btn_photo_shutter)
         }
     }
 
-    public void toggleFlash() {
-        if (this.camera.getFlash() == Flash.OFF) {
-            titleShow("FLASH MODE\nFLASH ON");
-            this.camera.setFlash(Flash.ON);
-            binding.futuremain.menuFlash.setImageResource(R.drawable.flash);
-        } else if (this.camera.getFlash() == Flash.ON) {
-            titleShow("FLASH MODE\nFLASH AUTO");
-            this.camera.setFlash(Flash.AUTO);
-            binding.futuremain.menuFlash.setImageResource(R.drawable.flash_auto);
-        } else if (this.camera.getFlash() == Flash.AUTO) {
-            titleShow("FLASH MODE\nFLASH OFF");
-            this.camera.setFlash(Flash.OFF);
-            binding.futuremain.menuFlash.setImageResource(R.drawable.flash_off);
+    fun toggleFlash() {
+        if (camera!!.flash == Flash.OFF) {
+            titleShow("FLASH MODE\nFLASH ON")
+            camera!!.flash = Flash.ON
+            binding.futuremain.menuFlash.setImageResource(R.drawable.flash)
+        } else if (camera!!.flash == Flash.ON) {
+            titleShow("FLASH MODE\nFLASH AUTO")
+            camera!!.flash = Flash.AUTO
+            binding.futuremain.menuFlash.setImageResource(R.drawable.flash_auto)
+        } else if (camera!!.flash == Flash.AUTO) {
+            titleShow("FLASH MODE\nFLASH OFF")
+            camera!!.flash = Flash.OFF
+            binding.futuremain.menuFlash.setImageResource(R.drawable.flash_off)
         }
     }
 
-    public static class AnonymousClass44 {
-        static final int[] $SwitchMap$android$graphics$Bitmap$CompressFormat;
-        static final int[] $SwitchMap$com$otaliastudios$cameraview$controls$Facing = new int[Facing.values().length];
+    object AnonymousClass44 {
+        val BitmapCompressFormat: IntArray
+        val cameraviewControlsFacing = IntArray(Facing.values().size)
 
-        static {
+        init {
             try {
-                $SwitchMap$com$otaliastudios$cameraview$controls$Facing[Facing.BACK.ordinal()] = 1;
-            } catch (NoSuchFieldError unused) {
+                cameraviewControlsFacing[Facing.BACK.ordinal] = 1
+            } catch (_: NoSuchFieldError) {
             }
             try {
-                $SwitchMap$com$otaliastudios$cameraview$controls$Facing[Facing.FRONT.ordinal()] = 2;
-            } catch (NoSuchFieldError unused2) {
+                cameraviewControlsFacing[Facing.FRONT.ordinal] = 2
+            } catch (_: NoSuchFieldError) {
             }
-            $SwitchMap$android$graphics$Bitmap$CompressFormat = new int[Bitmap.CompressFormat.values().length];
+            BitmapCompressFormat = IntArray(CompressFormat.values().size)
             try {
-                $SwitchMap$android$graphics$Bitmap$CompressFormat[Bitmap.CompressFormat.JPEG.ordinal()] = 1;
-            } catch (NoSuchFieldError unused3) {
+                BitmapCompressFormat[CompressFormat.JPEG.ordinal] = 1
+            } catch (_: NoSuchFieldError) {
             }
             try {
-                $SwitchMap$android$graphics$Bitmap$CompressFormat[Bitmap.CompressFormat.PNG.ordinal()] = 2;
-            } catch (NoSuchFieldError unused4) {
+                BitmapCompressFormat[CompressFormat.PNG.ordinal] = 2
+            } catch (_: NoSuchFieldError) {
             }
         }
     }
 
-    public void toggleCamera() {
-        if (this.camera.isTakingPicture() || this.camera.isTakingVideo()) {
-            return;
+    fun toggleCamera() {
+        if (camera!!.isTakingPicture || camera!!.isTakingVideo) {
+            return
         }
-        int i = AnonymousClass44.$SwitchMap$com$otaliastudios$cameraview$controls$Facing[this.camera.toggleFacing().ordinal()];
+        val i = AnonymousClass44.cameraviewControlsFacing[camera!!.toggleFacing().ordinal]
         if (i == 1) {
-            if (this.mWheelview.getSelectedPosition() == 0) {
-                backVideo();
+            if (binding.wheelview.selectedPosition == 0) {
+                backVideo()
             } else {
-                backPhoto();
+                backPhoto()
             }
         } else if (i != 2) {
         } else {
-            if (this.mWheelview.getSelectedPosition() == 0) {
-                frontVideo();
+            if (binding.wheelview.selectedPosition == 0) {
+                frontVideo()
             } else {
-                frontPhoto();
+                frontPhoto()
             }
         }
     }
 
-    public void galleryAddPic(String str) {
-        Intent intent = new Intent("android.intent.action.MEDIA_SCANNER_SCAN_FILE");
-        intent.setData(Uri.fromFile(new File(str)));
-        sendBroadcast(intent);
+    fun galleryAddPic(str: String?) {
+        val intent = Intent("android.intent.action.MEDIA_SCANNER_SCAN_FILE")
+        intent.data = Uri.fromFile(File(str.toString()))
+        sendBroadcast(intent)
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        this.camera.open();
-        this.date = new Date();
-        this.rvFilterList.setVisibility(View.GONE);
-        this.isRecordvdo = false;
+    public override fun onResume() {
+        super.onResume()
+        camera!!.open()
+        date = Date()
+        binding.rvFilterList.visibility = View.GONE
+        isRecordvdo = false
         try {
-            if (this.file.isDirectory()) {
-                this.listFile = this.file.listFiles();
-                Arrays.sort(this.listFile, new Comparator<File>() {
-                    @Override // java.util.Comparator
-                    public int compare(File file, File file2) {
-                        return Long.valueOf(file.lastModified()).compareTo(Long.valueOf(file2.lastModified()));
-                    }
-                });
-                this.arrayPhotoVideo.clear();
-                this.FilePathStrings = new String[this.listFile.length];
-                if (this.listFile.length != 0) {
-                    Glide.with((FragmentActivity) this).load(this.listFile[this.listFile.length - 1].getAbsolutePath()).into(this.image_thumb);
-                    this.i += this.listFile.length;
-                } else {
-                    this.image_thumb.setImageResource(R.drawable.ic_launcher_background);
+            if (file!!.isDirectory) {
+                listFile = file!!.listFiles()!!
+                Arrays.sort(listFile) { file: File, file2: File ->
+                    java.lang.Long.valueOf(file.lastModified())
+                        .compareTo(java.lang.Long.valueOf(file2.lastModified()))
                 }
-                this.i = 0;
-                while (this.i < this.FilePathStrings.length) {
-                    this.arrayPhotoVideo.add(new ListModel(this.FilePathStrings[this.i]));
-                    this.i++;
+                arrayPhotoVideo.clear()
+                FilePathStrings = arrayOfNulls(listFile.size)
+                if (listFile.size != 0) {
+                    Glide.with((this as FragmentActivity))
+                        .load(listFile[listFile.size - 1].absolutePath).into(
+                        binding.imageThumb
+                    )
+                    i += listFile.size
+                } else {
+                    binding.imageThumb.setImageResource(R.drawable.ic_launcher_background)
+                }
+                i = 0
+                while (i < FilePathStrings.size) {
+                    arrayPhotoVideo.add(ListModel(FilePathStrings[i]))
+                    i++
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
-    @Override
-    public void onDestroy() {
-        this.camera.close();
-        super.onDestroy();
+    public override fun onDestroy() {
+        camera!!.close()
+        super.onDestroy()
     }
 
-    @Override
-    public boolean onKeyDown(int i, KeyEvent keyEvent) {
+    override fun onKeyDown(i: Int, keyEvent: KeyEvent): Boolean {
         if (i != 4) {
-            return true;
+            return true
         }
-        onBackPressed();
-        return true;
+        onBackPressed()
+        return true
     }
 
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent keyEvent) {
-        int action = keyEvent.getAction();
-        int keyCode = keyEvent.getKeyCode();
-        if (keyCode == 24) {
+    override fun dispatchKeyEvent(keyEvent: KeyEvent): Boolean {
+        val action = keyEvent.action
+        val keyCode = keyEvent.keyCode
+        return if (keyCode == 24) {
             if (action == 0) {
-                this.audioManager.adjustVolume(1, 4);
-                this.audioManager.adjustStreamVolume(3, 1, 1);
+                audioManager!!.adjustVolume(1, 4)
+                audioManager!!.adjustStreamVolume(3, 1, 1)
             }
-            return true;
+            true
         } else if (keyCode != 25) {
-            return super.dispatchKeyEvent(keyEvent);
+            super.dispatchKeyEvent(keyEvent)
         } else {
             if (action == 0) {
-                this.audioManager.adjustVolume(-1, 4);
-                this.audioManager.adjustStreamVolume(3, -1, 1);
+                audioManager!!.adjustVolume(-1, 4)
+                audioManager!!.adjustStreamVolume(3, -1, 1)
             }
-            return true;
+            true
         }
     }
 
-    public void titleShow(String str) {
-        binding.tvFunctionName.setText(str);
-        binding.tvFunctionName.setVisibility(View.VISIBLE);
-        binding.tvFunctionName.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fadeani));
-        new Handler().postDelayed(new Runnable() { // from class: com.cameraediter.iphone11pro.CameraActivity.42
-            @Override // java.lang.Runnable
-            public void run() {
-                binding.tvFunctionName.setVisibility(View.GONE);
-            }
-        }, 1400L);
+    fun titleShow(str: String?) {
+        binding.tvFunctionName.text = str
+        binding.tvFunctionName.visibility = View.VISIBLE
+        binding.tvFunctionName.startAnimation(
+            AnimationUtils.loadAnimation(
+                applicationContext, R.anim.fadeani
+            )
+        )
+        Handler(Looper.getMainLooper()).postDelayed({ binding.tvFunctionName.visibility = View.GONE }, 1400L)
     }
 
-    public void frontPhoto() {
-        if (this.setting_feature.getVisibility() == View.VISIBLE) {
-            this.menu_setting.performClick();
+    fun frontPhoto() {
+        if (binding.futuremain.settingFeature.visibility == View.VISIBLE) {
+            binding.futuremain.menuSetting.performClick()
         }
-        if (this.llTimerClick.getVisibility() == View.VISIBLE) {
-            this.menu_time.performClick();
+        if (binding.futuremain.llTimerClick.visibility == View.VISIBLE) {
+            binding.futuremain.menuTime.performClick()
         }
-        binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"));
-        this.setting_feature.setVisibility(View.GONE);
-        this.menu_setting.setImageResource(R.drawable.setting_white);
-        this.llTimerClick.setVisibility(View.GONE);
-        this.menu_time.setImageResource(R.drawable.timer);
-        this.rlHdr.setVisibility(View.GONE);
-        this.rlFlash.setVisibility(View.GONE);
-        this.rlSwitcher.setVisibility(View.VISIBLE);
-        this.rlTime.setVisibility(View.VISIBLE);
-        this.rlSetting.setVisibility(View.VISIBLE);
-        this.menu_filter.setVisibility(View.VISIBLE);
-        this.rlLocation.setVisibility(View.VISIBLE);
-        this.rlVolume.setVisibility(View.VISIBLE);
-        this.rlBright.setVisibility(View.VISIBLE);
-        this.rlAw.setVisibility(View.VISIBLE);
-        this.rlSce.setVisibility(View.VISIBLE);
-        this.rlImage.setVisibility(View.VISIBLE);
-        if (this.camera.getFlash() == Flash.ON) {
-            this.fladhMode = 2;
-        } else if (this.camera.getFlash() == Flash.AUTO) {
-            this.fladhMode = 1;
+        binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"))
+        binding.futuremain.settingFeature.visibility = View.GONE
+        binding.futuremain.menuSetting.setImageResource(R.drawable.setting_white)
+        binding.futuremain.llTimerClick.visibility = View.GONE
+        binding.futuremain.menuTime.setImageResource(R.drawable.timer)
+        binding.futuremain.rlHdr.visibility = View.GONE
+        binding.futuremain.rlFlash.visibility = View.GONE
+        binding.futuremain.rlSwitcher.visibility = View.VISIBLE
+        binding.futuremain.rlTime.visibility = View.VISIBLE
+        binding.futuremain.rlSetting.visibility = View.VISIBLE
+        binding.menuFilter.visibility = View.VISIBLE
+        binding.futuremain.rlLocation.visibility = View.VISIBLE
+        binding.futuremain.rlVolume.visibility = View.VISIBLE
+        binding.futuremain.rlBright.visibility = View.VISIBLE
+        binding.futuremain.rlAw.visibility = View.VISIBLE
+        binding.futuremain.rlSce.visibility = View.VISIBLE
+        binding.futuremain.rlImage.visibility = View.VISIBLE
+        fladhMode = if (camera!!.flash == Flash.ON) {
+            2
+        } else if (camera!!.flash == Flash.AUTO) {
+            1
         } else {
-            this.fladhMode = 0;
+            0
         }
     }
 
-    public void backPhoto() {
-        if (this.setting_feature.getVisibility() == View.VISIBLE) {
-            this.menu_setting.performClick();
+    fun backPhoto() {
+        if (binding.futuremain.settingFeature.visibility == View.VISIBLE) {
+            binding.futuremain.menuSetting.performClick()
         }
-        if (this.llTimerClick.getVisibility() == View.VISIBLE) {
-            this.menu_time.performClick();
+        if (binding.futuremain.llTimerClick.visibility == View.VISIBLE) {
+            binding.futuremain.menuTime.performClick()
         }
-        binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"));
-        this.setting_feature.setVisibility(View.GONE);
-        this.menu_setting.setImageResource(R.drawable.setting_white);
-        this.llTimerClick.setVisibility(View.GONE);
-        this.menu_time.setImageResource(R.drawable.timer);
-        this.rlHdr.setVisibility(View.VISIBLE);
-        this.rlFlash.setVisibility(View.VISIBLE);
-        this.rlSwitcher.setVisibility(View.VISIBLE);
-        this.rlTime.setVisibility(View.VISIBLE);
-        this.rlSetting.setVisibility(View.VISIBLE);
-        this.menu_filter.setVisibility(View.VISIBLE);
-        this.rlLocation.setVisibility(View.VISIBLE);
-        this.rlVolume.setVisibility(View.VISIBLE);
-        this.rlBright.setVisibility(View.VISIBLE);
-        this.rlAw.setVisibility(View.VISIBLE);
-        this.rlSce.setVisibility(View.VISIBLE);
-        this.rlImage.setVisibility(View.VISIBLE);
-        int i = this.fladhMode;
+        binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"))
+        binding.futuremain.settingFeature.visibility = View.GONE
+        binding.futuremain.menuSetting.setImageResource(R.drawable.setting_white)
+        binding.futuremain.llTimerClick.visibility = View.GONE
+        binding.futuremain.menuTime.setImageResource(R.drawable.timer)
+        binding.futuremain.rlHdr.visibility = View.VISIBLE
+        binding.futuremain.rlFlash.visibility = View.VISIBLE
+        binding.futuremain.rlSwitcher.visibility = View.VISIBLE
+        binding.futuremain.rlTime.visibility = View.VISIBLE
+        binding.futuremain.rlSetting.visibility = View.VISIBLE
+        binding.menuFilter.visibility = View.VISIBLE
+        binding.futuremain.rlLocation.visibility = View.VISIBLE
+        binding.futuremain.rlVolume.visibility = View.VISIBLE
+        binding.futuremain.rlBright.visibility = View.VISIBLE
+        binding.futuremain.rlAw.visibility = View.VISIBLE
+        binding.futuremain.rlSce.visibility = View.VISIBLE
+        binding.futuremain.rlImage.visibility = View.VISIBLE
+        val i = fladhMode
         if (i == 2) {
-            this.camera.setFlash(Flash.ON);
+            camera!!.flash = Flash.ON
         } else if (i == 1) {
-            this.camera.setFlash(Flash.AUTO);
+            camera!!.flash = Flash.AUTO
         } else {
-            this.camera.setFlash(Flash.OFF);
+            camera!!.flash = Flash.OFF
         }
     }
 
-    public void frontVideo() {
-        if (this.setting_feature.getVisibility() == View.VISIBLE) {
-            this.menu_setting.performClick();
+    fun frontVideo() {
+        if (binding.futuremain.settingFeature.visibility == View.VISIBLE) {
+            binding.futuremain.menuSetting.performClick()
         }
-        if (this.llTimerClick.getVisibility() == View.VISIBLE) {
-            this.menu_time.performClick();
+        if (binding.futuremain.llTimerClick.visibility == View.VISIBLE) {
+            binding.futuremain.menuTime.performClick()
         }
-        this.brightness_seekbar.setProgress(0.0f);
-        binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"));
-        this.setting_feature.setVisibility(View.GONE);
-        this.menu_setting.setImageResource(R.drawable.setting_white);
-        this.llTimerClick.setVisibility(View.GONE);
-        this.menu_time.setImageResource(R.drawable.timer);
-        this.rlHdr.setVisibility(View.GONE);
-        this.rlFlash.setVisibility(View.GONE);
-        this.rlTime.setVisibility(View.GONE);
-        this.rlSetting.setVisibility(View.VISIBLE);
-        this.rlSwitcher.setVisibility(View.VISIBLE);
-        this.menu_filter.setVisibility(View.GONE);
-        this.rlLocation.setVisibility(View.VISIBLE);
-        this.rlVolume.setVisibility(View.VISIBLE);
-        this.rlBright.setVisibility(View.GONE);
-        this.rlAw.setVisibility(View.VISIBLE);
-        this.rlSce.setVisibility(View.GONE);
-        this.rlImage.setVisibility(View.VISIBLE);
+        binding.futuremain.brightnessSeekbar.setProgress(0.0f)
+        binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"))
+        binding.futuremain.settingFeature.visibility = View.GONE
+        binding.futuremain.menuSetting.setImageResource(R.drawable.setting_white)
+        binding.futuremain.llTimerClick.visibility = View.GONE
+        binding.futuremain.menuTime.setImageResource(R.drawable.timer)
+        binding.futuremain.rlHdr.visibility = View.GONE
+        binding.futuremain.rlFlash.visibility = View.GONE
+        binding.futuremain.rlTime.visibility = View.GONE
+        binding.futuremain.rlSetting.visibility = View.VISIBLE
+        binding.futuremain.rlSwitcher.visibility = View.VISIBLE
+        binding.menuFilter.visibility = View.GONE
+        binding.futuremain.rlLocation.visibility = View.VISIBLE
+        binding.futuremain.rlVolume.visibility = View.VISIBLE
+        binding.futuremain.rlBright.visibility = View.GONE
+        binding.futuremain.rlAw.visibility = View.VISIBLE
+        binding.futuremain.rlSce.visibility = View.GONE
+        binding.futuremain.rlImage.visibility = View.VISIBLE
     }
 
-    public void backVideo() {
-        if (this.setting_feature.getVisibility() == View.VISIBLE) {
-            this.menu_setting.performClick();
+    fun backVideo() {
+        if (binding.futuremain.settingFeature.visibility == View.VISIBLE) {
+            binding.futuremain.menuSetting.performClick()
         }
-        if (this.llTimerClick.getVisibility() == View.VISIBLE) {
-            this.menu_time.performClick();
+        if (binding.futuremain.llTimerClick.visibility == View.VISIBLE) {
+            binding.futuremain.menuTime.performClick()
         }
-        this.brightness_seekbar.setProgress(0.0f);
-        binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"));
-        this.setting_feature.setVisibility(View.GONE);
-        this.menu_setting.setImageResource(R.drawable.setting_white);
-        this.llTimerClick.setVisibility(View.GONE);
-        this.menu_time.setImageResource(R.drawable.timer);
-        this.rlHdr.setVisibility(View.GONE);
-        this.rlFlash.setVisibility(View.VISIBLE);
-        this.rlTime.setVisibility(View.GONE);
-        this.rlSetting.setVisibility(View.VISIBLE);
-        this.rlSwitcher.setVisibility(View.VISIBLE);
-        this.menu_filter.setVisibility(View.GONE);
-        this.rlLocation.setVisibility(View.VISIBLE);
-        this.rlVolume.setVisibility(View.VISIBLE);
-        this.rlBright.setVisibility(View.GONE);
-        this.rlAw.setVisibility(View.VISIBLE);
-        this.rlSce.setVisibility(View.GONE);
-        this.rlImage.setVisibility(View.VISIBLE);
+        binding.futuremain.brightnessSeekbar.setProgress(0.0f)
+        binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"))
+        binding.futuremain.settingFeature.visibility = View.GONE
+        binding.futuremain.menuSetting.setImageResource(R.drawable.setting_white)
+        binding.futuremain.llTimerClick.visibility = View.GONE
+        binding.futuremain.menuTime.setImageResource(R.drawable.timer)
+        binding.futuremain.rlHdr.visibility = View.GONE
+        binding.futuremain.rlFlash.visibility = View.VISIBLE
+        binding.futuremain.rlTime.visibility = View.GONE
+        binding.futuremain.rlSetting.visibility = View.VISIBLE
+        binding.futuremain.rlSwitcher.visibility = View.VISIBLE
+        binding.menuFilter.visibility = View.GONE
+        binding.futuremain.rlLocation.visibility = View.VISIBLE
+        binding.futuremain.rlVolume.visibility = View.VISIBLE
+        binding.futuremain.rlBright.visibility = View.GONE
+        binding.futuremain.rlAw.visibility = View.VISIBLE
+        binding.futuremain.rlSce.visibility = View.GONE
+        binding.futuremain.rlImage.visibility = View.VISIBLE
     }
 
-    public void getLocation(File file) {
-        String str;
-        String str2;
+    fun getLocation(file: File) {
+        val str: String
+        val str2: String
         try {
-            ExifInterface exifInterface = new ExifInterface(file.getAbsolutePath());
-            double d = this.latitude;
-            String[] split = Location.convert(Math.abs(d), Location.FORMAT_SECONDS).split(":");
-            String[] split2 = split[2].split("\\.");
-            if (split2.length == 0) {
-                str = split[2];
+            val exifInterface = ExifInterface(file.absolutePath)
+            val d = latitude
+            val split = Location.convert(Math.abs(d), Location.FORMAT_SECONDS).split(":".toRegex())
+                .dropLastWhile { it.isEmpty() }
+                .toTypedArray()
+            val split2 =
+                split[2].split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            str = if (split2.size == 0) {
+                split[2]
             } else {
-                str = split2[0];
+                split2[0]
             }
-            exifInterface.setAttribute(ExifInterface.TAG_GPS_LATITUDE, split[0] + "/1," + split[1] + "/1," + str + "/1");
-            exifInterface.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, d > 0.0d ? "N" : ExifInterface.LATITUDE_SOUTH);
-            double d2 = this.longitude;
-            String[] split3 = Location.convert(Math.abs(d2), Location.FORMAT_SECONDS).split(":");
-            String[] split4 = split3[2].split("\\.");
-            if (split4.length == 0) {
-                str2 = split3[2];
+            exifInterface.setAttribute(
+                ExifInterface.TAG_GPS_LATITUDE,
+                split[0] + "/1," + split[1] + "/1," + str + "/1"
+            )
+            exifInterface.setAttribute(
+                ExifInterface.TAG_GPS_LATITUDE_REF,
+                if (d > 0.0) "N" else ExifInterface.LATITUDE_SOUTH
+            )
+            val d2 = longitude
+            val split3 =
+                Location.convert(Math.abs(d2), Location.FORMAT_SECONDS).split(":".toRegex())
+                    .dropLastWhile { it.isEmpty() }
+                    .toTypedArray()
+            val split4 =
+                split3[2].split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            str2 = if (split4.size == 0) {
+                split3[2]
             } else {
-                str2 = split4[0];
+                split4[0]
             }
-            exifInterface.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, split3[0] + "/1," + split3[1] + "/1," + str2 + "/1");
-            exifInterface.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, d2 > 0.0d ? ExifInterface.LONGITUDE_EAST : ExifInterface.LONGITUDE_WEST);
-            exifInterface.saveAttributes();
-        } catch (IOException e) {
-            e.printStackTrace();
+            exifInterface.setAttribute(
+                ExifInterface.TAG_GPS_LONGITUDE,
+                split3[0] + "/1," + split3[1] + "/1," + str2 + "/1"
+            )
+            exifInterface.setAttribute(
+                ExifInterface.TAG_GPS_LONGITUDE_REF,
+                if (d2 > 0.0) ExifInterface.LONGITUDE_EAST else ExifInterface.LONGITUDE_WEST
+            )
+            exifInterface.saveAttributes()
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
     }
 
-    public void getcurrentlocationinfo() {
-        ActivityCompat.checkSelfPermission(this, "android.permission.ACCESS_COARSE_LOCATION");
-        ActivityCompat.checkSelfPermission(this, "android.permission.ACCESS_FINE_LOCATION");
-        GPSTracker gPSTracker = new GPSTracker(this);
+    fun getcurrentlocationinfo() {
+        ActivityCompat.checkSelfPermission(this, "android.permission.ACCESS_COARSE_LOCATION")
+        ActivityCompat.checkSelfPermission(this, "android.permission.ACCESS_FINE_LOCATION")
+        val gPSTracker = GPSTracker(this)
         if (gPSTracker.canGetLocation()) {
-            gPSTracker.getLocation();
-            this.latitude = gPSTracker.getLatitude();
-            this.longitude = gPSTracker.getLongitude();
+            gPSTracker.location
+            latitude = gPSTracker.latitude
+            longitude = gPSTracker.longitude
         }
     }
 
-    public void checkPermission() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-            if (ContextCompat.checkSelfPermission(this, "android.permission.CAMERA") + ContextCompat.checkSelfPermission(this, "android.permission.READ_MEDIA_IMAGES") + ContextCompat.checkSelfPermission(this, "android.permission.RECORD_AUDIO") + ContextCompat.checkSelfPermission(this, "android.permission.ACCESS_FINE_LOCATION") + ContextCompat.checkSelfPermission(this, "android.permission.ACCESS_COARSE_LOCATION") == 0) {
-                this.camera = (CameraView) findViewById(R.id.camera);
-                this.camera.open();
-                File file = new File(Const.PATH);
+    fun checkPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    "android.permission.CAMERA"
+                ) + ContextCompat.checkSelfPermission(
+                    this,
+                    "android.permission.READ_MEDIA_IMAGES"
+                ) + ContextCompat.checkSelfPermission(
+                    this,
+                    "android.permission.RECORD_AUDIO"
+                ) + ContextCompat.checkSelfPermission(
+                    this,
+                    "android.permission.ACCESS_FINE_LOCATION"
+                ) + ContextCompat.checkSelfPermission(
+                    this,
+                    "android.permission.ACCESS_COARSE_LOCATION"
+                ) == 0
+            ) {
+                camera = findViewById<View>(R.id.camera) as CameraView
+                camera!!.open()
+                var file = File(Const.PATH)
                 if (!file.exists()) {
-                    file.mkdir();
-                    file.mkdirs();
+                    file.mkdir()
+                    file.mkdirs()
                 }
-                if (!Environment.getExternalStorageState().equals("mounted")) {
-                    Toast.makeText(this, "Error! No SDCARD Found!", Toast.LENGTH_LONG).show();
+                if (Environment.getExternalStorageState() != "mounted") {
+                    Toast.makeText(this, "Error! No SDCARD Found!", Toast.LENGTH_LONG).show()
                 } else {
-                     this.file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + File.separator + "iCamera");
-                    this.file.mkdirs();
+                    file =
+                        File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path + File.separator + "iCamera")
+                    file.mkdirs()
                 }
-                getcurrentlocationinfo();
-            } else if (ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.CAMERA") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.RECORD_AUDIO") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.READ_MEDIA_IMAGES") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.READ_MEDIA_AUDIO") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.ACCESS_FINE_LOCATION") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.ACCESS_COARSE_LOCATION")) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage("Camera, Read External, and Write External Storage permissions are required to do the task.");
-                builder.setTitle("Please grant those permissions");
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.43
-                    @Override // android.content.DialogInterface.OnClickListener
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        ActivityCompat.requestPermissions(CameraActivity.this, new String[]{"android.permission.CAMERA", "android.permission.RECORD_AUDIO", "android.permission.READ_MEDIA_IMAGES",  "android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION"}, 123);
-                    }
-                });
-                builder.setNeutralButton("Cancel", (DialogInterface.OnClickListener) null);
-                builder.create().show();
+                getcurrentlocationinfo()
+            } else if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    "android.permission.CAMERA"
+                ) || ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    "android.permission.RECORD_AUDIO"
+                ) || ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    "android.permission.READ_MEDIA_IMAGES"
+                ) || ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    "android.permission.READ_MEDIA_AUDIO"
+                ) || ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    "android.permission.ACCESS_FINE_LOCATION"
+                ) || ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    "android.permission.ACCESS_COARSE_LOCATION"
+                )
+            ) {
+                val builder = AlertDialog.Builder(this)
+                builder.setMessage("Camera, Read External, and Write External Storage permissions are required to do the task.")
+                builder.setTitle("Please grant those permissions")
+                builder.setPositiveButton("OK") { _: DialogInterface?, _: Int ->
+                    ActivityCompat.requestPermissions(
+                        this@CameraActivity,
+                        arrayOf(
+                            "android.permission.CAMERA",
+                            "android.permission.RECORD_AUDIO",
+                            "android.permission.READ_MEDIA_IMAGES",
+                            "android.permission.ACCESS_FINE_LOCATION",
+                            "android.permission.ACCESS_COARSE_LOCATION"
+                        ),
+                        123
+                    )
+                }
+                builder.setNeutralButton("Cancel", null as DialogInterface.OnClickListener?)
+                builder.create().show()
             } else {
-                ActivityCompat.requestPermissions(this, new String[]{"android.permission.CAMERA", "android.permission.RECORD_AUDIO", "android.permission.READ_MEDIA_IMAGES","android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION"}, 123);
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(
+                        "android.permission.CAMERA",
+                        "android.permission.RECORD_AUDIO",
+                        "android.permission.READ_MEDIA_IMAGES",
+                        "android.permission.ACCESS_FINE_LOCATION",
+                        "android.permission.ACCESS_COARSE_LOCATION"
+                    ),
+                    123
+                )
             }
-        }else {
-            if (ContextCompat.checkSelfPermission(this, "android.permission.CAMERA") + ContextCompat.checkSelfPermission(this, "android.permission.READ_EXTERNAL_STORAGE") + ContextCompat.checkSelfPermission(this, "android.permission.WRITE_EXTERNAL_STORAGE") + ContextCompat.checkSelfPermission(this, "android.permission.RECORD_AUDIO") + ContextCompat.checkSelfPermission(this, "android.permission.ACCESS_FINE_LOCATION") + ContextCompat.checkSelfPermission(this, "android.permission.ACCESS_COARSE_LOCATION") == 0) {
-                this.camera = (CameraView) findViewById(R.id.camera);
-                this.camera.open();
-                File file = new File(Const.PATH);
+        } else {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    "android.permission.CAMERA"
+                ) + ContextCompat.checkSelfPermission(
+                    this,
+                    "android.permission.READ_EXTERNAL_STORAGE"
+                ) + ContextCompat.checkSelfPermission(
+                    this,
+                    "android.permission.WRITE_EXTERNAL_STORAGE"
+                ) + ContextCompat.checkSelfPermission(
+                    this,
+                    "android.permission.RECORD_AUDIO"
+                ) + ContextCompat.checkSelfPermission(
+                    this,
+                    "android.permission.ACCESS_FINE_LOCATION"
+                ) + ContextCompat.checkSelfPermission(
+                    this,
+                    "android.permission.ACCESS_COARSE_LOCATION"
+                ) == 0
+            ) {
+                camera = findViewById<View>(R.id.camera) as CameraView
+                camera!!.open()
+                var file = File(Const.PATH)
                 if (!file.exists()) {
-                    file.mkdir();
-                    file.mkdirs();
+                    file.mkdir()
+                    file.mkdirs()
                 }
-                if (!Environment.getExternalStorageState().equals("mounted")) {
-                    Toast.makeText(this, "Error! No SDCARD Found!", Toast.LENGTH_LONG).show();
+                if (Environment.getExternalStorageState() != "mounted") {
+                    Toast.makeText(this, "Error! No SDCARD Found!", Toast.LENGTH_LONG).show()
                 } else {
-                     this.file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + File.separator + "iCamera");
-                    this.file.mkdirs();
+                    file =
+                        File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path + File.separator + "iCamera")
+                    file.mkdirs()
                 }
-                getcurrentlocationinfo();
-            } else if (ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.CAMERA") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.RECORD_AUDIO") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.READ_EXTERNAL_STORAGE") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.WRITE_EXTERNAL_STORAGE") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.ACCESS_FINE_LOCATION") || ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.ACCESS_COARSE_LOCATION")) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage("Camera, Read External, and Write External Storage permissions are required to do the task.");
-                builder.setTitle("Please grant those permissions");
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() { // from class: com.cameraediter.iphone11pro.CameraActivity.43
-                    @Override // android.content.DialogInterface.OnClickListener
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        ActivityCompat.requestPermissions(CameraActivity.this, new String[]{"android.permission.CAMERA", "android.permission.RECORD_AUDIO", "android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION"}, 123);
-                    }
-                });
-                builder.setNeutralButton("Cancel", (DialogInterface.OnClickListener) null);
-                builder.create().show();
+                getcurrentlocationinfo()
+            } else if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    "android.permission.CAMERA"
+                ) || ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    "android.permission.RECORD_AUDIO"
+                ) || ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    "android.permission.READ_EXTERNAL_STORAGE"
+                ) || ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    "android.permission.WRITE_EXTERNAL_STORAGE"
+                ) || ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    "android.permission.ACCESS_FINE_LOCATION"
+                ) || ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    "android.permission.ACCESS_COARSE_LOCATION"
+                )
+            ) {
+                val builder = AlertDialog.Builder(this)
+                builder.setMessage("Camera, Read External, and Write External Storage permissions are required to do the task.")
+                builder.setTitle("Please grant those permissions")
+                builder.setPositiveButton("OK") { _: DialogInterface?, _: Int ->
+                    ActivityCompat.requestPermissions(
+                        this@CameraActivity,
+                        arrayOf(
+                            "android.permission.CAMERA",
+                            "android.permission.RECORD_AUDIO",
+                            "android.permission.READ_EXTERNAL_STORAGE",
+                            "android.permission.WRITE_EXTERNAL_STORAGE",
+                            "android.permission.ACCESS_FINE_LOCATION",
+                            "android.permission.ACCESS_COARSE_LOCATION"
+                        ),
+                        123
+                    )
+                }
+                builder.setNeutralButton("Cancel", null as DialogInterface.OnClickListener?)
+                builder.create().show()
             } else {
-                ActivityCompat.requestPermissions(this, new String[]{"android.permission.CAMERA", "android.permission.RECORD_AUDIO", "android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION"}, 123);
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(
+                        "android.permission.CAMERA",
+                        "android.permission.RECORD_AUDIO",
+                        "android.permission.READ_EXTERNAL_STORAGE",
+                        "android.permission.WRITE_EXTERNAL_STORAGE",
+                        "android.permission.ACCESS_FINE_LOCATION",
+                        "android.permission.ACCESS_COARSE_LOCATION"
+                    ),
+                    123
+                )
             }
         }
-
     }
 
-    @Override // androidx.fragment.app.FragmentActivity, android.app.Activity, androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback
-    public void onRequestPermissionsResult(int i, String[] strArr, int[] iArr) {
-        super.onRequestPermissionsResult(i, strArr, iArr);
+    override fun onRequestPermissionsResult(i: Int, strArr: Array<String>, iArr: IntArray) {
+        super.onRequestPermissionsResult(i, strArr, iArr)
         if (i == 123) {
-            if (iArr.length <= 0 || iArr[0] + iArr[1] + iArr[2] != 0) {
-                Toast.makeText(this, "Permissions denied.", Toast.LENGTH_SHORT).show();
-                return;
+            if (iArr.size <= 0 || iArr[0] + iArr[1] + iArr[2] != 0) {
+                Toast.makeText(this, "Permissions denied.", Toast.LENGTH_SHORT).show()
+                return
             }
-            this.camera = (CameraView) findViewById(R.id.camera);
-            this.camera.open();
-            File file = new File(Const.PATH);
+            camera = findViewById<View>(R.id.camera) as CameraView
+            camera!!.open()
+            var file = File(Const.PATH)
             if (!file.exists()) {
-                file.mkdir();
-                file.mkdirs();
+                file.mkdir()
+                file.mkdirs()
             }
-            if (!Environment.getExternalStorageState().equals("mounted")) {
-                Toast.makeText(this, "Error! No SDCARD Found!", Toast.LENGTH_LONG).show();
+            if (Environment.getExternalStorageState() != "mounted") {
+                Toast.makeText(this, "Error! No SDCARD Found!", Toast.LENGTH_LONG).show()
             } else {
-                 this.file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + File.separator + "iCamera");
-                this.file.mkdirs();
+                file =
+                    File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path + File.separator + "iCamera")
+                file.mkdirs()
             }
-            getcurrentlocationinfo();
+            getcurrentlocationinfo()
         }
     }
 
-    /* loaded from: classes.dex */
-    public class Listener extends CameraListener {
-        @Override // com.otaliastudios.cameraview.CameraListener
-        public void onCameraOpened(CameraOptions cameraOptions) {
+    inner class Listener() : CameraListener() {
+        override fun onCameraOpened(cameraOptions: CameraOptions) {}
+        override fun onSwiperDetect(i: Int) {
+            super.onSwiperDetect(i)
+            Log.d("aaaa", i.toString() + "")
         }
 
-        private Listener() {
-          //  CameraActivity.this = r1;
+        override fun onCameraError(cameraException: CameraException) {
+            super.onCameraError(cameraException)
+            Toast.makeText(this@CameraActivity, "iCamera failed", Toast.LENGTH_SHORT).show()
         }
 
-        @Override // com.otaliastudios.cameraview.CameraListener
-        public void onSwiperDetect(int i) {
-            super.onSwiperDetect(i);
-            Log.d("aaaa", i + "");
-        }
-
-        @Override // com.otaliastudios.cameraview.CameraListener
-        public void onCameraError(CameraException cameraException) {
-            super.onCameraError(cameraException);
-            Toast.makeText(CameraActivity.this, "iCamera failed", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override // com.otaliastudios.cameraview.CameraListener
-        public void onPictureTaken(PictureResult pictureResult) {
-            super.onPictureTaken(pictureResult);
-            if (CameraActivity.this.flashPos == 1) {
-                CameraActivity.this.camera.setFlash(Flash.OFF);
-            } else if (CameraActivity.this.flashPos == 2) {
-                CameraActivity.this.camera.setFlash(Flash.OFF);
+        override fun onPictureTaken(pictureResult: PictureResult) {
+            super.onPictureTaken(pictureResult)
+            if (flashPos == 1) {
+                camera!!.flash = Flash.OFF
+            } else if (flashPos == 2) {
+                camera!!.flash = Flash.OFF
             } else {
-                CameraActivity.this.camera.setFlash(Flash.OFF);
+                camera!!.flash = Flash.OFF
             }
-            CameraActivity.this.shutter_button.setEnabled(true);
-            CameraActivity.this.camera.removeCameraListener(this);
-            if (CameraActivity.this.camera.isTakingVideo()) {
-                CameraActivity cameraActivity = CameraActivity.this;
-                Toast.makeText(cameraActivity, "Captured while taking video. Size=" + pictureResult.getSize(),  Toast.LENGTH_SHORT).show();
-                return;
+            binding.shutterButton.isEnabled = true
+            camera!!.removeCameraListener(this)
+            if (camera!!.isTakingVideo) {
+                val cameraActivity = this@CameraActivity
+                Toast.makeText(
+                    cameraActivity,
+                    "Captured while taking video. Size=" + pictureResult.size,
+                    Toast.LENGTH_SHORT
+                ).show()
+                return
             }
-            System.currentTimeMillis();
-            CameraActivity.this.getImage(BitmapFactory.decodeByteArray(pictureResult.getData(), 0, pictureResult.getData().length));
+            System.currentTimeMillis()
+            getImage(BitmapFactory.decodeByteArray(pictureResult.data, 0, pictureResult.data.size))
         }
 
-        @Override // com.otaliastudios.cameraview.CameraListener
-        public void onVideoTaken(VideoResult videoResult) {
-            super.onVideoTaken(videoResult);
-            CameraActivity.this.camera.removeCameraListener(this);
-            Uri fromFile = Uri.fromFile(videoResult.getFile());
+        override fun onVideoTaken(videoResult: VideoResult) {
+            super.onVideoTaken(videoResult)
+            camera!!.removeCameraListener(this)
+            val fromFile = Uri.fromFile(videoResult.file)
             try {
-                new SimpleDateFormat("yyyyMMdd_HHmmss");
-                String format = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-                File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + File.separator + "iCamera");
+                SimpleDateFormat("yyyyMMdd_HHmmss")
+                val format = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+                val file =
+                    File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path + File.separator + "iCamera")
                 try {
                     if (!file.exists()) {
-                        file.mkdirs();
+                        file.mkdirs()
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
-                final File file2 = new File(file, "VDO" + CameraActivity.this.i + format + ".mp4");
-                InputStream openInputStream = CameraActivity.this.getContentResolver().openInputStream(fromFile);
-                FileOutputStream fileOutputStream = new FileOutputStream(file2);
-                byte[] bArr = new byte[1024];
+                val file2 = File(file, "VDO$i$format.mp4")
+                val openInputStream = contentResolver.openInputStream(fromFile)
+                val fileOutputStream = FileOutputStream(file2)
+                val bArr = ByteArray(1024)
                 while (true) {
-                    int read = openInputStream.read(bArr);
+                    val read = openInputStream!!.read(bArr)
                     if (read <= 0) {
-                        break;
+                        break
                     }
-                    fileOutputStream.write(bArr, 0, read);
+                    fileOutputStream.write(bArr, 0, read)
                 }
-                fileOutputStream.close();
-                openInputStream.close();
-                CameraActivity.this.galleryAddPic(file2.getAbsolutePath());
-                CameraActivity.this.runOnUiThread(new Runnable() { // from class: com.cameraediter.iphone11pro.CameraActivity.Listener.1
-                    @Override // java.lang.Runnable
-                    public void run() {
-                        try {
-                            Glide.with((FragmentActivity) CameraActivity.this).load(file2.getAbsolutePath()).into(CameraActivity.this.image_thumb);
-                            CameraActivity.this.image_thumb.setImageURI(Uri.fromFile(file2));
-                        } catch (Exception e2) {
-                            e2.printStackTrace();
-                            CameraActivity.this.image_thumb.setImageURI(Uri.fromFile(file2));
-                        }
-                        new Handler().postDelayed(new Runnable() { // from class: com.cameraediter.iphone11pro.CameraActivity.Listener.1.1
-                            @Override // java.lang.Runnable
-                            public void run() {
-                                CameraActivity.this.image_thumb.startAnimation(AnimationUtils.loadAnimation(CameraActivity.this.getApplicationContext(), R.anim.fade_out));
-                            }
-                        }, 500L);
+                fileOutputStream.close()
+                openInputStream.close()
+                galleryAddPic(file2.absolutePath)
+                runOnUiThread {
+                    try {
+                        Glide.with((this@CameraActivity as FragmentActivity))
+                            .load(file2.absolutePath).into(
+                            binding.imageThumb
+                        )
+                        binding.imageThumb.setImageURI(Uri.fromFile(file2))
+                    } catch (e2: Exception) {
+                        e2.printStackTrace()
+                        binding.imageThumb.setImageURI(Uri.fromFile(file2))
                     }
-                });
-                CameraActivity.this.arrayPhotoVideo.add(new ListModel(file2.getAbsolutePath()));
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        binding.imageThumb.startAnimation(
+                            AnimationUtils.loadAnimation(
+                                applicationContext, R.anim.fade_out
+                            )
+                        )
+                    }, 500L)
+                }
+                arrayPhotoVideo.add(ListModel(file2.absolutePath))
                 try {
-                    if (CameraActivity.this.isLocation) {
-                        CameraActivity.this.getLocation(file2);
+                    if (isLocation) {
+                        getLocation(file2)
                     }
-                } catch (Exception e2) {
-                    e2.printStackTrace();
+                } catch (e2: Exception) {
+                    e2.printStackTrace()
                 }
-                if (CameraActivity.this.isOff) {
-                    CameraActivity.this.isOff = false;
-                    CameraActivity.this.camera.setFlash(Flash.ON);
+                if (isOff) {
+                    isOff = false
+                    camera!!.flash = Flash.ON
                 }
-            } catch (FileNotFoundException e3) {
-                Log.e("Exception", "" + e3);
-            } catch (IOException e4) {
-                Log.e("Exception", "" + e4);
+            } catch (e3: FileNotFoundException) {
+                Log.e("Exception", "" + e3)
+            } catch (e4: IOException) {
+                Log.e("Exception", "" + e4)
             }
         }
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        this.camera.close();
+    override fun onPause() {
+        super.onPause()
+        camera!!.close()
+    }
+
+    companion object {
+        @JvmStatic
+        fun getMimeType(compressFormat: CompressFormat): String {
+            val i = AnonymousClass44.BitmapCompressFormat[compressFormat.ordinal]
+            if (i != 1) {
+                if (i != 2) {
+                }
+                return "png"
+            }
+            return "jpeg"
+        }
     }
 }

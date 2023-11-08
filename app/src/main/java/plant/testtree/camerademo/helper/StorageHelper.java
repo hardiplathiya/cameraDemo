@@ -24,11 +24,10 @@ import java.util.Iterator;
 
 import plant.testtree.camerademo.R;
 import plant.testtree.camerademo.util.ErrorCause;
-import plant.testtree.camerademo.util.MediaHelper;
 import plant.testtree.camerademo.util.ProgressException;
 import plant.testtree.camerademo.util.StringUtils;
 
-/* loaded from: classes.dex */
+
 public class StorageHelper {
     private static final String PRIMARY_VOLUME_NAME = "primary";
     private static final String TAG = "StorageHelper";

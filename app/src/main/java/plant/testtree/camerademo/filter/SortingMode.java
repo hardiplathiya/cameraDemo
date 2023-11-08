@@ -1,6 +1,6 @@
 package plant.testtree.camerademo.filter;
 
-/* loaded from: classes.dex */
+
 public enum SortingMode {
     NAME(0, "_display_name", "bucket_display_name"),
     DATE(1, "date_modified", "max(date_modified)"),

@@ -4,7 +4,7 @@ import android.content.Context;
 
 import plant.testtree.camerademo.filter.shadertoy.FastBlurFilter;
 
-/* loaded from: classes.dex */
+
 public class BlurredFrameEffect extends FilterGroup {
     private static final int BLUR_STEP_LENGTH = 2;
     private static final float SCALING_FACTOR = 0.6f;

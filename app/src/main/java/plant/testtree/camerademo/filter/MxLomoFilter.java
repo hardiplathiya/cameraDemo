@@ -6,13 +6,13 @@ import android.opengl.GLES20;
 import plant.testtree.camerademo.util.SimpleFragmentShaderFilter;
 import plant.testtree.camerademo.util.TextureUtils;
 
-/* loaded from: classes.dex */
+
 public class MxLomoFilter extends SimpleFragmentShaderFilter {
     public MxLomoFilter(Context context) {
         super(context, "filter/fsh/mx/mx_lomo.glsl");
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.SimpleFragmentShaderFilter, com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void onDrawFrame(int i) {
         onPreDrawElements();
         setUniform1f(this.glSimpleProgram.getProgramId(), "rOffset", 1.0f);

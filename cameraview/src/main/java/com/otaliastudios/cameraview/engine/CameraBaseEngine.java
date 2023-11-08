@@ -41,10 +41,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-
-/**
- * Abstract implementation of {@link CameraEngine} that helps in common tasks.
- */
 public abstract class CameraBaseEngine extends CameraEngine {
 
     protected final static int ALLOWED_ZOOM_OPS = 20;
@@ -87,14 +83,13 @@ public abstract class CameraBaseEngine extends CameraEngine {
     private int mVideoBitRate;
     private int mAudioBitRate;
     private long mAutoFocusResetDelayMillis;
-    private int mSnapshotMaxWidth; // in REF_VIEW like SizeSelectors
-    private int mSnapshotMaxHeight; // in REF_VIEW like SizeSelectors
-    private int mFrameProcessingMaxWidth; // in REF_VIEW like SizeSelectors
-    private int mFrameProcessingMaxHeight; // in REF_VIEW like SizeSelectors
+    private int mSnapshotMaxWidth;
+    private int mSnapshotMaxHeight; 
+    private int mFrameProcessingMaxWidth; 
+    private int mFrameProcessingMaxHeight; 
     private int mFrameProcessingPoolSize;
     private Overlay mOverlay;
 
-    // Ops used for testing.
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED) Task<Void> mZoomTask
             = Tasks.forResult(null);
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED) Task<Void> mExposureCorrectionTask
@@ -117,12 +112,6 @@ public abstract class CameraBaseEngine extends CameraEngine {
         super(callback);
     }
 
-    /**
-     * Called at construction time to get a frame manager that can later be
-     * accessed through {@link #getFrameManager()}.
-     * @param poolSize pool size
-     * @return a frame manager
-     */
     @NonNull
     protected abstract FrameManager instantiateFrameManager(int poolSize);
 
@@ -331,20 +320,11 @@ public abstract class CameraBaseEngine extends CameraEngine {
         return mAutoFocusResetDelayMillis;
     }
 
-    /**
-     * Helper function for subclasses.
-     * @return true if AF should be reset
-     */
     @SuppressWarnings("WeakerAccess")
     protected final boolean shouldResetAutoFocus() {
         return mAutoFocusResetDelayMillis > 0 && mAutoFocusResetDelayMillis != Long.MAX_VALUE;
     }
 
-    /**
-     * Sets a new facing value. This will restart the engine session (if there's any)
-     * so that we can open the new facing camera.
-     * @param facing facing
-     */
     @Override
     public final void setFacing(final @NonNull Facing facing) {
         final Facing old = mFacing;
@@ -370,10 +350,7 @@ public abstract class CameraBaseEngine extends CameraEngine {
         return mFacing;
     }
 
-    /**
-     * Sets a new audio value that will be used for video recordings.
-     * @param audio desired audio
-     */
+
     @Override
     public final void setAudio(@NonNull Audio audio) {
         if (mAudio != audio) {
@@ -391,10 +368,7 @@ public abstract class CameraBaseEngine extends CameraEngine {
         return mAudio;
     }
 
-    /**
-     * Sets the desired mode (either picture or video).
-     * @param mode desired mode.
-     */
+
     @Override
     public final void setMode(@NonNull Mode mode) {
         if (mode != mMode) {
@@ -524,11 +498,6 @@ public abstract class CameraBaseEngine extends CameraEngine {
         });
     }
 
-    /**
-     * The snapshot size is the {@link #getPreviewStreamSize(Reference)}, but cropped based on the
-     * view/surface aspect ratio.
-     * @param stub a picture stub
-     */
     @Override
     public /* final */ void takePictureSnapshot(final @NonNull PictureResult.Stub stub) {
         // Save boolean before scheduling! See how Camera2Engine calls this with a temp value.
@@ -607,10 +576,6 @@ public abstract class CameraBaseEngine extends CameraEngine {
         });
     }
 
-    /**
-     * @param stub a video stub
-     * @param file the output file
-     */
     @Override
     public final void takeVideoSnapshot(@NonNull final VideoResult.Stub stub,
                                         @NonNull final File file) {
@@ -653,9 +618,6 @@ public abstract class CameraBaseEngine extends CameraEngine {
     protected void onStopVideo() {
         if (mVideoRecorder != null) {
             mVideoRecorder.stop(false);
-            // Do not null this, so we respond correctly to isTakingVideo(),
-            // which checks for recorder presence and recorder.isRecording().
-            // It will be nulled in onVideoResult.
         }
     }
 
@@ -697,10 +659,6 @@ public abstract class CameraBaseEngine extends CameraEngine {
     @EngineThread
     protected abstract void onTakeVideo(@NonNull VideoResult.Stub stub);
 
-    //endregion
-
-    //region Size / Surface
-
     @Override
     public final void onSurfaceChanged() {
         LOG.i("onSurfaceChanged:", "Size is", getPreviewSurfaceSize(Reference.VIEW));
@@ -708,7 +666,6 @@ public abstract class CameraBaseEngine extends CameraEngine {
                 new Runnable() {
             @Override
             public void run() {
-                // Compute a new camera preview size and apply.
                 Size newSize = computePreviewStreamSize();
                 if (newSize.equals(mPreviewStreamSize)) {
                     LOG.i("onSurfaceChanged:",
@@ -723,12 +680,6 @@ public abstract class CameraBaseEngine extends CameraEngine {
         });
     }
 
-    /**
-     * The preview stream size has changed. At this point, some engine might want to
-     * simply call {@link #restartPreview()}, others to {@link #restartBind()}.
-     *
-     * It basically depends on the step at which the preview stream size is actually used.
-     */
     @EngineThread
     protected abstract void onPreviewStreamSizeChanged();
 
@@ -765,29 +716,6 @@ public abstract class CameraBaseEngine extends CameraEngine {
                 : preview.getSurfaceSize();
     }
 
-    /**
-     * Returns the snapshot size, but not cropped with the view dimensions, which
-     * is what we will do before creating the snapshot. However, cropping is done at various
-     * levels so we don't want to perform the op here.
-     *
-     * The base snapshot size is based on PreviewStreamSize (later cropped with view ratio). Why?
-     * One might be tempted to say that it's the SurfaceSize (which already matches the view ratio).
-     *
-     * The camera sensor will capture preview frames with PreviewStreamSize and that's it. Then they
-     * are hardware-scaled by the preview surface, but this does not affect the snapshot, as the
-     * snapshot recorder simply creates another surface.
-     *
-     * Done tests to ensure that this is true, by using
-     * 1. small SurfaceSize and biggest() PreviewStreamSize: output is not low quality
-     * 2. big SurfaceSize and smallest() PreviewStreamSize: output is low quality
-     * In both cases the result.size here was set to the biggest of the two.
-     *
-     * I could not find the same evidence for videos, but I would say that the same things should
-     * apply, despite the capturing mechanism being different.
-     *
-     * @param reference the reference system
-     * @return the uncropped snapshot size
-     */
     @Nullable
     @Override
     public final Size getUncroppedSnapshotSize(@NonNull Reference reference) {
@@ -813,15 +741,6 @@ public abstract class CameraBaseEngine extends CameraEngine {
         }
     }
 
-    /**
-     * This is called either on cameraView.start(), or when the underlying surface changes.
-     * It is possible that in the first call the preview surface has not already computed its
-     * dimensions.
-     * But when it does, the {@link CameraPreview.SurfaceCallback} should be called,
-     * and this should be refreshed.
-     *
-     * @return the capture size
-     */
     @NonNull
     @SuppressWarnings("WeakerAccess")
     protected final Size computeCaptureSize() {
@@ -831,8 +750,6 @@ public abstract class CameraBaseEngine extends CameraEngine {
     @NonNull
     @SuppressWarnings("WeakerAccess")
     protected final Size computeCaptureSize(@NonNull Mode mode) {
-        // We want to pass stuff into the REF_VIEW reference, not the sensor one.
-        // This is already managed by CameraOptions, so we just flip again at the end.
         boolean flip = getAngles().flip(Reference.SENSOR, Reference.VIEW);
         SizeSelector selector;
         Collection<Size> sizes;
@@ -855,12 +772,6 @@ public abstract class CameraBaseEngine extends CameraEngine {
         return result;
     }
 
-    /**
-     * This is called anytime {@link #computePreviewStreamSize()} is called.
-     * This means that it should be called during the binding process, when
-     * we can be sure that the camera is available (engineState == STARTED).
-     * @return a list of available sizes for preview
-     */
     @EngineThread
     @NonNull
     protected abstract List<Size> getPreviewStreamAvailableSizes();
@@ -870,16 +781,12 @@ public abstract class CameraBaseEngine extends CameraEngine {
     @SuppressWarnings("WeakerAccess")
     protected final Size computePreviewStreamSize() {
         @NonNull List<Size> previewSizes = getPreviewStreamAvailableSizes();
-        // These sizes come in REF_SENSOR. Since there is an external selector involved,
-        // we must convert all of them to REF_VIEW, then flip back when returning.
         boolean flip = getAngles().flip(Reference.SENSOR, Reference.VIEW);
         List<Size> sizes = new ArrayList<>(previewSizes.size());
         for (Size size : previewSizes) {
             sizes.add(flip ? size.flip() : size);
         }
 
-        // Create our own default selector, which will be used if the external
-        // mPreviewStreamSizeSelector is null, or if it fails in finding a size.
         Size targetMinSize = getPreviewSurfaceSize(Reference.VIEW);
         if (targetMinSize == null) {
             throw new IllegalStateException("targetMinSize should not be null here.");
@@ -889,22 +796,20 @@ public abstract class CameraBaseEngine extends CameraEngine {
         LOG.i("computePreviewStreamSize:",
                 "targetRatio:", targetRatio,
                 "targetMinSize:", targetMinSize);
-        SizeSelector matchRatio = SizeSelectors.and( // Match this aspect ratio and sort by biggest
+        SizeSelector matchRatio = SizeSelectors.and(
                 SizeSelectors.aspectRatio(targetRatio, 0),
                 SizeSelectors.biggest());
-        SizeSelector matchSize = SizeSelectors.and( // Bigger than this size, and sort by smallest
+        SizeSelector matchSize = SizeSelectors.and(
                 SizeSelectors.minHeight(targetMinSize.getHeight()),
                 SizeSelectors.minWidth(targetMinSize.getWidth()),
                 SizeSelectors.smallest());
         SizeSelector matchAll = SizeSelectors.or(
-                SizeSelectors.and(matchRatio, matchSize), // Try to respect both constraints.
-                matchSize, // If couldn't match aspect ratio, at least respect the size
-                matchRatio, // If couldn't respect size, at least match aspect ratio
-                SizeSelectors.biggest() // If couldn't match any, take the biggest.
+                SizeSelectors.and(matchRatio, matchSize),
+                matchSize,
+                matchRatio,
+                SizeSelectors.biggest()
         );
 
-        // Apply the external selector with this as a fallback,
-        // and return a size in REF_SENSOR reference.
         SizeSelector selector;
         if (mPreviewStreamSizeSelector != null) {
             selector = SizeSelectors.or(mPreviewStreamSizeSelector, matchAll);
@@ -921,11 +826,6 @@ public abstract class CameraBaseEngine extends CameraEngine {
         return result;
     }
 
-    /**
-     * This is called anytime {@link #computeFrameProcessingSize()} is called.
-     * Implementors can return null if frame processor size is not selectable
-     * @return a list of available sizes for frame processing
-     */
     @EngineThread
     @NonNull
     protected abstract List<Size> getFrameProcessingAvailableSizes();
@@ -935,8 +835,6 @@ public abstract class CameraBaseEngine extends CameraEngine {
     @SuppressWarnings("WeakerAccess")
     protected final Size computeFrameProcessingSize() {
         @NonNull List<Size> frameSizes = getFrameProcessingAvailableSizes();
-        // These sizes come in REF_SENSOR. Since there is an external selector involved,
-        // we must convert all of them to REF_VIEW, then flip back when returning.
         boolean flip = getAngles().flip(Reference.SENSOR, Reference.VIEW);
         List<Size> sizes = new ArrayList<>(frameSizes.size());
         for (Size size : frameSizes) {
@@ -974,5 +872,4 @@ public abstract class CameraBaseEngine extends CameraEngine {
         return result;
     }
 
-    //endregion
 }

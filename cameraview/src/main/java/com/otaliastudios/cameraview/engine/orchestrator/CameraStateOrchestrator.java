@@ -10,10 +10,6 @@ import com.google.android.gms.tasks.Tasks;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 
-/**
- * A special {@link CameraOrchestrator} with special methods that deal with the
- * {@link CameraState}.
- */
 public class CameraStateOrchestrator extends CameraOrchestrator {
 
     private CameraState mCurrentState = CameraState.OFF;

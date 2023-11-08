@@ -16,7 +16,7 @@ import plant.testtree.camerademo.activity.EditImageActivity;
 import plant.testtree.camerademo.util.FilterResourceHelper;
 import plant.testtree.camerademo.util.GLRootView;
 
-/* loaded from: classes.dex */
+
 public class FilterAdapterGalalry extends RecyclerView.Adapter<FilterAdapterGalalry.FilterHolder> {
     private Context context;
     public List<FilterType> filterTypeList;
@@ -24,12 +24,12 @@ public class FilterAdapterGalalry extends RecyclerView.Adapter<FilterAdapterGala
     public OnFilterChangeListener onFilterChangeListener;
     public int selected = 0;
 
-    /* loaded from: classes.dex */
+   
     public interface OnFilterChangeListener {
         void onFilterChanged(FilterType filterType);
     }
 
-    /* loaded from: classes.dex */
+   
     public class FilterHolder extends RecyclerView.ViewHolder {
         GLRootView camera_view;
         FrameLayout filterImg;
@@ -37,10 +37,8 @@ public class FilterAdapterGalalry extends RecyclerView.Adapter<FilterAdapterGala
         LinearLayout filterRoot;
         ImageView thumbImage;
 
-        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
         public FilterHolder(View view) {
             super(view);
-           // FilterAdapterGalalry.this = r1;
         }
     }
 
@@ -50,7 +48,7 @@ public class FilterAdapterGalalry extends RecyclerView.Adapter<FilterAdapterGala
         this.image = str;
     }
 
-    @Override // androidx.recyclerview.widget.RecyclerView.Adapter
+    @Override 
     public int getItemViewType(int i) {
         if (i == 1) {
             return -1;
@@ -58,7 +56,7 @@ public class FilterAdapterGalalry extends RecyclerView.Adapter<FilterAdapterGala
         return super.getItemViewType(i);
     }
 
-    @Override // androidx.recyclerview.widget.RecyclerView.Adapter
+    @Override 
     public FilterHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         if (i == -1) {
             return new FilterHolder(LayoutInflater.from(this.context).inflate(R.layout.filter_division_layout, viewGroup, false));
@@ -72,7 +70,7 @@ public class FilterAdapterGalalry extends RecyclerView.Adapter<FilterAdapterGala
         return filterHolder;
     }
 
-    @Override // androidx.recyclerview.widget.RecyclerView.Adapter
+    @Override 
     public void onBindViewHolder(FilterHolder filterHolder, final int i) {
         if (i != 1) {
             FilterType filterType = this.filterTypeList.get(i);
@@ -85,27 +83,25 @@ public class FilterAdapterGalalry extends RecyclerView.Adapter<FilterAdapterGala
                 filterHolder.filterImg.setBackgroundResource(0);
                 filterHolder.filterName.setTextColor(-1);
             }
-            filterHolder.filterRoot.setOnClickListener(new View.OnClickListener() { // from class: com.cameraediter.iphone11pro.filter.FilterAdapterGalalry.1
-                @Override // android.view.View.OnClickListener
-                public void onClick(View view) {
-                    if (FilterAdapterGalalry.this.selected != i) {
-                        int i2 = FilterAdapterGalalry.this.selected;
-                        int i3 = i;
-                        EditImageActivity.filterPosition = i3;
-                        FilterAdapterGalalry filterAdapter = FilterAdapterGalalry.this;
-                        filterAdapter.selected = i3;
-                        filterAdapter.notifyItemChanged(i2);
-                        FilterAdapterGalalry.this.notifyItemChanged(i);
-                        if (FilterAdapterGalalry.this.onFilterChangeListener != null) {
-                            FilterAdapterGalalry.this.onFilterChangeListener.onFilterChanged(FilterAdapterGalalry.this.filterTypeList.get(i));
-                        }
+
+            filterHolder.filterRoot.setOnClickListener(view -> {
+                if (FilterAdapterGalalry.this.selected != i) {
+                    int i2 = FilterAdapterGalalry.this.selected;
+                    int i3 = i;
+                    EditImageActivity.filterPosition = i3;
+                    FilterAdapterGalalry filterAdapter = FilterAdapterGalalry.this;
+                    filterAdapter.selected = i3;
+                    filterAdapter.notifyItemChanged(i2);
+                    FilterAdapterGalalry.this.notifyItemChanged(i);
+                    if (FilterAdapterGalalry.this.onFilterChangeListener != null) {
+                        FilterAdapterGalalry.this.onFilterChangeListener.onFilterChanged(FilterAdapterGalalry.this.filterTypeList.get(i));
                     }
                 }
             });
         }
     }
 
-    @Override // androidx.recyclerview.widget.RecyclerView.Adapter
+    @Override 
     public int getItemCount() {
         List<FilterType> list = this.filterTypeList;
         if (list == null) {

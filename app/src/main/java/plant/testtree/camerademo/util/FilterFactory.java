@@ -2,6 +2,7 @@ package plant.testtree.camerademo.util;
 
 import android.content.Context;
 import plant.testtree.camerademo.adapter.FilterType;
+import plant.testtree.camerademo.filter.AbsFilter;
 import plant.testtree.camerademo.filter.BlackWhiteFilter;
 import plant.testtree.camerademo.filter.BlurredFrameEffect;
 import plant.testtree.camerademo.filter.BraSizeTestLeftFilter;
@@ -9,7 +10,9 @@ import plant.testtree.camerademo.filter.BraSizeTestRightFilter;
 import plant.testtree.camerademo.filter.BrightnessFilter;
 import plant.testtree.camerademo.filter.FillLightFilter;
 import plant.testtree.camerademo.filter.FilterTypeExt;
+import plant.testtree.camerademo.filter.GrayScaleShaderFilter;
 import plant.testtree.camerademo.filter.GreenHouseFilter;
+import plant.testtree.camerademo.filter.InvertColorFilter;
 import plant.testtree.camerademo.filter.MoonLightFilter;
 import plant.testtree.camerademo.filter.MultiplyFilter;
 import plant.testtree.camerademo.filter.MxFaceBeautyFilter;
@@ -115,7 +118,7 @@ import plant.testtree.camerademo.filter.xiuxiuxiu.VintageFilter;
 import plant.testtree.camerademo.filter.xiuxiuxiu.VividFilter;
 import plant.testtree.camerademo.filter.xiuxiuxiu.WaldenFilter;
 
-/* loaded from: classes.dex */
+
 public class FilterFactory {
     public static AbsFilter createFilter(FilterType filterType, Context context) {
         switch (filterType) {

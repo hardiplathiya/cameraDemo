@@ -6,13 +6,13 @@ import android.opengl.GLES20;
 import plant.testtree.camerademo.util.SimpleFragmentShaderFilter;
 import plant.testtree.camerademo.util.TextureUtils;
 
-/* loaded from: classes.dex */
+
 public class MxFaceBeautyFilter extends SimpleFragmentShaderFilter {
     public MxFaceBeautyFilter(Context context) {
         super(context, "filter/fsh/mx/mx_face_beauty.glsl");
     }
 
-    @Override // com.cameraediter.iphone11pro.filter.base.SimpleFragmentShaderFilter, com.cameraediter.iphone11pro.filter.base.AbsFilter
+    @Override 
     public void onDrawFrame(int i) {
         onPreDrawElements();
         setUniform1f(this.glSimpleProgram.getProgramId(), "stepSizeX", 1.0f / this.surfaceWidth);

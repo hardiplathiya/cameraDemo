@@ -13,7 +13,7 @@ import plant.testtree.camerademo.adapter.FilterType;
 import plant.testtree.camerademo.filter.FilterGroup;
 import plant.testtree.camerademo.filter.PassThroughFilter;
 
-/* loaded from: classes.dex */
+
 public class GLWrapper implements GLSurfaceView.Renderer {
     private Context context;
     private FilterGroup customizedFilters;
@@ -48,12 +48,12 @@ public class GLWrapper implements GLSurfaceView.Renderer {
         return this;
     }
 
-    @Override // android.opengl.GLSurfaceView.Renderer
+    @Override 
     public void onSurfaceCreated(GL10 gl10, EGLConfig eGLConfig) {
         this.filterGroup.init();
     }
 
-    @Override // android.opengl.GLSurfaceView.Renderer
+    @Override 
     public void onSurfaceChanged(GL10 gl10, int i, int i2) {
         this.surfaceWidth = i;
         this.surfaceHeight = i2;
@@ -65,7 +65,7 @@ public class GLWrapper implements GLSurfaceView.Renderer {
         Log.d("GL_THREAD", this.textureId + " ");
     }
 
-    @Override // android.opengl.GLSurfaceView.Renderer
+    @Override 
     public void onDrawFrame(GL10 gl10) {
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         GLES20.glClear(FujifilmMakernoteDirectory.TAG_FACES_DETECTED);

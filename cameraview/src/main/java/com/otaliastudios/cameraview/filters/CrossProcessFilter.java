@@ -4,10 +4,6 @@ import androidx.annotation.NonNull;
 
 import com.otaliastudios.cameraview.filter.BaseFilter;
 
-/**
- * Applies a cross process effect, in which the red and green channels
- * are enhanced while the blue channel is restricted.
- */
 public class CrossProcessFilter extends BaseFilter {
 
     private final static String FRAGMENT_SHADER = "#extension GL_OES_EGL_image_external : require\n"

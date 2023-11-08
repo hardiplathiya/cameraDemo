@@ -9,35 +9,6 @@ import com.otaliastudios.opengl.draw.GlDrawable;
 import com.otaliastudios.opengl.draw.GlRect;
 import com.otaliastudios.opengl.program.GlTextureProgram;
 
-/**
- * A base implementation of {@link Filter} that just leaves the fragment shader to subclasses.
- * See {@link NoFilter} for a non-abstract implementation.
- *
- * This class offers a default vertex shader implementation which in most cases is not required
- * to be changed. Most effects can be rendered by simply changing the fragment shader, thus
- * by overriding {@link #getFragmentShader()}.
- *
- * All {@link BaseFilter}s should have a no-arguments public constructor.
- * This class will try to automatically implement {@link #copy()} thanks to this.
- * If your filter implements public parameters, please implement {@link OneParameterFilter}
- * and {@link TwoParameterFilter} to handle them and have them passed automatically to copies.
- *
- * NOTE - This class expects variable to have a certain name:
- * - {@link #vertexPositionName}
- * - {@link #vertexTransformMatrixName}
- * - {@link #vertexModelViewProjectionMatrixName}
- * - {@link #vertexTextureCoordinateName}
- * - {@link #fragmentTextureCoordinateName}
- * You can either change these variables, for example in your constructor, or change your
- * vertex and fragment shader code to use them.
- *
- * NOTE - the {@link android.graphics.SurfaceTexture} restrictions apply:
- * We only support the {@link android.opengl.GLES11Ext#GL_TEXTURE_EXTERNAL_OES} texture target
- * and it must be specified in the fragment shader as a samplerExternalOES texture.
- * You also have to explicitly require the extension: see
- * {@link #createDefaultFragmentShader(String)}.
- *
- */
 public abstract class BaseFilter implements Filter {
 
     private final static String TAG = BaseFilter.class.getSimpleName();
@@ -131,10 +102,6 @@ public abstract class BaseFilter implements Filter {
 
     @Override
     public void onDestroy() {
-        // Since we used the handle constructor of GlTextureProgram, calling release here
-        // will NOT destroy the GL program. This is important because Filters are not supposed
-        // to have ownership of programs. Creation and deletion happen outside, and deleting twice
-        // would cause an error.
         program.release();
         program = null;
         programDrawable = null;

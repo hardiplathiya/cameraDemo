@@ -3,7 +3,7 @@ package plant.testtree.camerademo.filter;
 import android.opengl.GLES20;
 import com.drew.metadata.exif.makernotes.FujifilmMakernoteDirectory;
 
-/* loaded from: classes.dex */
+
 public class FBO {
     private int frameBuffer;
     private int frameBufferTexture;

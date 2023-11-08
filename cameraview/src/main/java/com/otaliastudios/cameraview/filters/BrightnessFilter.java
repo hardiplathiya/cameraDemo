@@ -8,9 +8,6 @@ import com.otaliastudios.cameraview.filter.BaseFilter;
 import com.otaliastudios.cameraview.filter.OneParameterFilter;
 import com.otaliastudios.opengl.core.Egloo;
 
-/**
- * Adjusts the brightness of the frames.
- */
 public class BrightnessFilter extends BaseFilter implements OneParameterFilter {
 
     private final static String FRAGMENT_SHADER = "#extension GL_OES_EGL_image_external : require\n"
@@ -36,12 +33,6 @@ public class BrightnessFilter extends BaseFilter implements OneParameterFilter {
         brightness = bbb;
     }
 
-    /**
-     * Returns the current brightness.
-     *
-     * @see #setBrightness(float)
-     * @return brightness
-     */
     @SuppressWarnings({"unused", "WeakerAccess"})
     public float getBrightness() {
         return brightness;
@@ -49,13 +40,11 @@ public class BrightnessFilter extends BaseFilter implements OneParameterFilter {
 
     @Override
     public void setParameter1(float value) {
-        // parameter is 0...1, brightness is 1...2.
         setBrightness(value + 1);
     }
 
     @Override
     public float getParameter1() {
-        // parameter is 0...1, brightness is 1...2.
         return getBrightness() - 1F;
     }
 

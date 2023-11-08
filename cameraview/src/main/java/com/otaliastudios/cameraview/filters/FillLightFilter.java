@@ -8,9 +8,6 @@ import com.otaliastudios.cameraview.filter.BaseFilter;
 import com.otaliastudios.cameraview.filter.OneParameterFilter;
 import com.otaliastudios.opengl.core.Egloo;
 
-/**
- * Applies back-light filling to the frames.
- */
 public class FillLightFilter extends BaseFilter implements OneParameterFilter {
 
     private final static String FRAGMENT_SHADER = "#extension GL_OES_EGL_image_external : require\n"
@@ -37,26 +34,13 @@ public class FillLightFilter extends BaseFilter implements OneParameterFilter {
 
     public FillLightFilter() { }
 
-    /**
-     * Sets the current strength.
-     * 0.0: no change.
-     * 1.0: max strength.
-     *
-     * @param strength strength
-     */
+
     @SuppressWarnings("WeakerAccess")
     public void setStrength(float strength) {
         if (strength < 0.0f) strength = 0f;
         if (strength > 1.0f) strength = 1f;
         this.strength = strength;
     }
-
-    /**
-     * Returns the current strength.
-     *
-     * @see #setStrength(float)
-     * @return strength
-     */
     @SuppressWarnings({"unused", "WeakerAccess"})
     public float getStrength() {
         return strength;

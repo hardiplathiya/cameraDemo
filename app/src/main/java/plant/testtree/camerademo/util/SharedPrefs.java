@@ -3,7 +3,6 @@ package plant.testtree.camerademo.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-/* loaded from: classes.dex */
 final class SharedPrefs {
     private static final int PREFERENCES_MODE = 0;
     private static final String PREFERENCES_NAME = "com.editphotogallery.photovideogallery.SHARED_PREFS";

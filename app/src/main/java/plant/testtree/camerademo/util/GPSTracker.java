@@ -11,7 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import androidx.core.app.ActivityCompat;
 
-/* loaded from: classes.dex */
+
 public class GPSTracker implements LocationListener {
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1;
     private static final long MIN_TIME_BW_UPDATES = 1;

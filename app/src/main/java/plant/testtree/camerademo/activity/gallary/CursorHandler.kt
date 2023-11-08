@@ -1,14 +1,12 @@
-package plant.testtree.camerademo.activity.gallary;
+package plant.testtree.camerademo.activity.gallary
 
-import android.database.Cursor;
+import android.database.Cursor
 
-public interface CursorHandler<T> {
-
-    final class CC {
-        public static String[] getProjection() {
-            return new String[0];
-        }
+interface CursorHandler<T> {
+    object CC {
+        val projection: Array<String?>
+            get() = arrayOfNulls(0)
     }
 
-    T handle(Cursor cursor);
+    fun handle(cursor: Cursor?): T
 }

@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-/* loaded from: classes.dex */
+
 public class StringUtils {
     public static String[] asArray(String... strArr) {
         return strArr;
