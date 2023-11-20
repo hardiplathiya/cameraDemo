@@ -5,7 +5,6 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 
 import com.otaliastudios.cameraview.CameraLogger;
-import com.otaliastudios.cameraview.SwipeCall;
 
 /**
  * A {@link GestureFinder} that detects {@link Gesture#SCROLL_HORIZONTAL}
@@ -54,31 +53,6 @@ public class ScrollGestureFinder extends GestureFinder {
 
         mDetector.setIsLongpressEnabled(false); // Looks important.
     }
-
-    public ScrollGestureFinder(GestureFinder.Controller controller, final SwipeCall swipeCall) {
-        super(controller, 2);
-        this.mDetector = new GestureDetector(controller.getContext(), new GestureDetector.SimpleOnGestureListener() { // from class: com.otaliastudios.cameraview.gesture.ScrollGestureFinder.1
-            @Override // android.view.GestureDetector.SimpleOnGestureListener, android.view.GestureDetector.OnGestureListener
-            public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent2, float f, float f2) {
-                try {
-                    float y = motionEvent2.getY() - motionEvent.getY();
-                    float x = motionEvent2.getX() - motionEvent.getX();
-                    if (Math.abs(x) > Math.abs(y) && Math.abs(x) > 100.0f && Math.abs(f) > 100.0f) {
-                        if (x > 0.0f) {
-                            swipeCall.swipeRight();
-                        } else {
-                            swipeCall.swipeLeft();
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return super.onFling(motionEvent, motionEvent2, f, f2);
-            }
-        });
-        this.mDetector.setIsLongpressEnabled(false);
-    }
-
 
     @Override
     protected boolean handleTouchEvent(@NonNull MotionEvent event) {

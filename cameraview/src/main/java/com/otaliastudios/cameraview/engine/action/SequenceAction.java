@@ -10,8 +10,13 @@ import androidx.annotation.RequiresApi;
 
 import java.util.List;
 
+/**
+ * Executes a list of actions in sequence, completing once
+ * the last of them has been completed.
+ */
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 class SequenceAction extends BaseAction {
+    // Need to be BaseAction so we can call onStart() instead of start()
     private final List<BaseAction> actions;
     private int runningAction = -1;
 
@@ -24,6 +29,7 @@ class SequenceAction extends BaseAction {
         boolean first = runningAction == -1;
         boolean last = runningAction == actions.size() - 1;
         if (last) {
+            // This was the last action. We're done.
             setState(STATE_COMPLETED);
         } else {
             runningAction++;
@@ -54,6 +60,8 @@ class SequenceAction extends BaseAction {
     protected void onAbort(@NonNull ActionHolder holder) {
         super.onAbort(holder);
         if (runningAction >= 0) {
+            // Previous actions have been completed already.
+            // Future actions will never start. So this is OK.
             actions.get(runningAction).onAbort(holder);
         }
     }

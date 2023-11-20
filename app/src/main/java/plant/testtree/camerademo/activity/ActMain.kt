@@ -31,7 +31,7 @@ class ActMain : AppCompatActivity() {
 
     private fun clickListner() {
         binding.btnSong.setOnClickListener {
-            this@ActMain.startActivity(
+            startActivity(
                 Intent(
                     this@ActMain,
                     CameraActivity::class.java

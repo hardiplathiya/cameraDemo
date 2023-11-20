@@ -129,9 +129,9 @@ public class CameraView extends FrameLayout implements LifecycleObserver {
     private boolean mUseDeviceOrientation;
     private boolean mRequestPermissions;
     private HashMap<Gesture, GestureAction> mGestureMap = new HashMap<>(4);
-    public static Preview mPreview;
+    private Preview mPreview;
     private Engine mEngine;
-    public static Filter mPendingFilter;
+    private Filter mPendingFilter;
     private int mFrameProcessingExecutors;
     private int mActiveGestures;
 
@@ -139,7 +139,7 @@ public class CameraView extends FrameLayout implements LifecycleObserver {
     private Handler mUiHandler;
     private Executor mFrameProcessingExecutor;
     @VisibleForTesting CameraCallbacks mCameraCallbacks;
-    public static CameraPreview mCameraPreview;
+    private CameraPreview mCameraPreview;
     private OrientationHelper mOrientationHelper;
     private CameraEngine mCameraEngine;
     private Size mLastPreviewStreamSize;
@@ -174,12 +174,6 @@ public class CameraView extends FrameLayout implements LifecycleObserver {
         super(context, attrs);
         initialize(context, attrs);
     }
-
-    SwpieCallBack callBackS;
-    public void setCall(SwpieCallBack swpieCallBack) {
-        this.callBackS = swpieCallBack;
-    }
-
 
     //region Init
 
@@ -315,19 +309,6 @@ public class CameraView extends FrameLayout implements LifecycleObserver {
 
         // Create the orientation helper
         mOrientationHelper = new OrientationHelper(context, mCameraCallbacks);
-
-//        this.mScrollGestureFinder = new ScrollGestureFinder(this.mCameraCallbacks, new SwipeCall() { // from class: com.otaliastudios.cameraview.CameraView.1
-//            @Override // com.otaliastudios.cameraview.gesture.SwipeCall
-//            public void swipeLeft() {
-//                CameraView.this.callBackS.onSwipeValue(0);
-//            }
-//
-//            @Override // com.otaliastudios.cameraview.gesture.SwipeCall
-//            public void swipeRight() {
-//                CameraView.this.callBackS.onSwipeValue(1);
-//            }
-//        });
-
     }
 
     /**
@@ -2749,7 +2730,7 @@ public class CameraView extends FrameLayout implements LifecycleObserver {
      * @return the current filter
      */
     @NonNull
-    public static Filter getFilter() {
+    public Filter getFilter() {
         if (mCameraPreview == null) {
             return mPendingFilter;
         } else if (mCameraPreview instanceof FilterCameraPreview) {

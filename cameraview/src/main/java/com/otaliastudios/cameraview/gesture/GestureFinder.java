@@ -7,6 +7,10 @@ import androidx.annotation.VisibleForTesting;
 
 import android.view.MotionEvent;
 
+/**
+ * Base class for gesture finders.
+ * Gesture finders are passed down touch events to detect gestures.
+ */
 public abstract class GestureFinder {
 
     public interface Controller {
@@ -15,6 +19,8 @@ public abstract class GestureFinder {
         int getHeight();
     }
 
+    // The number of possible values between minValue and maxValue, for the getValue method.
+    // We could make this non-static (e.g. larger granularity for exposure correction).
     private final static int GRANULARITY = 50;
 
     private boolean mActive;

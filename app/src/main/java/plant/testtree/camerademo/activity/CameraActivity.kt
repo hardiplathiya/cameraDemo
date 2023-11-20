@@ -1517,10 +1517,10 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
 
     inner class Listener() : CameraListener() {
         override fun onCameraOpened(cameraOptions: CameraOptions) {}
-        override fun onSwiperDetect(i: Int) {
-            super.onSwiperDetect(i)
-            Log.d("aaaa", i.toString() + "")
-        }
+//        override fun onSwiperDetect(i: Int) {
+//            super.onSwiperDetect(i)
+//            Log.d("aaaa", i.toString() + "")
+//        }
 
         override fun onCameraError(cameraException: CameraException) {
             super.onCameraError(cameraException)

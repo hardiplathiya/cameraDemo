@@ -43,8 +43,6 @@ public abstract class CameraListener {
     @UiThread
     public void onCameraError(@NonNull CameraException exception) { }
 
-    public void onSwiperDetect(int i) {
-    }
 
     /**
      * Notifies that a picture previously captured with {@link CameraView#takePicture()}
