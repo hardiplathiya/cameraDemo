@@ -1,82 +1,205 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:orientation="vertical"
     android:layout_height="match_parent">
 
-    <ImageView
+    <LinearLayout
+        android:id="@+id/toolbar"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/toolbar_bg">
+
+        <ImageView
+            android:id="@+id/img_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@null"
+            android:padding="@dimen/_3sdp"
+            android:src="@drawable/ic_back" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:text="@string/app_name"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_16ssp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_below="@+id/toolbar"
+       android:layout_marginHorizontal="@dimen/_10ssp"
+        android:layout_marginVertical="@dimen/_5sdp"
+        android:layout_width="match_parent"
+        android:src="@drawable/banner"
+        android:adjustViewBounds="true"
+        android:layout_height="wrap_content"
         android:scaleType="fitXY" />
 
-    <FrameLayout
-        android:id="@+id/frameLayout"
+    <TextView
+        android:id="@+id/txtappname"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_margin="@dimen/_1sdp"
-        android:background="@drawable/nativeborder"
-        android:padding="@dimen/_1sdp" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/logo"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:text="Features:"
+        android:fontFamily="@font/poppins_medium"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/_14ssp" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/frameLayout"
-        android:layout_marginTop="@dimen/_25sdp"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical">
 
         <LinearLayout
+            android:layout_marginTop="@dimen/_5sdp"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
+            android:layout_marginHorizontal="@dimen/_10sdp"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="horizontal"
             android:weightSum="2">
 
             <ImageView
-                android:id="@+id/btnSong"
+                android:id="@+id/btncamera"
                 android:layout_width="0dp"
+                android:adjustViewBounds="true"
+                android:layout_marginEnd="@dimen/_5sdp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:src="@drawable/hcamera" />
+                android:src="@drawable/ic_camera" />
 
             <ImageView
-                android:id="@+id/gallery2"
+                android:id="@+id/gallary"
                 android:layout_width="0dp"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:adjustViewBounds="true"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:src="@drawable/hgallery" />
+                android:src="@drawable/ic_gallery" />
         </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/logo"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:text="Other Features:"
+            android:fontFamily="@font/poppins_medium"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/_14ssp" />
 
         <LinearLayout
+            android:layout_marginTop="@dimen/_5sdp"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_10sdp"
             android:orientation="horizontal">
 
-            <ImageView
+            <LinearLayout
                 android:id="@+id/cardShare"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:orientation="vertical"
                 android:layout_weight="1"
-                android:padding="@dimen/_5sdp"
-                android:src="@drawable/ic_share" />
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/btnrate2"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:padding="@dimen/_5sdp"
-                android:src="@drawable/ic_rate" />
+                <ImageView
+                    android:layout_width="@dimen/_50sdp"
+                    android:layout_height="@dimen/_50sdp"
+                    android:adjustViewBounds="true"
+                    android:padding="@dimen/_5sdp"
+                    android:src="@drawable/ic_share" />
 
-            <ImageView
-                android:id="@+id/moreapp"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
+                <TextView
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="@dimen/_10sdp"
+                    android:text="Share"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/cardRate"
+                android:orientation="vertical"
                 android:layout_weight="1"
-                android:padding="@dimen/_5sdp"
-                android:src="@drawable/ic_more" />
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="@dimen/_50sdp"
+                    android:layout_height="@dimen/_50sdp"
+                    android:adjustViewBounds="true"
+                    android:padding="@dimen/_5sdp"
+                    android:src="@drawable/ic_rate" />
+
+                <TextView
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:text="Rate Us"
+                    android:layout_marginBottom="@dimen/_10sdp"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/cardMoreapp"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="@dimen/_50sdp"
+                    android:layout_height="@dimen/_50sdp"
+                    android:adjustViewBounds="true"
+                    android:padding="@dimen/_5sdp"
+                    android:src="@drawable/ic_more" />
+
+                <TextView
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="@dimen/_10sdp"
+                    android:text="More App"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/cardprivacy"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="@dimen/_50sdp"
+                    android:layout_height="@dimen/_50sdp"
+                    android:adjustViewBounds="true"
+                    android:padding="@dimen/_5sdp"
+                    android:src="@drawable/ic_privacy" />
+
+                <TextView
+                    android:gravity="center"
+                    android:layout_marginBottom="@dimen/_10sdp"
+                    android:layout_width="match_parent"
+                    android:text="Privacy"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-</RelativeLayout>
+</LinearLayout>

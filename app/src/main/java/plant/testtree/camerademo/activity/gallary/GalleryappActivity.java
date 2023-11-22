@@ -215,12 +215,10 @@ public class GalleryappActivity extends AppCompatActivity {
                 if (GalleryappActivity.this.mediaItems.get(i).isVideo() || GalleryappActivity.this.mediaItems.get(i).isGif()) {
                     binding.llEdit.setVisibility(View.GONE);
                     binding.tvRotate.setVisibility(View.GONE);
-                    binding.llDetail.setVisibility(View.VISIBLE);
                     binding.tvSetas.setVisibility(View.GONE);
                 } else {
                     binding.llEdit.setVisibility(View.VISIBLE);
                     binding.tvRotate.setVisibility(View.VISIBLE);
-                    binding.llDetail.setVisibility(View.VISIBLE);
                     binding.tvSetas.setVisibility(View.VISIBLE);
                 }
                 if (GalleryappActivity.this.mediaItems.get(i).getLatitude() == 0.0d || GalleryappActivity.this.mediaItems.get(i).getLongitude() == 0.0d) {
@@ -302,11 +300,6 @@ public class GalleryappActivity extends AppCompatActivity {
             GalleryappActivity.this.startActivity(new Intent("android.intent.action.VIEW", Uri.parse(String.format(Locale.ENGLISH, "http://maps.google.com/maps?q=loc:%f,%f", Double.valueOf(GalleryappActivity.this.mediaItems.get(binding.galleryPager.getCurrentItem()).getLatitude()), Double.valueOf(GalleryappActivity.this.mediaItems.get(binding.galleryPager.getCurrentItem()).getLongitude())))));
             Log.d("lat_long", GalleryappActivity.this.mediaItems.get(binding.galleryPager.getCurrentItem()).getLatitude() + "  " + GalleryappActivity.this.mediaItems.get(binding.galleryPager.getCurrentItem()).getLongitude());
         });
-        binding.llDetail.setOnClickListener(view -> {
-            binding.cardMenuList.setVisibility(View.GONE);
-            binding.rlMenuList.setVisibility(View.GONE);
-            GalleryappActivity.this.showDetailsDialog();
-        });
         binding.rlHideShow.setOnClickListener(view -> {
             binding.rlSlideShow.setVisibility(View.GONE);
             binding.galleryPager.setCurrentItem(binding.vpSlideShow.getCurrentItem());
@@ -378,11 +371,9 @@ public class GalleryappActivity extends AppCompatActivity {
                     if (GalleryappActivity.this.mediaItems.get(0).isVideo() || GalleryappActivity.this.mediaItems.get(0).isGif()) {
                         binding.llEdit.setVisibility(View.GONE);
                         binding.tvRotate.setVisibility(View.GONE);
-                        binding.llDetail.setVisibility(View.VISIBLE);
                     } else {
                         binding.llEdit.setVisibility(View.VISIBLE);
                         binding.tvRotate.setVisibility(View.VISIBLE);
-                        binding.llDetail.setVisibility(View.VISIBLE);
                     }
                     binding.rlProgress.setVisibility(View.GONE);
                     if (GalleryappActivity.this.mediaItems.get(0).getLatitude() == 0.0d || GalleryappActivity.this.mediaItems.get(i).getLongitude() == 0.0d) {
@@ -494,9 +485,9 @@ public class GalleryappActivity extends AppCompatActivity {
         builder.setView(inflate);
         final AlertDialog create = builder.create();
         ((TextView) inflate.findViewById(R.id.tvTitle)).setText("Are you sure you want to delete this media?");
-        ((Button) inflate.findViewById(R.id.btnNo)).setOnClickListener(view -> create.dismiss());
+        ((TextView) inflate.findViewById(R.id.btnNo)).setOnClickListener(view -> create.dismiss());
 
-        ((Button) inflate.findViewById(R.id.btnYes)).setOnClickListener(view -> {
+        ((TextView) inflate.findViewById(R.id.btnYes)).setOnClickListener(view -> {
             create.dismiss();
             GalleryappActivity.this.deleteCurrentMedia();
         });

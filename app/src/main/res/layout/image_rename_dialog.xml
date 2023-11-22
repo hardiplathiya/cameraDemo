@@ -19,7 +19,7 @@
             android:paddingTop="12dp"
             android:paddingBottom="12dp"
             android:text="Rename File"
-            android:textColor="@color/colorWhite"
+            android:textColor="@color/white"
             android:textSize="18dp"
             android:textStyle="bold" />
 

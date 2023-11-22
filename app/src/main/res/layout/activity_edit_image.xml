@@ -15,7 +15,7 @@
             android:layout_width="@dimen/_40sdp"
             android:layout_height="@dimen/_40sdp"
             android:src="@drawable/back_new"
-            n5:tint="@color/colorWhite" />
+            n5:tint="@color/white" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -71,10 +71,10 @@
 
                 <ImageView
                     android:id="@+id/ivFilter"
-                    android:layout_width="@dimen/_40sdp"
-                    android:layout_height="@dimen/_40sdp"
-                    android:padding="@dimen/_7sdp"
-                    android:src="@drawable/color1" />
+                    android:layout_width="@dimen/_35sdp"
+                    android:layout_height="@dimen/_35sdp"
+                    android:padding="@dimen/_8sdp"
+                    android:src="@drawable/ic_filter" />
             </LinearLayout>
 
             <LinearLayout
@@ -166,7 +166,7 @@
                 android:layout_height="@dimen/_40sdp"
                 android:padding="@dimen/_12sdp"
                 android:src="@drawable/close"
-                n5:tint="@color/colorWhite" />
+                n5:tint="@color/white" />
 
             <ImageView
                 android:id="@+id/ivFilterDone"
@@ -175,7 +175,7 @@
                 android:layout_alignParentRight="true"
                 android:padding="@dimen/_10sdp"
                 android:src="@drawable/tick"
-                n5:tint="@color/colorWhite" />
+                n5:tint="@color/white" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -221,7 +221,7 @@
                 android:layout_height="@dimen/_40sdp"
                 android:padding="@dimen/_12sdp"
                 android:src="@drawable/close"
-                n5:tint="@color/colorWhite" />
+                n5:tint="@color/white" />
 
             <ImageView
                 android:id="@+id/ivColorDone"
@@ -230,7 +230,7 @@
                 android:layout_alignParentRight="true"
                 android:padding="@dimen/_10sdp"
                 android:src="@drawable/tick"
-                n5:tint="@color/colorWhite" />
+                n5:tint="@color/white" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -264,14 +264,14 @@
                     android:layout_marginLeft="@dimen/_10sdp"
                     android:fontFamily="@font/muli_regular"
                     android:text=""
-                    android:textColor="@color/colorWhite" />
+                    android:textColor="@color/white" />
 
                 <ImageView
                     android:id="@+id/ivMenu"
                     android:layout_width="@dimen/_20sdp"
                     android:layout_height="@dimen/_20sdp"
                     android:layout_alignParentRight="true"
-                    android:src="@drawable/menu" />
+                    android:src="@drawable/ic_menu" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -287,11 +287,11 @@
                     android:layout_marginLeft="@dimen/_10sdp"
                     android:layout_marginRight="@dimen/_10sdp"
                     android:visibility="gone"
-                    n5:dsb_indicatorColor="@color/colorWhite"
+                    n5:dsb_indicatorColor="@color/white"
                     n5:dsb_indicatorPopupEnabled="false"
                     n5:dsb_max="350"
                     n5:dsb_min="200"
-                    n5:dsb_progressColor="@color/colorWhite"
+                    n5:dsb_progressColor="@color/white"
                     n5:dsb_scrubberHeight="1dp"
                     n5:dsb_thumbSize="18dp"
                     n5:dsb_trackColor="#ffd3d3d3"
@@ -306,11 +306,11 @@
                     android:layout_marginLeft="@dimen/_10sdp"
                     android:layout_marginRight="@dimen/_10sdp"
                     android:visibility="gone"
-                    n5:dsb_indicatorColor="@color/colorWhite"
+                    n5:dsb_indicatorColor="@color/white"
                     n5:dsb_indicatorPopupEnabled="false"
                     n5:dsb_max="200"
                     n5:dsb_min="100"
-                    n5:dsb_progressColor="@color/colorWhite"
+                    n5:dsb_progressColor="@color/white"
                     n5:dsb_scrubberHeight="1dp"
                     n5:dsb_thumbSize="18dp"
                     n5:dsb_trackColor="#ffd3d3d3"
@@ -325,11 +325,11 @@
                     android:layout_marginLeft="@dimen/_10sdp"
                     android:layout_marginRight="@dimen/_10sdp"
                     android:visibility="gone"
-                    n5:dsb_indicatorColor="@color/colorWhite"
+                    n5:dsb_indicatorColor="@color/white"
                     n5:dsb_indicatorPopupEnabled="false"
                     n5:dsb_max="200"
                     n5:dsb_min="100"
-                    n5:dsb_progressColor="@color/colorWhite"
+                    n5:dsb_progressColor="@color/white"
                     n5:dsb_scrubberHeight="1dp"
                     n5:dsb_thumbSize="18dp"
                     n5:dsb_trackColor="#ffd3d3d3"
@@ -365,7 +365,7 @@
                     android:fontFamily="@font/muli_regular"
                     android:gravity="center"
                     android:text="Brightness"
-                    android:textColor="@color/colorWhite"
+                    android:textColor="@color/white"
                     android:textSize="@dimen/_12sdp" />
             </LinearLayout>
 
@@ -388,7 +388,7 @@
                     android:fontFamily="@font/muli_regular"
                     android:gravity="center"
                     android:text="Saturation"
-                    android:textColor="@color/colorWhite"
+                    android:textColor="@color/white"
                     android:textSize="@dimen/_12sdp" />
             </LinearLayout>
 
@@ -411,7 +411,7 @@
                     android:fontFamily="@font/muli_regular"
                     android:gravity="center"
                     android:text="Contrast"
-                    android:textColor="@color/colorWhite"
+                    android:textColor="@color/white"
                     android:textSize="@dimen/_12sdp" />
             </LinearLayout>
         </LinearLayout>

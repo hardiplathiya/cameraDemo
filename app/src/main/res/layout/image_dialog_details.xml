@@ -22,7 +22,7 @@
             android:paddingTop="12dp"
             android:paddingBottom="12dp"
             android:text="Details"
-            android:textColor="@color/colorWhite"
+            android:textColor="@color/white"
             android:textSize="18dp"
             android:textStyle="bold" />
 

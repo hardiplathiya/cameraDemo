@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:background="@drawable/splash_bg"
     android:layout_height="match_parent">
 
     <ImageView
@@ -12,18 +13,33 @@
         android:src="@drawable/logo" />
 
     <TextView
+        android:id="@+id/txtappname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/logo"
         android:layout_marginTop="@dimen/_18sdp"
         android:gravity="center"
         android:text="@string/app_name"
-        android:textColor="#000000"
-        android:textSize="@dimen/_15sdp" />
+        android:fontFamily="@font/poppins_bold"
+        android:textColor="@color/blue"
+        android:textSize="@dimen/_20ssp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtappname"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:gravity="center"
+        android:text="Stunning Camera Effects That Easily Take
+High-quality Photos."
+        android:fontFamily="@font/poppins_medium"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_12ssp" />
 
     <ProgressBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:progressTint="@color/white"
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
         android:layout_marginBottom="@dimen/_20sdp" />

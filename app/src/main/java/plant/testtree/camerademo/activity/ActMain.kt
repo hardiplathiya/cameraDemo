@@ -30,7 +30,7 @@ class ActMain : AppCompatActivity() {
     }
 
     private fun clickListner() {
-        binding.btnSong.setOnClickListener {
+        binding.btncamera.setOnClickListener {
             startActivity(
                 Intent(
                     this@ActMain,
@@ -38,8 +38,8 @@ class ActMain : AppCompatActivity() {
                 )
             )
         }
-        binding.gallery2.setOnClickListener { checkPermission() }
-        binding.btnrate2.setOnClickListener {
+        binding.gallary.setOnClickListener { checkPermission() }
+        binding.cardRate.setOnClickListener {
             val intent = Intent("android.intent.action.VIEW")
             intent.data =
                 Uri.parse("https://play.google.com/store/apps/details?id=" + this@ActMain.packageName)

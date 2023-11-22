@@ -110,7 +110,7 @@ class EditImageActivity : AppCompatActivity() {
                 isCrop = true
                 binding.rlCropLayout.visibility = View.VISIBLE
                 binding.ivCrop.setImageResource(R.drawable.crop_press)
-                binding.ivFilter.setImageResource(R.drawable.color1)
+                binding.ivFilter.setImageResource(R.drawable.ic_filter)
                 binding.ivColorEdit.setImageResource(R.drawable.effect)
                 Handler(Looper.getMainLooper()).postDelayed({
                     try {
@@ -127,7 +127,7 @@ class EditImageActivity : AppCompatActivity() {
                 isCrop = true
                 binding.rlCropLayout.visibility = View.VISIBLE
                 binding.ivCrop.setImageResource(R.drawable.crop_press)
-                binding.ivFilter.setImageResource(R.drawable.color1)
+                binding.ivFilter.setImageResource(R.drawable.ic_filter)
                 binding.ivColorEdit.setImageResource(R.drawable.effect)
                 Handler(Looper.getMainLooper()).postDelayed({
                     try {
@@ -142,14 +142,14 @@ class EditImageActivity : AppCompatActivity() {
                 isCrop = false
                 binding.rlCropLayout.visibility = View.GONE
                 binding.ivCrop.setImageResource(R.drawable.crop)
-                binding.ivFilter.setImageResource(R.drawable.color1)
+                binding.ivFilter.setImageResource(R.drawable.ic_filter)
                 binding.ivColorEdit.setImageResource(R.drawable.effect)
             } else {
                 val editImageActivity4 = this@EditImageActivity
                 editImageActivity4.isCrop = true
                 binding.rlCropLayout.visibility = View.VISIBLE
                 binding.ivCrop.setImageResource(R.drawable.crop_press)
-                binding.ivFilter.setImageResource(R.drawable.color1)
+                binding.ivFilter.setImageResource(R.drawable.ic_filter)
                 binding.ivColorEdit.setImageResource(R.drawable.effect)
                 try {
                     UCrop.of((imageUri)!!, Uri.fromFile(File(cacheDir, "destination.jpg")))
@@ -193,7 +193,7 @@ class EditImageActivity : AppCompatActivity() {
                 isFilter = false
                 binding.rlFilterView.visibility = View.GONE
                 binding.ivCrop.setImageResource(R.drawable.crop)
-                binding.ivFilter.setImageResource(R.drawable.color1)
+                binding.ivFilter.setImageResource(R.drawable.ic_filter)
                 binding.ivColorEdit.setImageResource(R.drawable.effect)
                 takePhoto()
             } else {
@@ -228,7 +228,7 @@ class EditImageActivity : AppCompatActivity() {
                 val editImageActivity = this@EditImageActivity
                 editImageActivity.isColorEffect = true
                 binding.ivCrop.setImageResource(R.drawable.crop)
-                binding.ivFilter.setImageResource(R.drawable.color1)
+                binding.ivFilter.setImageResource(R.drawable.ic_filter)
                 binding.ivColorEdit.setImageResource(R.drawable.effect_press)
                 binding.rlColorFilter.visibility = View.VISIBLE
                 binding.llAnimationFilter.visibility = View.GONE
@@ -246,7 +246,7 @@ class EditImageActivity : AppCompatActivity() {
                 }, 500L)
             } else if (isColorEffect) {
                 binding.ivCrop.setImageResource(R.drawable.crop)
-                binding.ivFilter.setImageResource(R.drawable.color1)
+                binding.ivFilter.setImageResource(R.drawable.ic_filter)
                 binding.ivColorEdit.setImageResource(R.drawable.effect)
                 binding.tvDone.isEnabled = true
                 binding.tvDone.setTextColor(
@@ -285,7 +285,7 @@ class EditImageActivity : AppCompatActivity() {
                 val editImageActivity2 = this@EditImageActivity
                 editImageActivity2.isColorEffect = true
                 binding.ivCrop.setImageResource(R.drawable.crop)
-                binding.ivFilter.setImageResource(R.drawable.color1)
+                binding.ivFilter.setImageResource(R.drawable.ic_filter)
                 binding.ivColorEdit.setImageResource(R.drawable.effect_press)
                 binding.rlColorFilter.visibility = View.VISIBLE
                 binding.llAnimationFilter.visibility = View.GONE
@@ -581,7 +581,7 @@ class EditImageActivity : AppCompatActivity() {
     override fun onBackPressed() {
         if (binding.rlFilterView.visibility == View.VISIBLE) {
             binding.rlFilterView.visibility = View.GONE
-            binding.ivFilter.setImageResource(R.drawable.color1)
+            binding.ivFilter.setImageResource(R.drawable.ic_filter)
             isFilter = false
         } else if (binding.rlColorFilter.visibility == View.VISIBLE) {
             binding.rlColorFilter.visibility = View.GONE

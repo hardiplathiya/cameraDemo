@@ -13,6 +13,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
+            android:background="@color/toolbar_bg"
             android:layout_height="@dimen/_37sdp"
             android:clickable="true"
             android:orientation="horizontal"
@@ -37,9 +38,9 @@
                         android:layout_height="@dimen/_32sdp"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
-                        android:padding="@dimen/_4sdp"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/flash_off" />
+                        android:adjustViewBounds="true"
+                        android:padding="@dimen/_8sdp"
+                        android:src="@drawable/ic_flash_off" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -71,9 +72,9 @@
                         android:layout_height="@dimen/_32sdp"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
-                        android:padding="@dimen/_4sdp"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/menu" />
+                        android:padding="@dimen/_8sdp"
+                        android:adjustViewBounds="true"
+                        android:src="@drawable/ic_menu" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -88,7 +89,7 @@
                         android:layout_height="@dimen/_32sdp"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
-                        android:padding="@dimen/_4sdp"
+                        android:padding="@dimen/_8sdp"
                         android:scaleType="fitXY"
                         android:src="@drawable/timer" />
                 </RelativeLayout>
@@ -105,9 +106,9 @@
                         android:layout_height="@dimen/_32sdp"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
-                        android:padding="@dimen/_4sdp"
+                        android:padding="@dimen/_7sdp"
                         android:scaleType="fitXY"
-                        android:src="@drawable/setting_white" />
+                        android:src="@drawable/ic_setting" />
                 </RelativeLayout>
             </LinearLayout>
         </LinearLayout>
@@ -128,13 +129,15 @@
                 android:paddingTop="@dimen/_1sdp" />
 
             <LinearLayout
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:background="@drawable/roundtransparant"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_37sdp"
+                android:layout_marginTop="@dimen/_10sdp"
                 android:layout_alignParentTop="true"
                 android:clickable="true"
                 android:orientation="horizontal"
                 android:paddingLeft="10dp"
-                android:paddingTop="@dimen/_7sdp"
                 android:paddingRight="10dp">
 
                 <RelativeLayout
@@ -419,10 +422,10 @@
                     app:isb_show_tick_marks_type="oval"
                     app:isb_show_tick_texts="true"
                     app:isb_thumb_color="@color/color_back"
-                    app:isb_tick_marks_color="@color/colorWhite"
-                    app:isb_tick_texts_color="@color/colorWhite"
+                    app:isb_tick_marks_color="@color/white"
+                    app:isb_tick_texts_color="@color/white"
                     app:isb_ticks_count="5"
-                    app:isb_track_progress_color="@color/colorWhite" />
+                    app:isb_track_progress_color="@color/white" />
             </LinearLayout>
 
             <LinearLayout
@@ -468,7 +471,7 @@
                         android:fontFamily="@font/muli_regular"
                         android:gravity="center"
                         android:text="3x3"
-                        android:textColor="@color/colorWhite" />
+                        android:textColor="@color/white" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -485,7 +488,7 @@
                         android:fontFamily="@font/muli_regular"
                         android:gravity="center"
                         android:text="4x4"
-                        android:textColor="@color/colorWhite" />
+                        android:textColor="@color/white" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -502,13 +505,16 @@
                         android:fontFamily="@font/muli_regular"
                         android:gravity="center"
                         android:text="PHI"
-                        android:textColor="@color/colorWhite" />
+                        android:textColor="@color/white" />
                 </RelativeLayout>
             </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/llTimerClick"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginHorizontal="@dimen/_10sdp"
+            android:background="@drawable/roundtransparant"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -516,20 +522,12 @@
             android:orientation="vertical"
             android:visibility="gone">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:background="#80000000"
-                android:paddingTop="@dimen/_1sdp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_37sdp"
                 android:orientation="horizontal"
                 android:paddingLeft="10dp"
-                android:paddingTop="@dimen/_7sdp"
                 android:paddingRight="10dp">
 
                 <RelativeLayout
@@ -563,7 +561,7 @@
                         android:fontFamily="@font/muli_regular"
                         android:gravity="center"
                         android:text="3s"
-                        android:textColor="@color/colorWhite" />
+                        android:textColor="@color/white" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -580,7 +578,7 @@
                         android:fontFamily="@font/muli_regular"
                         android:gravity="center"
                         android:text="5s"
-                        android:textColor="@color/colorWhite" />
+                        android:textColor="@color/white" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -597,7 +595,7 @@
                         android:fontFamily="@font/muli_regular"
                         android:gravity="center"
                         android:text="9s"
-                        android:textColor="@color/colorWhite" />
+                        android:textColor="@color/white" />
                 </RelativeLayout>
             </LinearLayout>
         </LinearLayout>
