@@ -5,7 +5,6 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
 import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.location.Location
 import android.media.AudioManager
 import android.media.MediaPlayer
@@ -70,7 +69,6 @@ import java.util.concurrent.TimeUnit
 class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
     var FilePathStrings: Array<String?> = arrayOf()
     var audioManager: AudioManager? = null
-    var camera: CameraView? = null
     var count = 0
     var counter = 0
     var date: Date? = null
@@ -124,7 +122,7 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
         val filterAdapter = FilterAdapter(this, mAllFilters)
         binding.rvFilterList.adapter = filterAdapter
         filterAdapter.setOnFilterChangeListener { i: Int ->
-            if (camera!!.preview == Preview.GL_SURFACE) {
+            if (binding.cameraViews.preview == Preview.GL_SURFACE) {
                 val cameraActivity = this@CameraActivity
                 cameraActivity.mCurrentFilter = i
                 val filters = cameraActivity.mAllFilters[mCurrentFilter]
@@ -140,7 +138,7 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
                     )
                 }, 300L)
                 handler.postDelayed({ binding.tvToast.visibility = View.GONE }, 1300L)
-                camera!!.setFilter(filters.newInstance())
+                binding.cameraViews.filter = filters.newInstance()
             }
         }
     }
@@ -149,13 +147,13 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
         binding.futuremain.cameraSwitcher.setOnClickListener { toggleCamera() }
         binding.futuremain.menuFlash.setOnClickListener { toggleFlash() }
         binding.futuremain.menuHdr.setOnClickListener {
-            if (camera!!.hdr == Hdr.OFF) {
+            if (binding.cameraViews.hdr == Hdr.OFF) {
                 titleShow("HDR ON")
-                camera!!.hdr = Hdr.ON
-                binding.futuremain.menuHdr.setImageResource(R.drawable.ic_launcher_background)
-            } else if (camera!!.hdr == Hdr.ON) {
+                binding.cameraViews.hdr = Hdr.ON
+                binding.futuremain.menuHdr.setImageResource(R.drawable.ic_hdr_on)
+            } else if (binding.cameraViews.hdr == Hdr.ON) {
                 titleShow("HDR OFF")
-                camera!!.hdr = Hdr.OFF
+                binding.cameraViews.hdr = Hdr.OFF
                 binding.futuremain.menuHdr.setImageResource(R.drawable.hdr_off)
             }
         }
@@ -172,7 +170,7 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
             }
             binding.rvFilterList.visibility = View.GONE
             clickCount++
-            if (camera!!.mode == Mode.VIDEO) {
+            if (binding.cameraViews.mode == Mode.VIDEO) {
                 binding.shutterButton.isEnabled = false
                 Handler(Looper.getMainLooper()).postDelayed({ binding.shutterButton.isEnabled = true }, 2000L)
                 captureVideo()
@@ -211,7 +209,7 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
                 }
             }
             try {
-                if (listFile.size == 0) {
+                if (listFile.isEmpty()) {
                     Toast.makeText(this@CameraActivity, "No Media Found", Toast.LENGTH_SHORT).show()
                 } else {
                     startActivity(Intent(this@CameraActivity, GalleryappActivity::class.java))
@@ -227,12 +225,12 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
             if (binding.futuremain.llTimerClick.visibility == View.VISIBLE) {
                 binding.futuremain.llTimerClick.visibility = View.GONE
                 binding.futuremain.menuTime.setImageResource(R.drawable.timer)
-                binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"))
+              //  binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"))
                 return@setOnClickListener
             }
             binding.futuremain.llTimerClick.visibility = View.VISIBLE
             binding.futuremain.menuTime.setImageResource(R.drawable.timer_on)
-            binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#66000000"))
+          //  binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#66000000"))
         }
         binding.menuFilter.setOnClickListener {
             TimeUnit.MILLISECONDS.toSeconds(Date().time - date!!.time)
@@ -254,15 +252,15 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
                 binding.futuremain.menuBrightness.setImageResource(R.drawable.brigh)
                 binding.futuremain.llGrid.visibility = View.GONE
                 binding.futuremain.menuImage.setImageResource(R.drawable.grid)
-                binding.futuremain.menuSetting.setImageResource(R.drawable.setting_white)
-                binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"))
+                binding.futuremain.menuSetting.setImageResource(R.drawable.ic_setting)
+              //  binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"))
                 return@setOnClickListener
             }
             binding.futuremain.llTimerClick.visibility = View.GONE
             binding.futuremain.menuTime.setImageResource(R.drawable.timer)
             binding.futuremain.settingFeature.visibility = View.VISIBLE
             binding.futuremain.menuSetting.setImageResource(R.drawable.setting)
-            binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#66000000"))
+         //   binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#66000000"))
         }
         binding.futuremain.menuLocation.setOnClickListener {
             if (isLocation) {
@@ -306,58 +304,58 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
             binding.futuremain.menuBrightness.setImageResource(R.drawable.brigh)
         }
         binding.futuremain.menuIncandescent.setOnClickListener {
-            if (camera!!.whiteBalance != WhiteBalance.INCANDESCENT) {
+            if (binding.cameraViews.whiteBalance != WhiteBalance.INCANDESCENT) {
                 titleShow("WHITE BALANCE\nINCANDESCENT")
                 binding.futuremain.menuIncandescent.setImageResource(R.drawable.light_on)
                 binding.futuremain.menuFluorescent.setImageResource(R.drawable.fluore)
                 binding.futuremain.menuAuto.setImageResource(R.drawable.auto)
                 binding.futuremain.menuDaylight.setImageResource(R.drawable.daylight)
                 binding.futuremain.menuCloudy.setImageResource(R.drawable.cloudy)
-                camera!!.whiteBalance = WhiteBalance.INCANDESCENT
+                binding.cameraViews.whiteBalance = WhiteBalance.INCANDESCENT
             }
         }
         binding.futuremain.menuFluorescent.setOnClickListener {
-            if (camera!!.whiteBalance != WhiteBalance.FLUORESCENT) {
+            if (binding.cameraViews.whiteBalance != WhiteBalance.FLUORESCENT) {
                 titleShow("WHITE BALANCE\nFLUORESCENT")
                 binding.futuremain.menuIncandescent.setImageResource(R.drawable.light)
                 binding.futuremain.menuFluorescent.setImageResource(R.drawable.fluore_on)
                 binding.futuremain.menuAuto.setImageResource(R.drawable.auto)
                 binding.futuremain.menuDaylight.setImageResource(R.drawable.daylight)
                 binding.futuremain.menuCloudy.setImageResource(R.drawable.cloudy)
-                camera!!.whiteBalance = WhiteBalance.FLUORESCENT
+                binding.cameraViews.whiteBalance = WhiteBalance.FLUORESCENT
             }
         }
         binding.futuremain.menuAuto.setOnClickListener {
-            if (camera!!.whiteBalance != WhiteBalance.AUTO) {
+            if (binding.cameraViews.whiteBalance != WhiteBalance.AUTO) {
                 titleShow("WHITE BALANCE\nAUTO")
                 binding.futuremain.menuIncandescent.setImageResource(R.drawable.light)
                 binding.futuremain.menuFluorescent.setImageResource(R.drawable.fluore)
                 binding.futuremain.menuAuto.setImageResource(R.drawable.auto_on)
                 binding.futuremain.menuDaylight.setImageResource(R.drawable.daylight)
                 binding.futuremain.menuCloudy.setImageResource(R.drawable.cloudy)
-                camera!!.whiteBalance = WhiteBalance.AUTO
+                binding.cameraViews.whiteBalance = WhiteBalance.AUTO
             }
         }
         binding.futuremain.menuDaylight.setOnClickListener {
-            if (camera!!.whiteBalance != WhiteBalance.DAYLIGHT) {
+            if (binding.cameraViews.whiteBalance != WhiteBalance.DAYLIGHT) {
                 titleShow("WHITE BALANCE\nDAYLIGHT")
                 binding.futuremain.menuIncandescent.setImageResource(R.drawable.light)
                 binding.futuremain.menuFluorescent.setImageResource(R.drawable.fluore)
                 binding.futuremain.menuAuto.setImageResource(R.drawable.auto)
                 binding.futuremain.menuDaylight.setImageResource(R.drawable.daylight_on)
                 binding.futuremain.menuCloudy.setImageResource(R.drawable.cloudy)
-                camera!!.whiteBalance = WhiteBalance.DAYLIGHT
+                binding.cameraViews.whiteBalance = WhiteBalance.DAYLIGHT
             }
         }
         binding.futuremain.menuCloudy.setOnClickListener {
-            if (camera!!.whiteBalance != WhiteBalance.CLOUDY) {
+            if (binding.cameraViews.whiteBalance != WhiteBalance.CLOUDY) {
                 titleShow("WHITE BALANCE\nCLOUDY")
                 binding.futuremain.menuIncandescent.setImageResource(R.drawable.light)
                 binding.futuremain.menuFluorescent.setImageResource(R.drawable.fluore)
                 binding.futuremain.menuAuto.setImageResource(R.drawable.auto)
                 binding.futuremain.menuDaylight.setImageResource(R.drawable.daylight)
                 binding.futuremain.menuCloudy.setImageResource(R.drawable.cloudy_on)
-                camera!!.whiteBalance = WhiteBalance.CLOUDY
+                binding.cameraViews.whiteBalance = WhiteBalance.CLOUDY
             }
         }
         binding.futuremain.menuAction.setOnClickListener {
@@ -365,7 +363,7 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
                 titleShow("SCENE MODE\nACTION")
                 val cameraActivity = this@CameraActivity
                 cameraActivity.sce = 1
-                cameraActivity.camera!!.setFilter(cameraActivity.mAllFilters[0].newInstance())
+                cameraActivity.binding.cameraViews.setFilter(cameraActivity.mAllFilters[0].newInstance())
                 binding.futuremain.menuScenone.setImageResource(R.drawable.sce_off)
                 binding.futuremain.menuNight.setImageResource(R.drawable.night)
                 binding.futuremain.menuAction.setImageResource(R.drawable.action_on)
@@ -376,7 +374,7 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
                 titleShow("SCENE MODE\nNIGHT")
                 val cameraActivity = this@CameraActivity
                 cameraActivity.sce = 2
-                cameraActivity.camera!!.setFilter(cameraActivity.mAllFilters[21].newInstance())
+                cameraActivity.binding.cameraViews.setFilter(cameraActivity.mAllFilters[21].newInstance())
                 binding.futuremain.menuScenone.setImageResource(R.drawable.sce_off)
                 binding.futuremain.menuNight.setImageResource(R.drawable.night_on)
                 binding.futuremain.menuAction.setImageResource(R.drawable.action)
@@ -387,7 +385,7 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
                 titleShow("SCENE MODE\nNONE")
                 val cameraActivity = this@CameraActivity
                 cameraActivity.sce = 0
-                cameraActivity.camera!!.setFilter(cameraActivity.mAllFilters[0].newInstance())
+                cameraActivity.binding.cameraViews.setFilter(cameraActivity.mAllFilters[0].newInstance())
                 binding.futuremain.menuScenone.setImageResource(R.drawable.sce_on)
                 binding.futuremain.menuNight.setImageResource(R.drawable.night)
                 binding.futuremain.menuAction.setImageResource(R.drawable.action)
@@ -524,8 +522,8 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
             }
         }
         binding.futuremain.menuOff.setOnClickListener {
-            if (camera!!.grid != Grid.OFF) {
-                camera!!.grid = Grid.OFF
+            if (binding.cameraViews.grid != Grid.OFF) {
+                binding.cameraViews.grid = Grid.OFF
                 binding.futuremain.menuOff.setTextColor(
                     ContextCompat.getColor(
                         this@CameraActivity,
@@ -553,8 +551,8 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
             }
         }
         binding.futuremain.menu3.setOnClickListener {
-            if (camera!!.grid != Grid.DRAW_3X3) {
-                camera!!.grid = Grid.DRAW_3X3
+            if (binding.cameraViews.grid != Grid.DRAW_3X3) {
+                binding.cameraViews.grid = Grid.DRAW_3X3
                 binding.futuremain.menuOff.setTextColor(
                     ContextCompat.getColor(
                         this@CameraActivity,
@@ -582,8 +580,8 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
             }
         }
         binding.futuremain.menu4.setOnClickListener {
-            if (camera!!.grid != Grid.DRAW_4X4) {
-                camera!!.grid = Grid.DRAW_4X4
+            if (binding.cameraViews.grid != Grid.DRAW_4X4) {
+                binding.cameraViews.grid = Grid.DRAW_4X4
                 binding.futuremain.menuOff.setTextColor(
                     ContextCompat.getColor(
                         this@CameraActivity,
@@ -611,8 +609,8 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
             }
         }
         binding.futuremain.menuPhi.setOnClickListener {
-            if (camera!!.grid != Grid.DRAW_PHI) {
-                camera!!.grid = Grid.DRAW_PHI
+            if (binding.cameraViews.grid != Grid.DRAW_PHI) {
+                binding.cameraViews.grid = Grid.DRAW_PHI
                 binding.futuremain.menuOff.setTextColor(
                     ContextCompat.getColor(
                         this@CameraActivity,
@@ -639,29 +637,26 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
                 )
             }
         }
+
         binding.futuremain.brightnessSeekbar.setOnSeekChangeListener(object :
             OnSeekChangeListener {
             override fun onSeeking(seekParams: SeekParams) {}
             override fun onStartTrackingTouch(indicatorSeekBar: IndicatorSeekBar) {}
             override fun onStopTrackingTouch(indicatorSeekBar: IndicatorSeekBar) {
-                camera!!.setFilter(mAllFilters[3].newInstance())
+                binding.cameraViews.filter = mAllFilters[3].newInstance()
                 if (indicatorSeekBar.progress == -2) {
                     titleShow("EXPOSURE\n-2")
-                    val brightnessFilter = BrightnessFilter()
                     BrightnessFilter.setBrightness(0.5f)
                 } else if (indicatorSeekBar.progress == -1) {
-                    val brightnessFilter = BrightnessFilter()
                     BrightnessFilter.setBrightness(1.0f)
                     titleShow("EXPOSURE\n-1")
                 } else if (indicatorSeekBar.progress == 0) {
-                    camera!!.setFilter(mAllFilters[3].newInstance())
+                    binding.cameraViews.filter = mAllFilters[3].newInstance()
                     titleShow("EXPOSURE\n0")
                 } else if (indicatorSeekBar.progress == 1) {
-                    val brightnessFilter = BrightnessFilter()
                     BrightnessFilter.setBrightness(1.5f)
                     titleShow("EXPOSURE\n1")
                 } else if (indicatorSeekBar.progress == 2) {
-                    val brightnessFilter = BrightnessFilter()
                     BrightnessFilter.setBrightness(2f)
                     titleShow("EXPOSURE\n2")
                 }
@@ -722,8 +717,7 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
 
     private fun cameraLoad() {
         try {
-            camera = findViewById<View>(R.id.camera) as CameraView
-            camera!!.open()
+            binding.cameraViews.open()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -753,7 +747,7 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
                     )
                     i += listFile.size
                 } else {
-                    binding.imageThumb.setImageResource(R.drawable.ic_launcher_background)
+                    binding.imageThumb.setImageResource(R.drawable.img_dummy)
                 }
                 i = 0
                 while (i < FilePathStrings.size) {
@@ -774,7 +768,7 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
 
     fun capturePhoto() {
         System.currentTimeMillis()
-        camera!!.addCameraListener(Listener())
+        binding.cameraViews.addCameraListener(Listener())
         val i = timer
         if (i != 0) {
             count = i * 1000 + 1000
@@ -793,25 +787,25 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
 
                 override fun onFinish() {
                     binding.timerCounter.text = ""
-                    if (camera!!.flash == Flash.ON) {
+                    if (binding.cameraViews.flash == Flash.ON) {
                         val cameraActivity = this@CameraActivity
                         cameraActivity.flashPos = 2
-                        cameraActivity.camera!!.flash = Flash.TORCH
+                        cameraActivity.binding.cameraViews.flash = Flash.TORCH
                         Handler(Looper.getMainLooper()).postDelayed({
                             if (isSound) {
                                 mp!!.start()
                             }
-                            camera!!.takePictureSnapshot()
+                            binding.cameraViews.takePictureSnapshot()
                         }, 500L)
-                    } else if (camera!!.flash == Flash.AUTO) {
+                    } else if (binding.cameraViews.flash == Flash.AUTO) {
                         val cameraActivity2 = this@CameraActivity
                         cameraActivity2.flashPos = 1
-                        cameraActivity2.camera!!.flash = Flash.TORCH
+                        cameraActivity2.binding.cameraViews.flash = Flash.TORCH
                         Handler(Looper.getMainLooper()).postDelayed({
                             if (isSound) {
                                 mp!!.start()
                             }
-                            camera!!.takePictureSnapshot()
+                            binding.cameraViews.takePictureSnapshot()
                         }, 500L)
                     } else {
                         val cameraActivity3 = this@CameraActivity
@@ -819,34 +813,34 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
                         if (cameraActivity3.isSound) {
                             mp!!.start()
                         }
-                        camera!!.takePictureSnapshot()
+                        binding.cameraViews.takePictureSnapshot()
                     }
                 }
             }.start()
-        } else if (camera!!.flash == Flash.ON) {
+        } else if (binding.cameraViews.flash == Flash.ON) {
             flashPos = 2
-            camera!!.flash = Flash.TORCH
+            binding.cameraViews.flash = Flash.TORCH
             Handler(Looper.getMainLooper()).postDelayed({
                 if (isSound) {
                     mp!!.start()
                 }
-                camera!!.takePictureSnapshot()
+                binding.cameraViews.takePictureSnapshot()
             }, 500L)
-        } else if (camera!!.flash == Flash.AUTO) {
+        } else if (binding.cameraViews.flash == Flash.AUTO) {
             flashPos = 1
-            camera!!.flash = Flash.TORCH
+            binding.cameraViews.flash = Flash.TORCH
             Handler(Looper.getMainLooper()).postDelayed({
                 if (isSound) {
                     mp!!.start()
                 }
-                camera!!.takePictureSnapshot()
+                binding.cameraViews.takePictureSnapshot()
             }, 500L)
         } else {
             flashPos = 0
             if (isSound) {
                 mp!!.start()
             }
-            camera!!.takePictureSnapshot()
+            binding.cameraViews.takePictureSnapshot()
         }
     }
 
@@ -886,9 +880,9 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
         galleryAddPic(file.absolutePath)
         val i = flashPos
         if (i == 2) {
-            camera!!.flash = Flash.ON
+            binding.cameraViews.flash = Flash.ON
         } else if (i == 1) {
-            camera!!.flash = Flash.AUTO
+            binding.cameraViews.flash = Flash.AUTO
         }
     }
 
@@ -899,26 +893,26 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
             customHandler.removeCallbacks(updateTimerThread)
             binding.timerText.text = "00:00"
             binding.shutterButton.setImageResource(R.drawable.btn_new_shutter)
-            camera!!.stopVideo()
+            binding.cameraViews.stopVideo()
             startTime = 0L
             timeInMilliseconds = 0L
             timeSwapBuff = 0L
             updatedTime = 0L
-            if (camera!!.flash == Flash.TORCH) {
-                camera!!.flash = Flash.OFF
+            if (binding.cameraViews.flash == Flash.TORCH) {
+                binding.cameraViews.flash = Flash.OFF
                 isOff = true
                 return
             }
             return
         }
-        if (camera!!.flash == Flash.ON) {
-            camera!!.flash = Flash.TORCH
+        if (binding.cameraViews.flash == Flash.ON) {
+            binding.cameraViews.flash = Flash.TORCH
         }
         isRecordvdo = true
         startTime = SystemClock.uptimeMillis()
         customHandler.postDelayed(updateTimerThread, 0L)
-        camera!!.addCameraListener(Listener())
-        camera!!.takeVideo(File(filesDir, "video.mp4"))
+        binding.cameraViews.addCameraListener(Listener())
+        binding.cameraViews.takeVideo(File(filesDir, "video.mp4"))
         binding.shutterButton.setImageResource(R.drawable.btn_new_shutter_stop_video)
     }
 
@@ -929,23 +923,23 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
 
     override fun onWheelItemSelected(wheelView: WheelView, i: Int) {
         if (i == 0) {
-            if (camera!!.facing == Facing.FRONT) {
+            if (binding.cameraViews.facing == Facing.FRONT) {
                 frontVideo()
             } else {
                 backVideo()
             }
-            camera!!.mode = Mode.VIDEO
+            binding.cameraViews.mode = Mode.VIDEO
             binding.llTimer.visibility = View.VISIBLE
             binding.rvFilterList.visibility = View.GONE
-            camera!!.setFilter(mAllFilters[0].newInstance())
-            val layoutParams = camera!!.layoutParams
+            binding.cameraViews.setFilter(mAllFilters[0].newInstance())
+            val layoutParams = binding.cameraViews.layoutParams
             layoutParams.width = -1
             layoutParams.height = -1
-            camera!!.layoutParams = layoutParams
-            set(camera, -1)
+            binding.cameraViews.layoutParams = layoutParams
+            set(binding.cameraViews, -1)
             binding.shutterButton.setImageResource(R.drawable.btn_new_shutter)
         } else if (i == 1) {
-            if (camera!!.facing == Facing.FRONT) {
+            if (binding.cameraViews.facing == Facing.FRONT) {
                 frontPhoto()
             } else {
                 backPhoto()
@@ -954,16 +948,16 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
             timeInMilliseconds = 0L
             timeSwapBuff = 0L
             updatedTime = 0L
-            camera!!.mode = Mode.PICTURE
+            binding.cameraViews.mode = Mode.PICTURE
             binding.llTimer.visibility = View.GONE
-            val layoutParams2 = camera!!.layoutParams
+            val layoutParams2 = binding.cameraViews.layoutParams
             layoutParams2.width = -1
             layoutParams2.height = -1
-            set(camera, -1)
-            camera!!.layoutParams = layoutParams2
+            set(binding.cameraViews, -1)
+            binding.cameraViews.layoutParams = layoutParams2
             binding.shutterButton.setImageResource(R.drawable.btn_photo_shutter)
         } else if (i == 2) {
-            if (camera!!.facing == Facing.FRONT) {
+            if (binding.cameraViews.facing == Facing.FRONT) {
                 frontPhoto()
             } else {
                 backPhoto()
@@ -972,31 +966,31 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
             timeInMilliseconds = 0L
             timeSwapBuff = 0L
             updatedTime = 0L
-            camera!!.mode = Mode.PICTURE
+            binding.cameraViews.mode = Mode.PICTURE
             binding.llTimer.visibility = View.GONE
-            val layoutParams3 = camera!!.layoutParams
-            val measuredWidth = camera!!.measuredWidth
+            val layoutParams3 = binding.cameraViews.layoutParams
+            val measuredWidth = binding.cameraViews.measuredWidth
             layoutParams3.width = -1
             layoutParams3.height = measuredWidth
-            camera!!.layoutParams = layoutParams3
-            set(camera, Integer.valueOf(measuredWidth))
+            binding.cameraViews.layoutParams = layoutParams3
+            set(binding.cameraViews, Integer.valueOf(measuredWidth))
             binding.shutterButton.setImageResource(R.drawable.btn_photo_shutter)
         }
     }
 
     fun toggleFlash() {
-        if (camera!!.flash == Flash.OFF) {
+        if (binding.cameraViews.flash == Flash.OFF) {
             titleShow("FLASH MODE\nFLASH ON")
-            camera!!.flash = Flash.ON
-            binding.futuremain.menuFlash.setImageResource(R.drawable.flash)
-        } else if (camera!!.flash == Flash.ON) {
+            binding.cameraViews.flash = Flash.ON
+            binding.futuremain.menuFlash.setImageResource(R.drawable.ic_flash_light)
+        } else if (binding.cameraViews.flash == Flash.ON) {
             titleShow("FLASH MODE\nFLASH AUTO")
-            camera!!.flash = Flash.AUTO
-            binding.futuremain.menuFlash.setImageResource(R.drawable.flash_auto)
-        } else if (camera!!.flash == Flash.AUTO) {
+            binding.cameraViews.flash = Flash.AUTO
+            binding.futuremain.menuFlash.setImageResource(R.drawable.ic_flash_auto)
+        } else if (binding.cameraViews.flash == Flash.AUTO) {
             titleShow("FLASH MODE\nFLASH OFF")
-            camera!!.flash = Flash.OFF
-            binding.futuremain.menuFlash.setImageResource(R.drawable.flash_off)
+            binding.cameraViews.flash = Flash.OFF
+            binding.futuremain.menuFlash.setImageResource(R.drawable.ic_flash_off)
         }
     }
 
@@ -1026,10 +1020,10 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
     }
 
     fun toggleCamera() {
-        if (camera!!.isTakingPicture || camera!!.isTakingVideo) {
+        if (binding.cameraViews.isTakingPicture || binding.cameraViews.isTakingVideo) {
             return
         }
-        val i = AnonymousClass44.cameraviewControlsFacing[camera!!.toggleFacing().ordinal]
+        val i = AnonymousClass44.cameraviewControlsFacing[binding.cameraViews.toggleFacing().ordinal]
         if (i == 1) {
             if (binding.wheelview.selectedPosition == 0) {
                 backVideo()
@@ -1054,7 +1048,7 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
 
     public override fun onResume() {
         super.onResume()
-        camera!!.open()
+        binding.cameraViews.open()
         date = Date()
         binding.rvFilterList.visibility = View.GONE
         isRecordvdo = false
@@ -1067,14 +1061,14 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
                 }
                 arrayPhotoVideo.clear()
                 FilePathStrings = arrayOfNulls(listFile.size)
-                if (listFile.size != 0) {
+                if (listFile.isNotEmpty()) {
                     Glide.with((this as FragmentActivity))
                         .load(listFile[listFile.size - 1].absolutePath).into(
                         binding.imageThumb
                     )
                     i += listFile.size
                 } else {
-                    binding.imageThumb.setImageResource(R.drawable.ic_launcher_background)
+                    binding.imageThumb.setImageResource(R.drawable.img_dummy)
                 }
                 i = 0
                 while (i < FilePathStrings.size) {
@@ -1088,7 +1082,7 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
     }
 
     public override fun onDestroy() {
-        camera!!.close()
+        binding.cameraViews.close()
         super.onDestroy()
     }
 
@@ -1138,9 +1132,9 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
         if (binding.futuremain.llTimerClick.visibility == View.VISIBLE) {
             binding.futuremain.menuTime.performClick()
         }
-        binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"))
+      //  binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"))
         binding.futuremain.settingFeature.visibility = View.GONE
-        binding.futuremain.menuSetting.setImageResource(R.drawable.setting_white)
+        binding.futuremain.menuSetting.setImageResource(R.drawable.ic_setting)
         binding.futuremain.llTimerClick.visibility = View.GONE
         binding.futuremain.menuTime.setImageResource(R.drawable.timer)
         binding.futuremain.rlHdr.visibility = View.GONE
@@ -1155,9 +1149,9 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
         binding.futuremain.rlAw.visibility = View.VISIBLE
         binding.futuremain.rlSce.visibility = View.VISIBLE
         binding.futuremain.rlImage.visibility = View.VISIBLE
-        fladhMode = if (camera!!.flash == Flash.ON) {
+        fladhMode = if (binding.cameraViews.flash == Flash.ON) {
             2
-        } else if (camera!!.flash == Flash.AUTO) {
+        } else if (binding.cameraViews.flash == Flash.AUTO) {
             1
         } else {
             0
@@ -1171,9 +1165,9 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
         if (binding.futuremain.llTimerClick.visibility == View.VISIBLE) {
             binding.futuremain.menuTime.performClick()
         }
-        binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"))
+     //   binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"))
         binding.futuremain.settingFeature.visibility = View.GONE
-        binding.futuremain.menuSetting.setImageResource(R.drawable.setting_white)
+        binding.futuremain.menuSetting.setImageResource(R.drawable.ic_setting)
         binding.futuremain.llTimerClick.visibility = View.GONE
         binding.futuremain.menuTime.setImageResource(R.drawable.timer)
         binding.futuremain.rlHdr.visibility = View.VISIBLE
@@ -1190,11 +1184,11 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
         binding.futuremain.rlImage.visibility = View.VISIBLE
         val i = fladhMode
         if (i == 2) {
-            camera!!.flash = Flash.ON
+            binding.cameraViews.flash = Flash.ON
         } else if (i == 1) {
-            camera!!.flash = Flash.AUTO
+            binding.cameraViews.flash = Flash.AUTO
         } else {
-            camera!!.flash = Flash.OFF
+            binding.cameraViews.flash = Flash.OFF
         }
     }
 
@@ -1206,9 +1200,9 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
             binding.futuremain.menuTime.performClick()
         }
         binding.futuremain.brightnessSeekbar.setProgress(0.0f)
-        binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"))
+      //  binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"))
         binding.futuremain.settingFeature.visibility = View.GONE
-        binding.futuremain.menuSetting.setImageResource(R.drawable.setting_white)
+        binding.futuremain.menuSetting.setImageResource(R.drawable.ic_setting)
         binding.futuremain.llTimerClick.visibility = View.GONE
         binding.futuremain.menuTime.setImageResource(R.drawable.timer)
         binding.futuremain.rlHdr.visibility = View.GONE
@@ -1233,9 +1227,9 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
             binding.futuremain.menuTime.performClick()
         }
         binding.futuremain.brightnessSeekbar.setProgress(0.0f)
-        binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"))
+      //  binding.futuremain.llAllFeature.setBackgroundColor(Color.parseColor("#00000000"))
         binding.futuremain.settingFeature.visibility = View.GONE
-        binding.futuremain.menuSetting.setImageResource(R.drawable.setting_white)
+        binding.futuremain.menuSetting.setImageResource(R.drawable.ic_setting)
         binding.futuremain.llTimerClick.visibility = View.GONE
         binding.futuremain.menuTime.setImageResource(R.drawable.timer)
         binding.futuremain.rlHdr.visibility = View.GONE
@@ -1332,8 +1326,7 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
                     "android.permission.ACCESS_COARSE_LOCATION"
                 ) == 0
             ) {
-                camera = findViewById<View>(R.id.camera) as CameraView
-                camera!!.open()
+                binding.cameraViews.open()
                 var file = File(Const.PATH)
                 if (!file.exists()) {
                     file.mkdir()
@@ -1419,8 +1412,7 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
                     "android.permission.ACCESS_COARSE_LOCATION"
                 ) == 0
             ) {
-                camera = findViewById<View>(R.id.camera) as CameraView
-                camera!!.open()
+                binding.cameraViews.open()
                 var file = File(Const.PATH)
                 if (!file.exists()) {
                     file.mkdir()
@@ -1497,8 +1489,7 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
                 Toast.makeText(this, "Permissions denied.", Toast.LENGTH_SHORT).show()
                 return
             }
-            camera = findViewById<View>(R.id.camera) as CameraView
-            camera!!.open()
+            binding.cameraViews.open()
             var file = File(Const.PATH)
             if (!file.exists()) {
                 file.mkdir()
@@ -1530,15 +1521,15 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
         override fun onPictureTaken(pictureResult: PictureResult) {
             super.onPictureTaken(pictureResult)
             if (flashPos == 1) {
-                camera!!.flash = Flash.OFF
+                binding.cameraViews.flash = Flash.OFF
             } else if (flashPos == 2) {
-                camera!!.flash = Flash.OFF
+                binding.cameraViews.flash = Flash.OFF
             } else {
-                camera!!.flash = Flash.OFF
+                binding.cameraViews.flash = Flash.OFF
             }
             binding.shutterButton.isEnabled = true
-            camera!!.removeCameraListener(this)
-            if (camera!!.isTakingVideo) {
+            binding.cameraViews.removeCameraListener(this)
+            if (binding.cameraViews.isTakingVideo) {
                 val cameraActivity = this@CameraActivity
                 Toast.makeText(
                     cameraActivity,
@@ -1553,7 +1544,7 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
 
         override fun onVideoTaken(videoResult: VideoResult) {
             super.onVideoTaken(videoResult)
-            camera!!.removeCameraListener(this)
+            binding.cameraViews.removeCameraListener(this)
             val fromFile = Uri.fromFile(videoResult.file)
             try {
                 SimpleDateFormat("yyyyMMdd_HHmmss")
@@ -1610,7 +1601,7 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
                 }
                 if (isOff) {
                     isOff = false
-                    camera!!.flash = Flash.ON
+                    binding.cameraViews.flash = Flash.ON
                 }
             } catch (e3: FileNotFoundException) {
                 Log.e("Exception", "" + e3)
@@ -1622,7 +1613,7 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
 
     override fun onPause() {
         super.onPause()
-        camera!!.close()
+        binding.cameraViews.close()
     }
 
     companion object {
