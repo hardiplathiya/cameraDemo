@@ -111,14 +111,49 @@
 ## Please add these rules to your existing keep rules in order to suppress warnings.
 ## Please add these rules to your existing keep rules in order to suppress warnings.
 ## This is generated automatically by the Android Gradle plugin.
-#-dontwarn org.bouncycastle.jsse.BCSSLParameters
-#-dontwarn org.bouncycastle.jsse.BCSSLSocket
-#-dontwarn org.bouncycastle.jsse.provider.BouncyCastleJsseProvider
-#-dontwarn org.conscrypt.Conscrypt$Version
-#-dontwarn org.conscrypt.Conscrypt
-#-dontwarn org.conscrypt.ConscryptHostnameVerifier
-#-dontwarn org.openjsse.javax.net.ssl.SSLParameters
-#-dontwarn org.openjsse.javax.net.ssl.SSLSocket
-#-dontwarn org.openjsse.net.ssl.OpenJSSE
+
 #
 #
+
+
+-keep class com.google.ads.** # Don't proguard AdMob classes
+-dontwarn com.google.ads.** # Temporary workaround for v6.2.1. It gives a warning that you can ignore
+-keep public class com.google.android.gms.ads.**{
+   public *;
+}
+
+# For old ads classes
+-keep public class com.google.ads.**{
+   public *;
+}
+
+# For mediation
+-keepattributes Annotation
+
+# Other required classes for Google Play Services
+# Read more at http://developer.android.com/google/play-services/setup.html
+-keep class * extends java.util.ListResourceBundle {
+   protected Object[][] getContents();
+}
+
+-keep public class com.google.android.gms.common.internal.safeparcel.SafeParcelable {
+   public static final *** NULL;
+}
+
+-keepnames @com.google.android.gms.common.annotation.KeepName class *
+-keepclassmembernames class * {
+   @com.google.android.gms.common.annotation.KeepName *;
+}
+
+-keepnames class * implements android.os.Parcelable {
+   public static final ** CREATOR;
+}
+-dontwarn org.bouncycastle.jsse.BCSSLParameters
+-dontwarn org.bouncycastle.jsse.BCSSLSocket
+-dontwarn org.bouncycastle.jsse.provider.BouncyCastleJsseProvider
+-dontwarn org.conscrypt.Conscrypt$Version
+-dontwarn org.conscrypt.Conscrypt
+-dontwarn org.conscrypt.ConscryptHostnameVerifier
+-dontwarn org.openjsse.javax.net.ssl.SSLParameters
+-dontwarn org.openjsse.javax.net.ssl.SSLSocket
+-dontwarn org.openjsse.net.ssl.OpenJSSE
