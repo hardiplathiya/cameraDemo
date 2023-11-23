@@ -3,9 +3,14 @@ package plant.testtree.camerademo.activity
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +21,7 @@ import plant.testtree.camerademo.activity.gallary.GalleryappActivity
 import plant.testtree.camerademo.activity.selectlist.SelectImageListActivity
 import plant.testtree.camerademo.databinding.ActivityMainhomeBinding
 import java.io.File
+import kotlin.system.exitProcess
 
 class ActMain : AppCompatActivity() {
     lateinit var binding: ActivityMainhomeBinding
@@ -30,6 +36,9 @@ class ActMain : AppCompatActivity() {
     }
 
     private fun clickListner() {
+        binding.imgBack.setOnClickListener {
+            showExitDialog()
+        }
         binding.btncamera.setOnClickListener {
             startActivity(
                 Intent(
@@ -218,10 +227,27 @@ class ActMain : AppCompatActivity() {
         }
     }
 
+    fun showExitDialog() {
+        val builder = AlertDialog.Builder(this)
+        val inflate = LayoutInflater.from(this)
+            .inflate(R.layout.exit_dialog, null as ViewGroup?)
+        builder.setView(inflate)
+        val create = builder.create()
+        (inflate.findViewById<View>(R.id.btnExit) as TextView).setOnClickListener {
+            finishAffinity()
+            exitProcess(0)
+        }
+        (inflate.findViewById<View>(R.id.btnContinue) as TextView).setOnClickListener { view: View? ->
+            create.dismiss()
+        }
+        create.window!!.setBackgroundDrawable(ColorDrawable(0))
+        create.show()
+    }
+
     override fun onRequestPermissionsResult(i: Int, strArr: Array<String>, iArr: IntArray) {
         super.onRequestPermissionsResult(i, strArr, iArr)
         if (i == 123) {
-            if (iArr.size <= 0 || iArr[0] + iArr[1] + iArr[2] != 0) {
+            if (iArr.isEmpty() || iArr[0] + iArr[1] + iArr[2] != 0) {
                 Toast.makeText(this, "Permissions denied.", Toast.LENGTH_SHORT).show()
             } else {
                 startActivity(Intent(this@ActMain, SelectImageListActivity::class.java))
@@ -230,10 +256,7 @@ class ActMain : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        AlertDialog.Builder(this).setMessage("Are you sure you want to exit?").setCancelable(false)
-            .setPositiveButton("Yes") { _, _ ->
-                finishAffinity()
-            }.setNegativeButton("No", null).show()
+        showExitDialog()
     }
 
     companion object {

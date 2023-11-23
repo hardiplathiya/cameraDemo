@@ -450,9 +450,9 @@ public class GalleryappActivity extends AppCompatActivity {
         create.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         final EditText editText = (EditText) inflate.findViewById(R.id.etRename);
         editText.setText(StringUtils.getPhotoNameByPath(this.mediaItems.get(binding.galleryPager.getCurrentItem()).getPath()));
-        ((Button) inflate.findViewById(R.id.btnCancel)).setOnClickListener(view -> create.dismiss());
+        ((TextView) inflate.findViewById(R.id.btnCancel)).setOnClickListener(view -> create.dismiss());
 
-        ((Button) inflate.findViewById(R.id.btnOK)).setOnClickListener(view -> {
+        ((TextView) inflate.findViewById(R.id.btnOK)).setOnClickListener(view -> {
             if (TextUtils.isEmpty(editText.getText().toString())) {
                 Toast.makeText(GalleryappActivity.this, "Enter file name!", Toast.LENGTH_SHORT).show();
                 editText.requestFocus();

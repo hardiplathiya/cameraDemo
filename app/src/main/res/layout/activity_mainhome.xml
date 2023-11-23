@@ -35,8 +35,7 @@
     </LinearLayout>
 
     <ImageView
-        android:layout_below="@+id/toolbar"
-       android:layout_marginHorizontal="@dimen/_10ssp"
+        android:layout_marginHorizontal="@dimen/_10ssp"
         android:layout_marginVertical="@dimen/_5sdp"
         android:layout_width="match_parent"
         android:src="@drawable/banner"
@@ -48,7 +47,6 @@
         android:id="@+id/txtappname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/logo"
         android:layout_marginTop="@dimen/_10sdp"
         android:layout_marginStart="@dimen/_10sdp"
         android:text="Features:"
@@ -94,7 +92,6 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/logo"
             android:layout_marginTop="@dimen/_10sdp"
             android:layout_marginStart="@dimen/_10sdp"
             android:text="Other Features:"
