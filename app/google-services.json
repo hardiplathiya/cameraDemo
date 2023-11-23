@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "443820131762",
+    "project_id": "camera-iphone-2f08e",
+    "storage_bucket": "camera-iphone-2f08e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:443820131762:android:3a5fff30559e03ea1650ab",
+        "android_client_info": {
+          "package_name": "plant.testtree.camerademo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXG47LDrXGkUyJlPdsYQwdhFR1NDfjBgg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

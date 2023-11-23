@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/splash_bg"
     android:layout_height="match_parent">
 
@@ -36,11 +37,30 @@ High-quality Photos."
         android:textColor="@color/white"
         android:textSize="@dimen/_12ssp" />
 
-    <ProgressBar
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:progressTint="@color/white"
         android:layout_alignParentBottom="true"
-        android:layout_centerInParent="true"
-        android:layout_marginBottom="@dimen/_20sdp" />
+        android:layout_marginBottom="@dimen/_20sdp">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/animationView"
+            android:layout_width="@dimen/_60sdp"
+            android:layout_height="@dimen/_60sdp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/_5sdp"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/cameraloader" />
+
+        <TextView
+            android:id="@+id/txtwait"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/animationView"
+            android:layout_centerHorizontal="true"
+            android:text="Please wait.."
+            android:textColor="@color/white" />
+
+    </RelativeLayout>
 </RelativeLayout>

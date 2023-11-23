@@ -26,3 +26,5 @@ include ':app'
 
 include ':cameraview'
 //include ':styleimageview'
+include ':ucrop'
+include ':AdsSdk'

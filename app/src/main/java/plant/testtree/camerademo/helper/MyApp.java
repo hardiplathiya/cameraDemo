@@ -4,10 +4,12 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.pesonal.adsdk.AppClass;
+
 import plant.testtree.camerademo.util.Prefs;
 
 
-public class MyApp extends Application {
+public class MyApp extends AppClass {
     private static Context context;
     private static MyApp ourInstance;
     public boolean isFromEdit = false;

@@ -1,21 +1,35 @@
 package plant.testtree.camerademo.activity
 
+import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.pesonal.adsdk.ADS_SplashActivity
+import com.pesonal.adsdk.ADS_SplashActivity.publisheridName
+import com.pesonal.adsdk.AppManage
+import com.pesonal.adsdk.AppManage.isNetworkAvailable
+import com.pesonal.adsdk.SharedPref
 import plant.testtree.camerademo.R
 import plant.testtree.camerademo.activity.gallary.GalleryappActivity
 import plant.testtree.camerademo.activity.selectlist.SelectImageListActivity
 import plant.testtree.camerademo.databinding.ActivityMainhomeBinding
+import plant.testtree.camerademo.util.Const
 import java.io.File
+import kotlin.system.exitProcess
 
 class ActMain : AppCompatActivity() {
     lateinit var binding: ActivityMainhomeBinding
@@ -26,25 +40,81 @@ class ActMain : AppCompatActivity() {
         )
         setContentView(binding.root)
         clickListner()
+        loadAds()
+    }
 
+    private fun loadAds() {
+        if (Const.isLoadAds == "1") {
+            ADS_SplashActivity.native_admob =  SharedPref.getString(
+                this@ActMain,
+                "native_admob",
+                "")
+                AppManage.new_admobnative_id = ADS_SplashActivity.native_admob
+                AppManage.getInstance(this@ActMain).showNativeSmall_medium(
+                    binding.rlNativeLaySmall,
+                    binding.nativeAdContainer,
+                    ADS_SplashActivity.native_admob,
+                    ADS_SplashActivity.fb_small_native,
+                    binding.rlNativeLaySmall,
+                    binding.shimmerNativeContainer
+                )
+            } else {
+                binding.shimmerNativeContainer.visibility = View.GONE
+            }
+    }
+
+
+    private fun privacyPolicy(activity: Activity) {
+        var policy = ""
+        if (isNetworkAvailable()) {
+            try {
+                 policy = SharedPref.getString(activity,"app_privacyPolicyLink","").toString()
+                activity.startActivity(Intent("android.intent.action.VIEW", Uri.parse(policy)))
+            } catch (e: ActivityNotFoundException) {
+                activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(policy)))
+            }
+        } else {
+            Toast.makeText(activity, "Connect Internet Please...", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun clickListner() {
-        binding.btncamera.setOnClickListener {
-            startActivity(
-                Intent(
-                    this@ActMain,
-                    CameraActivity::class.java
-                )
-            )
+
+        binding.imgBack.setOnClickListener {
+            showExitDialog()
         }
+        binding.btncamera.setOnClickListener {
+            AppManage.getInstance(this@ActMain)
+                .showInterstitialAd(this@ActMain) {
+                    startActivity(
+                        Intent(
+                            this@ActMain,
+                            CameraActivity::class.java
+                        )
+                    )
+                }
+        }
+
+        binding.cardprivacy.setOnClickListener {
+            privacyPolicy(this@ActMain)
+        }
+
         binding.gallary.setOnClickListener { checkPermission() }
+
         binding.cardRate.setOnClickListener {
             val intent = Intent("android.intent.action.VIEW")
             intent.data =
                 Uri.parse("https://play.google.com/store/apps/details?id=" + this@ActMain.packageName)
             this@ActMain.startActivity(intent)
         }
+
+        binding.cardMoreapp.setOnClickListener {
+            val intent = Intent("android.intent.action.VIEW")
+            intent.data =
+                Uri.parse("https://play.google.com/store/apps/developer?id=$publisheridName")
+            this@ActMain.startActivity(intent)
+        }
+
         binding.cardShare.setOnClickListener {
             val intent = Intent("android.intent.action.SEND")
             intent.type = "text/plain"
@@ -91,7 +161,10 @@ class ActMain : AppCompatActivity() {
                     "android.permission.ACCESS_COARSE_LOCATION"
                 ) == 0
             ) {
-                startActivity(Intent(this, SelectImageListActivity::class.java))
+                AppManage.getInstance(this@ActMain)
+                    .showInterstitialAd(this@ActMain) {
+                        startActivity(Intent(this, SelectImageListActivity::class.java))
+                    }
             } else if (ActivityCompat.shouldShowRequestPermissionRationale(
                     this,
                     "android.permission.CAMERA"
@@ -161,7 +234,10 @@ class ActMain : AppCompatActivity() {
                     "android.permission.ACCESS_COARSE_LOCATION"
                 ) == 0
             ) {
-                startActivity(Intent(this, SelectImageListActivity::class.java))
+                AppManage.getInstance(this@ActMain)
+                    .showInterstitialAd(this@ActMain) {
+                        startActivity(Intent(this, SelectImageListActivity::class.java))
+                    }
             } else if (ActivityCompat.shouldShowRequestPermissionRationale(
                     this,
                     "android.permission.CAMERA"
@@ -218,10 +294,27 @@ class ActMain : AppCompatActivity() {
         }
     }
 
+    fun showExitDialog() {
+        val builder = AlertDialog.Builder(this)
+        val inflate = LayoutInflater.from(this)
+            .inflate(R.layout.exit_dialog, null as ViewGroup?)
+        builder.setView(inflate)
+        val create = builder.create()
+        (inflate.findViewById<View>(R.id.btnExit) as TextView).setOnClickListener {
+            finishAffinity()
+            exitProcess(0)
+        }
+        (inflate.findViewById<View>(R.id.btnContinue) as TextView).setOnClickListener { view: View? ->
+            create.dismiss()
+        }
+        create.window!!.setBackgroundDrawable(ColorDrawable(0))
+        create.show()
+    }
+
     override fun onRequestPermissionsResult(i: Int, strArr: Array<String>, iArr: IntArray) {
         super.onRequestPermissionsResult(i, strArr, iArr)
         if (i == 123) {
-            if (iArr.size <= 0 || iArr[0] + iArr[1] + iArr[2] != 0) {
+            if (iArr.isEmpty() || iArr[0] + iArr[1] + iArr[2] != 0) {
                 Toast.makeText(this, "Permissions denied.", Toast.LENGTH_SHORT).show()
             } else {
                 startActivity(Intent(this@ActMain, SelectImageListActivity::class.java))
@@ -230,10 +323,7 @@ class ActMain : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        AlertDialog.Builder(this).setMessage("Are you sure you want to exit?").setCancelable(false)
-            .setPositiveButton("Yes") { _, _ ->
-                finishAffinity()
-            }.setNegativeButton("No", null).show()
+        showExitDialog()
     }
 
     companion object {

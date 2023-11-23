@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                app:cardBackgroundColor="@color/white"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_20ssp"
+                app:cardCornerRadius="6dp"
+                app:cardUseCompatPadding="true">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp">
+
+                    <TextView
+                        android:id="@+id/tvTitlemain"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/_10sdp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:text="Exit"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="@dimen/_18sdp" />
+
+                    <TextView
+                        android:id="@+id/tvTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tvTitlemain"
+                        android:text="If you getting best experience from using our app
+please share app with your friend and family.
+thank you!!"
+                        android:textColor="@color/text_black"
+                        android:textSize="@dimen/_12sdp" />
+
+                    <TextView
+                        android:id="@+id/tvTitleexit"
+                        android:layout_width="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/poppins_medium"
+                        android:layout_below="@+id/tvTitle"
+                        android:text="Are You Sure You Want To Exit App?"
+                        android:textColor="@color/text_black"
+                        android:textSize="@dimen/_14sdp" />
+
+                    <RelativeLayout
+                        android:layout_below="@+id/tvTitleexit"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/btnExit"
+                            android:layout_width="@dimen/_80sdp"
+                            android:layout_height="40dp"
+                            android:layout_marginStart="@dimen/_20ssp"
+                            android:background="@drawable/roundtransparant"
+                            android:backgroundTint="@color/toolbar_bg"
+                            android:fontFamily="@font/muli_bold"
+                            android:gravity="center"
+                            android:text="Exit"
+                            android:textColor="@color/white"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_toEndOf="@+id/btnExit"
+                            android:id="@+id/btnContinue"
+                            android:layout_width="@dimen/_80sdp"
+                            android:layout_height="40dp"
+                            android:gravity="center"
+                            android:layout_marginStart="@dimen/_20ssp"
+                            android:background="@drawable/roundtransparant"
+                            android:backgroundTint="@color/tv_value_dialog"
+                            android:fontFamily="@font/muli_bold"
+                            android:text="Continue"
+                            android:textColor="@color/colorPrimary"
+                            android:textStyle="bold" />
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+        </RelativeLayout>
+
+        <ImageView
+            android:layout_width="@dimen/_60sdp"
+            android:layout_height="@dimen/_60sdp"
+            android:adjustViewBounds="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/_20ssp"
+            android:src="@drawable/img_exit" />
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -3,16 +3,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/ivPlayIcon"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center"
-        android:alpha="0.7"
-        android:src="@drawable/ic_play_circle_outline_white_24dp" />
-
-    <ImageView
-        android:id="@+id/ivImage"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/ivImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ImageView
+            android:id="@+id/ivPlayIcon"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_centerInParent="true"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_play_circle_outline_white_24dp" />
+    </RelativeLayout>
+
 </FrameLayout>

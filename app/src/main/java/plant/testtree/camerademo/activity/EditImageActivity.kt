@@ -22,11 +22,15 @@ import androidx.exifinterface.media.ExifInterface
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.drew.metadata.exif.makernotes.FujifilmMakernoteDirectory
+import com.pesonal.adsdk.ADS_SplashActivity
+import com.pesonal.adsdk.AppManage
+import com.pesonal.adsdk.SharedPref
 import com.yalantis.ucrop.UCrop
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar.OnProgressChangeListener
 import plant.testtree.camerademo.R
 import plant.testtree.camerademo.activity.CameraActivity.Companion.getMimeType
+import plant.testtree.camerademo.activity.selectlist.SelectImageListActivity
 import plant.testtree.camerademo.adapter.FilterAdapterGalalry
 import plant.testtree.camerademo.adapter.FilterType
 import plant.testtree.camerademo.databinding.ActivityEditImageBinding
@@ -60,12 +64,17 @@ class EditImageActivity : AppCompatActivity() {
     lateinit var binding: ActivityEditImageBinding
     public override fun onCreate(bundle: Bundle?) {
         super.onCreate(bundle)
-        requestWindowFeature(1)
-        window.setFlags(1024, 1024)
         binding = ActivityEditImageBinding.inflate(
             layoutInflater
         )
         setContentView(binding.root)
+
+        initView()
+        clickListner()
+        loadAds()
+    }
+
+    private fun initView() {
         FileUtils.upZipFile(this, "filter/thumbs/thumbs.zip", filesDir.absolutePath)
         binding.ivBack.setOnClickListener { onBackPressed() }
         try {
@@ -103,62 +112,68 @@ class EditImageActivity : AppCompatActivity() {
         glRootView!!.setAspectRatio(loadBitmapFromFile.width, loadBitmapFromFile.height)
         loadBitmapFromFile.recycle()
         glWrapper.setFilePath(image)
+    }
+
+    private fun clickListner() {
         binding.llCrop.setOnClickListener {
-            if (binding.rlColorFilter.visibility == View.VISIBLE) {
-                binding.llColorEdit.performClick()
-                binding.rlColorFilter.visibility = View.GONE
-                isCrop = true
-                binding.rlCropLayout.visibility = View.VISIBLE
-                binding.ivCrop.setImageResource(R.drawable.crop_press)
-                binding.ivFilter.setImageResource(R.drawable.ic_filter)
-                binding.ivColorEdit.setImageResource(R.drawable.effect)
-                Handler(Looper.getMainLooper()).postDelayed({
-                    try {
-                        UCrop.of((imageUri)!!, Uri.fromFile(File(cacheDir, "destination.jpg")))
-                            .start(this@EditImageActivity)
-                        Log.d("imagepath", (imageUri!!.path)!!)
-                    } catch (e3: Exception) {
-                        e3.printStackTrace()
+            AppManage.getInstance(this@EditImageActivity)
+                .showInterstitialAd(this@EditImageActivity) {
+                    if (binding.rlColorFilter.visibility == View.VISIBLE) {
+                        binding.llColorEdit.performClick()
+                        binding.rlColorFilter.visibility = View.GONE
+                        isCrop = true
+                        binding.rlCropLayout.visibility = View.VISIBLE
+                        binding.ivCrop.setImageResource(R.drawable.crop_press)
+                        binding.ivFilter.setImageResource(R.drawable.ic_filter)
+                        binding.ivColorEdit.setImageResource(R.drawable.effect)
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            try {
+                                UCrop.of((imageUri)!!, Uri.fromFile(File(cacheDir, "destination.jpg")))
+                                    .start(this@EditImageActivity)
+                                Log.d("imagepath", (imageUri!!.path)!!)
+                            } catch (e3: Exception) {
+                                e3.printStackTrace()
+                            }
+                        }, 500L)
+                    } else if (binding.rlFilterView.visibility == View.VISIBLE) {
+                        binding.llFilter.performClick()
+                        binding.rlFilterView.visibility = View.GONE
+                        isCrop = true
+                        binding.rlCropLayout.visibility = View.VISIBLE
+                        binding.ivCrop.setImageResource(R.drawable.crop_press)
+                        binding.ivFilter.setImageResource(R.drawable.ic_filter)
+                        binding.ivColorEdit.setImageResource(R.drawable.effect)
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            try {
+                                UCrop.of((imageUri)!!, Uri.fromFile(File(cacheDir, "destination.jpg")))
+                                    .start(this@EditImageActivity)
+                                Log.d("imagepath", (imageUri!!.path)!!)
+                            } catch (e3: Exception) {
+                                e3.printStackTrace()
+                            }
+                        }, 500L)
+                    } else if (isCrop) {
+                        isCrop = false
+                        binding.rlCropLayout.visibility = View.GONE
+                        binding.ivCrop.setImageResource(R.drawable.crop)
+                        binding.ivFilter.setImageResource(R.drawable.ic_filter)
+                        binding.ivColorEdit.setImageResource(R.drawable.effect)
+                    } else {
+                        val editImageActivity4 = this@EditImageActivity
+                        editImageActivity4.isCrop = true
+                        binding.rlCropLayout.visibility = View.VISIBLE
+                        binding.ivCrop.setImageResource(R.drawable.crop_press)
+                        binding.ivFilter.setImageResource(R.drawable.ic_filter)
+                        binding.ivColorEdit.setImageResource(R.drawable.effect)
+                        try {
+                            UCrop.of((imageUri)!!, Uri.fromFile(File(cacheDir, "destination.jpg")))
+                                .start(this@EditImageActivity)
+                            Log.d("imagepath", (imageUri!!.path)!!)
+                        } catch (e3: Exception) {
+                            e3.printStackTrace()
+                        }
                     }
-                }, 500L)
-            } else if (binding.rlFilterView.visibility == View.VISIBLE) {
-                binding.llFilter.performClick()
-                binding.rlFilterView.visibility = View.GONE
-                isCrop = true
-                binding.rlCropLayout.visibility = View.VISIBLE
-                binding.ivCrop.setImageResource(R.drawable.crop_press)
-                binding.ivFilter.setImageResource(R.drawable.ic_filter)
-                binding.ivColorEdit.setImageResource(R.drawable.effect)
-                Handler(Looper.getMainLooper()).postDelayed({
-                    try {
-                        UCrop.of((imageUri)!!, Uri.fromFile(File(cacheDir, "destination.jpg")))
-                            .start(this@EditImageActivity)
-                        Log.d("imagepath", (imageUri!!.path)!!)
-                    } catch (e3: Exception) {
-                        e3.printStackTrace()
-                    }
-                }, 500L)
-            } else if (isCrop) {
-                isCrop = false
-                binding.rlCropLayout.visibility = View.GONE
-                binding.ivCrop.setImageResource(R.drawable.crop)
-                binding.ivFilter.setImageResource(R.drawable.ic_filter)
-                binding.ivColorEdit.setImageResource(R.drawable.effect)
-            } else {
-                val editImageActivity4 = this@EditImageActivity
-                editImageActivity4.isCrop = true
-                binding.rlCropLayout.visibility = View.VISIBLE
-                binding.ivCrop.setImageResource(R.drawable.crop_press)
-                binding.ivFilter.setImageResource(R.drawable.ic_filter)
-                binding.ivColorEdit.setImageResource(R.drawable.effect)
-                try {
-                    UCrop.of((imageUri)!!, Uri.fromFile(File(cacheDir, "destination.jpg")))
-                        .start(this@EditImageActivity)
-                    Log.d("imagepath", (imageUri!!.path)!!)
-                } catch (e3: Exception) {
-                    e3.printStackTrace()
                 }
-            }
         }
         binding.llFilter.setOnClickListener {
             binding.tvDone.isEnabled = true
@@ -432,6 +447,21 @@ class EditImageActivity : AppCompatActivity() {
         }
     }
 
+    private fun loadAds() {
+            ADS_SplashActivity.banner_admob =  SharedPref.getString(
+                this@EditImageActivity,
+                "banner_admob",
+                ADS_SplashActivity.banner_admob)
+
+                AppManage.new_banner_id = ADS_SplashActivity.banner_admob
+                AppManage.getInstance(this@EditImageActivity).showBanner(
+                    binding.llBannerView,
+                    ADS_SplashActivity.banner_admob,
+                    ADS_SplashActivity.fb_banner,
+                    ADS_SplashActivity.unity_banner,
+                    binding.shimmerBannerContainer, 1
+                )
+    }
     fun saveBitmapAsFile(bitmap: Bitmap, activity: Activity): File? {
         var fileOutputStream: FileOutputStream?
         val file2 = File(Const.PATH)
@@ -554,12 +584,20 @@ class EditImageActivity : AppCompatActivity() {
             val output = UCrop.getOutput(intent!!)
             imageUri = output
             try {
-                binding.ivImage.setImageBitmap(
-                    MediaStore.Images.Media.getBitmap(
-                        contentResolver,
-                        output
-                    )
-                )
+                var bitmap: Bitmap? = null
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(contentResolver, imageUri)
+                } catch (e2: IOException) {
+                    e2.printStackTrace()
+                }
+                binding.ivImage.setImageBitmap(bitmap)
+
+//                binding.ivImage.setImageBitmap(
+//                    MediaStore.Images.Media.getBitmap(
+//                        contentResolver,
+//                        output
+//                    )
+//                )
             } catch (e: IOException) {
                 e.printStackTrace()
             }

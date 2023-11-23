@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/native_ads"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:background="@drawable/bg_banner_img"
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/unity_ad_layout_app_lovin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</RelativeLayout>

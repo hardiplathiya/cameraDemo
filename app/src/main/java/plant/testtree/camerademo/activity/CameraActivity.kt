@@ -45,6 +45,7 @@ import com.otaliastudios.cameraview.controls.Preview
 import com.otaliastudios.cameraview.controls.WhiteBalance
 import com.otaliastudios.cameraview.filter.Filters
 import com.otaliastudios.cameraview.filters.BrightnessFilter
+import com.pesonal.adsdk.AppManage
 import com.warkiz.widget.IndicatorSeekBar
 import com.warkiz.widget.OnSeekChangeListener
 import com.warkiz.widget.SeekParams
@@ -100,8 +101,6 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
     lateinit var binding: ActivityCameraBinding
     public override fun onCreate(bundle: Bundle?) {
         super.onCreate(bundle)
-        requestWindowFeature(1)
-        window.setFlags(1024, 1024)
         binding = ActivityCameraBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initView()
@@ -179,44 +178,48 @@ class CameraActivity : AppCompatActivity(), OnWheelItemSelectedListener {
             binding.shutterButton.isEnabled = false
             capturePhoto()
         }
+
         binding.imageThumb.setOnClickListener {
-            if (binding.futuremain.settingFeature.visibility == View.VISIBLE) {
-                binding.futuremain.menuSetting.performClick()
-            }
-            if (binding.futuremain.llTimerClick.visibility == View.VISIBLE) {
-                binding.futuremain.menuTime.performClick()
-            }
-            binding.rvFilterList.visibility = View.GONE
-            file = File(
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                    .toString() + File.separator + "iCamera"
-            )
-            if (!file!!.exists()) {
-                file!!.mkdirs()
-            }
-            if (file!!.isDirectory) {
-                arrayPhotoVideo.clear()
-                listFile = file!!.listFiles()!!
-                Arrays.sort<File>(
-                    listFile,
-                    java.util.Comparator<File> { file, file2 ->
-                        return@Comparator java.lang.Long.valueOf(file.lastModified())
-                            .compareTo(java.lang.Long.valueOf(file2.lastModified()))
-                    })
-                FilePathStrings = arrayOfNulls(listFile.size)
-                for (str: String? in FilePathStrings) {
-                    arrayPhotoVideo.add(ListModel(str))
+            AppManage.getInstance(this@CameraActivity)
+                .showInterstitialAd(this@CameraActivity) {
+                    if (binding.futuremain.settingFeature.visibility == View.VISIBLE) {
+                        binding.futuremain.menuSetting.performClick()
+                    }
+                    if (binding.futuremain.llTimerClick.visibility == View.VISIBLE) {
+                        binding.futuremain.menuTime.performClick()
+                    }
+                    binding.rvFilterList.visibility = View.GONE
+                    file = File(
+                        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                            .toString() + File.separator + "iCamera"
+                    )
+                    if (!file!!.exists()) {
+                        file!!.mkdirs()
+                    }
+                    if (file!!.isDirectory) {
+                        arrayPhotoVideo.clear()
+                        listFile = file!!.listFiles()!!
+                        Arrays.sort<File>(
+                            listFile,
+                            java.util.Comparator<File> { file, file2 ->
+                                return@Comparator java.lang.Long.valueOf(file.lastModified())
+                                    .compareTo(java.lang.Long.valueOf(file2.lastModified()))
+                            })
+                        FilePathStrings = arrayOfNulls(listFile.size)
+                        for (str: String? in FilePathStrings) {
+                            arrayPhotoVideo.add(ListModel(str))
+                        }
+                    }
+                    try {
+                        if (listFile.isEmpty()) {
+                            Toast.makeText(this@CameraActivity, "No Media Found", Toast.LENGTH_SHORT).show()
+                        } else {
+                            startActivity(Intent(this@CameraActivity, GalleryappActivity::class.java))
+                        }
+                    } catch (e4: Exception) {
+                        e4.printStackTrace()
+                    }
                 }
-            }
-            try {
-                if (listFile.isEmpty()) {
-                    Toast.makeText(this@CameraActivity, "No Media Found", Toast.LENGTH_SHORT).show()
-                } else {
-                    startActivity(Intent(this@CameraActivity, GalleryappActivity::class.java))
-                }
-            } catch (e4: Exception) {
-                e4.printStackTrace()
-            }
         }
         binding.futuremain.menuTime.setOnClickListener {
             if (binding.futuremain.settingFeature.visibility == View.VISIBLE) {

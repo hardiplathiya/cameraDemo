@@ -1,5 +1,6 @@
 package plant.testtree.camerademo.activity.selectlist
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
@@ -9,13 +10,14 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.pesonal.adsdk.AppManage
 import plant.testtree.camerademo.R
 import plant.testtree.camerademo.activity.gallary.GalleryappActivity
 import plant.testtree.camerademo.activity.selectlist.SelectImageAdapter.MyViewHolder
 import plant.testtree.camerademo.model.Image
 import java.io.File
 
-class SelectImageAdapter(var moviesList: ArrayList<Image>, var context: Context) :
+class SelectImageAdapter(var moviesList: ArrayList<Image>, var context: Activity) :
     RecyclerView.Adapter<MyViewHolder>() {
     fun addData(imgList: ArrayList<Image>) {
         moviesList = ArrayList()
@@ -54,12 +56,15 @@ class SelectImageAdapter(var moviesList: ArrayList<Image>, var context: Context)
             moviesList[i].isCheck = false
         }
         myViewHolder.itemView.setOnClickListener {
-            val file = File(moviesList[i].path)
-            val intent = Intent(context, GalleryappActivity::class.java)
-            intent.putExtra("path", file.parentFile!!.name)
-            intent.putExtra("dir", file.parentFile?.toString())
-            intent.putExtra("name", file.name)
-            context.startActivity(intent)
+            AppManage.getInstance(context)
+                .showInterstitialAd(context) {
+                    val file = File(moviesList[i].path)
+                    val intent = Intent(context, GalleryappActivity::class.java)
+                    intent.putExtra("path", file.parentFile!!.name)
+                    intent.putExtra("dir", file.parentFile?.toString())
+                    intent.putExtra("name", file.name)
+                    context.startActivity(intent)
+                }
         }
     }
 

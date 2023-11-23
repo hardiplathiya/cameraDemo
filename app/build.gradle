@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
 android {
@@ -19,8 +21,8 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
-            shrinkResources false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -37,17 +39,14 @@ android {
 }
 
 dependencies {
-
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
     implementation 'de.hdodenhof:circleimageview:3.1.0'
-  //  implementation 'com.otaliastudios:cameraview:2.7.2'
     implementation 'com.github.bumptech.glide:glide:4.16.0'
     implementation 'com.github.warkiz.widget:indicatorseekbar:2.1.2'
-    implementation 'com.github.open-android:uCrop:v1.0.0'
     implementation 'com.drewnoakes:metadata-extractor:2.18.0'
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'
     implementation 'com.airbnb.android:lottie:6.1.0'
@@ -59,9 +58,6 @@ dependencies {
     implementation 'com.intuit.sdp:sdp-android:1.1.0'
 
     implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.10.0'
-  //  implementation 'it.chengdazhi.styleimageview:styleimageview:1.0.2'
-
-    implementation 'com.jakewharton:butterknife:10.2.3'
 
     implementation 'io.reactivex.rxjava2:rxjava:2.2.10'
     implementation'io.reactivex.rxjava2:rxandroid:2.1.1'
@@ -69,7 +65,17 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.github.Theophrast:SquareImageView:1.0.1'
     implementation project(path: ':cameraview')
-//    implementation project(path: ':styleimageview')
+    implementation project(path: ':ucrop')
+    implementation project(path: ':AdsSdk')
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
+
+    //fb
+    implementation 'com.facebook.android:audience-network-sdk:6.+'
+    implementation 'com.facebook.android:facebook-android-sdk:15.2.0'
+
+    implementation 'com.google.firebase:firebase-crashlytics-ktx:18.4.3'
+    implementation 'com.google.firebase:firebase-analytics-ktx:21.3.0'
+    implementation 'com.google.firebase:firebase-perf-ktx:20.4.1'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

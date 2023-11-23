@@ -65,13 +65,39 @@
 
     </RelativeLayout>
 
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer_Banner_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/_5sdp">
+
+        <RelativeLayout
+            android:id="@+id/ll_banner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_horizontal">
+
+            <LinearLayout
+                android:id="@+id/ll_banner_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center">
+
+                <include layout="@layout/mail_banner_80layout" />
+
+            </LinearLayout>
+        </RelativeLayout>
+    </com.facebook.shimmer.ShimmerFrameLayout>
     <RelativeLayout
+        android:visibility="gone"
         android:layout_below="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_45sdp"
         android:background="@color/white">
-
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -116,10 +142,10 @@
         android:visibility="gone" />
 
     <androidx.viewpager.widget.ViewPager
+        android:layout_below="@+id/shimmer_Banner_container"
         android:id="@+id/gallery_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/_45sdp"
         android:background="@color/white" />
 
     <RelativeLayout
@@ -240,6 +266,7 @@
         android:visibility="gone">
 
         <ProgressBar
+            android:indeterminateTint="@color/mainColor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true" />

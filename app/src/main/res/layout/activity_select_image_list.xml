@@ -3,6 +3,7 @@
     xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:backgroundTint="@color/white"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -41,15 +42,38 @@
         android:id="@+id/rv_listimage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/llbanner"
+        android:layout_above="@+id/shimmer_native_container"
         android:layout_below="@+id/toolbar"
         android:layout_marginTop="@dimen/_3sdp"
         android:padding="@dimen/_2sdp" />
 
-    <LinearLayout
-        android:id="@+id/llbanner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <com.facebook.shimmer.ShimmerFrameLayout
         android:layout_alignParentBottom="true"
-        android:orientation="vertical" />
+        android:id="@+id/shimmer_native_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/nativee"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/rl_native_lay_small"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true">
+
+                <include layout="@layout/mail_ad_native_100_static_layout" />
+
+            </LinearLayout>
+
+            <com.facebook.ads.NativeAdLayout
+                android:id="@+id/native_ad_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true" />
+
+        </RelativeLayout>
+    </com.facebook.shimmer.ShimmerFrameLayout>
 </RelativeLayout>

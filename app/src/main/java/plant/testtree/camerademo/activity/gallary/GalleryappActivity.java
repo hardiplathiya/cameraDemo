@@ -27,6 +27,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.pesonal.adsdk.ADS_SplashActivity;
+import com.pesonal.adsdk.AppManage;
+import com.pesonal.adsdk.SharedPref;
+
 import java.io.File;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -147,14 +151,21 @@ public class GalleryappActivity extends AppCompatActivity {
         return decimalFormat.format(d).concat(" Bytes");
     }
 
+    public static ActivityGalleryBinding binding;
 
-   public static ActivityGalleryBinding binding;
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         binding = ActivityGalleryBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        initView();
+        setAdapter();
+        clickListner();
+        loadAds();
+    }
+
+    private void initView() {
         MyApp.getInstance().isFromPuzzle = false;
         try {
             Prefs.init(this);
@@ -172,6 +183,9 @@ public class GalleryappActivity extends AppCompatActivity {
             file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + File.separator + foldername);
         }
         album = new Album(file.getAbsolutePath(), foldername);
+    }
+
+    private void setAdapter() {
         pAdapter = new MediaPagerAdapter(getSupportFragmentManager());
         binding.galleryPager.setAdapter(pAdapter);
         // java.lang.Runnable
@@ -187,6 +201,9 @@ public class GalleryappActivity extends AppCompatActivity {
                 }
             }
         }, 1000L);
+    }
+
+    private void clickListner() {
         binding.galleryPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrollStateChanged(int i) {
@@ -229,7 +246,7 @@ public class GalleryappActivity extends AppCompatActivity {
             }
         });
 
-        binding.ivBack.setOnClickListener(view ->onBackPressed());
+        binding.ivBack.setOnClickListener(view -> onBackPressed());
 
         binding.rlMenuList.setOnClickListener(view -> {
             binding.cardMenuList.setVisibility(View.GONE);
@@ -288,11 +305,15 @@ public class GalleryappActivity extends AppCompatActivity {
         });
 
         binding.llEdit.setOnClickListener(view -> {
-            binding.cardMenuList.setVisibility(View.GONE);
-            binding.rlMenuList.setVisibility(View.GONE);
-            Intent intent = new Intent(GalleryappActivity.this, EditImageActivity.class);
-            intent.putExtra("FilePath", GalleryappActivity.this.mediaItems.get(binding.galleryPager.getCurrentItem()).getPath());
-            GalleryappActivity.this.startActivity(intent);
+            AppManage.new_admob_id = ADS_SplashActivity.interstitial_admob;
+            AppManage.getInstance(GalleryappActivity.this)
+                            .showInterstitialAd(GalleryappActivity.this, () -> {
+                                binding.cardMenuList.setVisibility(View.GONE);
+                                binding.rlMenuList.setVisibility(View.GONE);
+                                Intent intent = new Intent(GalleryappActivity.this, EditImageActivity.class);
+                                intent.putExtra("FilePath", GalleryappActivity.this.mediaItems.get(binding.galleryPager.getCurrentItem()).getPath());
+                                GalleryappActivity.this.startActivity(intent);
+                            });
         });
         binding.tvShowOnMap.setOnClickListener(view -> {
             binding.cardMenuList.setVisibility(View.GONE);
@@ -304,6 +325,22 @@ public class GalleryappActivity extends AppCompatActivity {
             binding.rlSlideShow.setVisibility(View.GONE);
             binding.galleryPager.setCurrentItem(binding.vpSlideShow.getCurrentItem());
         });
+    }
+
+    private void loadAds() {
+        ADS_SplashActivity.banner_admob = SharedPref.getString(
+                GalleryappActivity.this,
+                "banner_admob",
+                ADS_SplashActivity.banner_admob);
+
+        AppManage.new_banner_id = ADS_SplashActivity.banner_admob;
+        AppManage.getInstance(GalleryappActivity.this).showBanner(
+                binding.llBannerView,
+                ADS_SplashActivity.banner_admob,
+                ADS_SplashActivity.fb_banner,
+                ADS_SplashActivity.unity_banner,
+                binding.shimmerBannerContainer, 1
+        );
     }
 
     @Override
@@ -450,9 +487,9 @@ public class GalleryappActivity extends AppCompatActivity {
         create.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         final EditText editText = (EditText) inflate.findViewById(R.id.etRename);
         editText.setText(StringUtils.getPhotoNameByPath(this.mediaItems.get(binding.galleryPager.getCurrentItem()).getPath()));
-        ((Button) inflate.findViewById(R.id.btnCancel)).setOnClickListener(view -> create.dismiss());
+        ((TextView) inflate.findViewById(R.id.btnCancel)).setOnClickListener(view -> create.dismiss());
 
-        ((Button) inflate.findViewById(R.id.btnOK)).setOnClickListener(view -> {
+        ((TextView) inflate.findViewById(R.id.btnOK)).setOnClickListener(view -> {
             if (TextUtils.isEmpty(editText.getText().toString())) {
                 Toast.makeText(GalleryappActivity.this, "Enter file name!", Toast.LENGTH_SHORT).show();
                 editText.requestFocus();

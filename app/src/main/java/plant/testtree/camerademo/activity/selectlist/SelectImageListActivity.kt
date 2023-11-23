@@ -3,15 +3,19 @@ package plant.testtree.camerademo.activity.selectlist
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
-import butterknife.ButterKnife
+import com.pesonal.adsdk.ADS_SplashActivity
+import com.pesonal.adsdk.AppManage
+import com.pesonal.adsdk.SharedPref
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import plant.testtree.camerademo.databinding.ActivitySelectImageListBinding
 import plant.testtree.camerademo.model.Image
+import plant.testtree.camerademo.util.Const
 import plant.testtree.camerademo.util.Const.imgList
 import java.io.File
 import java.util.TreeSet
@@ -24,13 +28,33 @@ class SelectImageListActivity : AppCompatActivity() {
         super.onCreate(bundle)
         binding = ActivitySelectImageListBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        ButterKnife.bind(this)
         binding.ivBack.setOnClickListener { onBackPressed() }
         adapter = SelectImageAdapter(imgList, this)
         binding.rvListimage.layoutManager = GridLayoutManager(this, 3)
         binding.rvListimage.itemAnimator = DefaultItemAnimator()
         binding.rvListimage.adapter = adapter
         addList()
+        loadAds()
+    }
+
+    private fun loadAds() {
+        if (Const.isLoadAds == "1") {
+            ADS_SplashActivity.native_admob =  SharedPref.getString(
+                this@SelectImageListActivity,
+                "native_admob",
+                "")
+            AppManage.new_admobnative_id = ADS_SplashActivity.native_admob
+            AppManage.getInstance(this@SelectImageListActivity).showNativeSmall_medium(
+                binding.rlNativeLaySmall,
+                binding.nativeAdContainer,
+                ADS_SplashActivity.native_admob,
+                ADS_SplashActivity.fb_small_native,
+                binding.rlNativeLaySmall,
+                binding.shimmerNativeContainer
+            )
+        } else {
+            binding.shimmerNativeContainer.visibility = View.GONE
+        }
     }
 
     fun addList() {

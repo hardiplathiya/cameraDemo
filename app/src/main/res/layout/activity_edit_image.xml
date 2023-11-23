@@ -7,29 +7,66 @@
 
     <RelativeLayout
         android:id="@+id/rlView1"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_40sdp">
+        android:layout_height="60dp"
+        android:background="@color/toolbar_bg"
+        android:layout_width="match_parent">
 
         <ImageView
             android:id="@+id/ivBack"
-            android:layout_width="@dimen/_40sdp"
-            android:layout_height="@dimen/_40sdp"
-            android:src="@drawable/back_new"
-            n5:tint="@color/white" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@null"
+            android:padding="@dimen/_3sdp"
+            android:src="@drawable/ic_back" />
+
     </RelativeLayout>
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer_Banner_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rlView1"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/_5sdp">
+
+        <RelativeLayout
+            android:id="@+id/ll_banner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_horizontal">
+
+            <LinearLayout
+                android:id="@+id/ll_banner_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center">
+
+                <include layout="@layout/mail_banner_80layout" />
+
+            </LinearLayout>
+        </RelativeLayout>
+    </com.facebook.shimmer.ShimmerFrameLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/rlView2"
-        android:layout_below="@+id/rlView1">
+        android:layout_below="@+id/shimmer_Banner_container">
 
         <ImageView
             android:id="@+id/ivImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
-            android:layout_margin="@dimen/_2sdp" />
+            android:layout_marginStart="@dimen/_2sdp"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:layout_marginEnd="@dimen/_2sdp"
+            android:layout_marginBottom="@dimen/_2sdp" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -424,6 +461,7 @@
         android:visibility="gone">
 
         <ProgressBar
+            android:indeterminateTint="@color/mainColor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true" />
