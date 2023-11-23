@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defaultsMap>
+
+    <entry>
+        <key>language_adsequence_data</key>
+        <value>Here is some text</value>
+    </entry>
+
+    <entry>
+        <key>language_appopen_data</key>
+        <value>Here is some text</value>
+    </entry>
+
+    <entry>
+        <key>language_banner_data</key>
+        <value>Here is some text</value>
+    </entry>
+
+    <entry>
+        <key>language_applovin_data</key>
+        <value>Here is some text</value>
+    </entry>
+
+    <entry>
+        <key>language_interstitial_data</key>
+        <value>Here is some text</value>
+    </entry>
+
+    <entry>
+        <key>language_native_data</key>
+        <value>Here is some text</value>
+    </entry>
+
+    <entry>
+        <key>qreka_data</key>
+        <value>Here is some text</value>
+    </entry>
+
+</defaultsMap>
