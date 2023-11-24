@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace 'plant.testtree.camerademo'
+    namespace 'com.iphonecamera.allinone.cameraediting'
     compileSdk 33
 
     defaultConfig {
-        applicationId "plant.testtree.camerademo"
+        applicationId "com.iphonecamera.allinone.cameraediting"
         minSdk 24
         targetSdk 33
         versionCode 1

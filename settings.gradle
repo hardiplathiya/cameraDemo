@@ -20,7 +20,7 @@ dependencyResolutionManagement {
 
 }
 
-rootProject.name = "cameraDemo"
+rootProject.name = "I Phone Camera Pro"
 include ':app'
 
 

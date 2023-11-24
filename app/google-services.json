@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "443820131762",
-    "project_id": "camera-iphone-2f08e",
-    "storage_bucket": "camera-iphone-2f08e.appspot.com"
+    "project_number": "773053499768",
+    "project_id": "iphone-camera-91367",
+    "storage_bucket": "iphone-camera-91367.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:443820131762:android:3a5fff30559e03ea1650ab",
+        "mobilesdk_app_id": "1:773053499768:android:a9a53525163cc692d4608d",
         "android_client_info": {
-          "package_name": "plant.testtree.camerademo"
+          "package_name": "com.iphonecamera.allinone.cameraediting"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBXG47LDrXGkUyJlPdsYQwdhFR1NDfjBgg"
+          "current_key": "AIzaSyAqQOHw7IxdMh1IKyp5UjzbyEKRiEoTgeM"
         }
       ],
       "services": {

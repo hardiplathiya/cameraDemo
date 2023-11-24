@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import android.view.animation.Interpolator;
 import android.widget.ImageView;
 
-import plant.testtree.camerademo.R;
+import com.iphonecamera.allinone.cameraediting.R;
 
 /**
  * Created by chengdazhi on 8/10/16.

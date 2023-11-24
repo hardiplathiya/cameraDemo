@@ -221,7 +221,7 @@
             android:layout_above="@+id/filter_list"
             android:layout_below="@+id/rlDoneView">
 
-            <plant.testtree.camerademo.util.GLRootView
+            <com.iphonecamera.allinone.cameraediting.util.GLRootView
                 android:id="@+id/camera_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

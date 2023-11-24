@@ -90,7 +90,7 @@
                 android:src="@drawable/btn_photo_shutter" />
         </RelativeLayout>
 
-        <plant.testtree.camerademo.util.WheelView
+        <com.iphonecamera.allinone.cameraediting.util.WheelView
             android:id="@+id/wheelview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
